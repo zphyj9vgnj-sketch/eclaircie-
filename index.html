@@ -129,7 +129,7 @@ p { margin: 0; }
 
 label { font-size: 16px; font-weight: 600; }
 label .opt { font-weight: 400; color: var(--muted); }
-textarea, input[type="text"] { width: 100%; border: 1.5px solid var(--line); border-radius: 16px; padding: 14px; font-family: var(--font-body); font-size: 16px; line-height: 1.4; color: var(--ink); background: var(--field); }
+textarea, input[type="text"], input[type="time"] { width: 100%; border: 1.5px solid var(--line); border-radius: 16px; padding: 14px; font-family: var(--font-body); font-size: 16px; line-height: 1.4; color: var(--ink); background: var(--field); }
 textarea { resize: none; }
 input[type="text"] { min-height: 48px; padding-top: 0; padding-bottom: 0; }
 
@@ -186,169 +186,535 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 (function () {
   'use strict';
 
-  var INVITES = [
-    `Demande à quelqu'un de te raconter un souvenir qui lui est cher.`,
-    `Envoie un message à quelqu'un à qui tu penses, sans raison particulière.`,
-    `Remercie quelqu'un pour une chose précise qu'il ou elle a faite.`,
-    `Pose une vraie question à quelqu'un, puis écoute la réponse jusqu'au bout.`,
-    `Propose ton aide à quelqu'un, même pour une toute petite chose.`,
-    `Partage un repas avec quelqu'un, téléphone rangé.`,
-    `Appelle quelqu'un que tu n'as pas entendu depuis longtemps.`,
-    `Dis à quelqu'un ce que tu apprécies chez lui ou elle.`,
-    `Regarde le ciel pendant une minute entière.`,
-    `Marche sans destination et remarque trois choses que tu n'avais jamais vues.`,
-    `Ferme les yeux une minute et écoute les bruits autour de toi.`,
-    `Observe les gens autour de toi, dans la rue ou dans un café, sans rien attendre.`,
-    `Va dans un endroit que tu aimes, sans rien y faire de précis.`,
-    `Touche un arbre, une pierre, de l'eau, et sens la matière.`,
-    `Prends le temps de regarder quelque chose de beau, sans le photographier.`,
-    `Sors prendre l'air cinq minutes sans ton téléphone.`,
-    `Rends un petit service sans qu'on te l'ait demandé.`,
-    `Laisse un mot gentil à quelqu'un, sur un post-it ou dans un sac.`,
-    `Tiens une porte, cède ta place, offre un vrai sourire : un geste pour un inconnu.`,
-    `Aide quelqu'un à porter, à chercher ou à comprendre quelque chose.`,
-    `Apprends à quelqu'un un petit truc que tu sais faire.`,
-    `Écris à quelqu'un qui t'a marqué, même si c'était il y a longtemps.`,
-    `Demande à un proche ce qui l'a fait rire récemment.`,
-    `Écoute une personne plus âgée te raconter son enfance.`,
-    `Retourne dans un lieu qui t'a déjà fait du bien.`,
-    `Invite quelqu'un à partager un thé ou un café, sans programme.`,
-    `Prends des nouvelles de quelqu'un qui traverse une période difficile.`,
-    `Prépare quelque chose à partager, un gâteau ou un thé, et offre-le.`,
-    `Demande à quelqu'un de quoi il ou elle est le plus fier ou fière, puis écoute.`,
-    `Dis merci à quelqu'un pour quelque chose qui date de plus d'un an.`,
-    `Propose une promenade à quelqu'un, sans but et sans regarder l'heure.`,
-    `Donne dix minutes de ton attention entière à quelqu'un, sans regarder ton téléphone.`,
-    `Repère quelqu'un qui semble avoir besoin d'un coup de main, et propose-le.`,
-    `Raconte à quelqu'un un moment qui t'a fait du bien récemment.`,
-    `Assieds-toi dehors et regarde passer les nuages, les gens, les feuilles.`,
-    `Écoute un morceau de musique en entier, les yeux fermés.`,
-    `Remarque la lumière à trois moments différents de la journée.`,
-    `Sens l'odeur de la pluie, d'une fleur ou d'un arbre, et reste un instant avec elle.`,
-    `Écris une carte postale ou une lettre à la main pour quelqu'un.`,
-    `Dis bonjour à quelqu'un que tu croises souvent sans jamais lui parler.`,
-    `Demande à quelqu'un « Comment ça va, vraiment ? » et prends le temps d'écouter.`,
-    `Fais rire quelqu'un.`,
-    `Prépare quelque chose avec quelqu'un, à deux mains et sans se presser.`,
-    `Marche en remarquant ce qui pousse, vole ou chante autour de toi.`,
-    `Passe un moment avec quelqu'un d'une autre génération que la tienne.`,
-    `Raconte une histoire à un enfant, ou demande-lui de t'en raconter une.`,
-    `Aide quelqu'un à faire une chose qu'il ou elle repousse depuis longtemps.`,
-    `Remercie une personne dont on pense rarement à reconnaître le travail.`,
-    `Regarde le lever ou le coucher du soleil, sans rien faire d'autre.`,
-    `Joue à quelque chose avec quelqu'un, sans enjeu, juste pour le plaisir.`,
-    `Écoute quelqu'un te parler de ce qui le passionne, sans l'interrompre.`,
-    `Passe un moment au bord de l'eau ou près d'un grand arbre.`,
-    `Propose à un ami perdu de vue de se retrouver.`,
-    `Partage un livre, une chanson ou un film qui t'a touché avec quelqu'un.`,
-    `Passe un moment à ne rien faire avec quelqu'un d'autre, sans rien dire.`,
-    `Fais un compliment sincère à quelqu'un sur ce qu'il ou elle est, pas sur son apparence.`
+  var MOMENTS = [
+    ["t", "Demande à quelqu'un de te raconter un souvenir qui lui est cher."],
+    ["d", "Envoie un message à quelqu'un à qui tu penses, sans raison particulière."],
+    ["t", "Remercie quelqu'un pour une chose précise qu'il ou elle a faite."],
+    ["t", "Pose une vraie question à quelqu'un, puis écoute la réponse jusqu'au bout."],
+    ["a", "Propose ton aide à quelqu'un, même pour une toute petite chose."],
+    ["a", "Partage un repas avec quelqu'un, téléphone rangé."],
+    ["a", "Appelle quelqu'un que tu n'as pas entendu depuis longtemps."],
+    ["t", "Dis à quelqu'un ce que tu apprécies chez lui ou elle."],
+    ["d", "Regarde le ciel pendant une minute entière."],
+    ["t", "Marche sans destination et remarque trois choses que tu n'avais jamais vues."],
+    ["d", "Ferme les yeux une minute et écoute les bruits autour de toi."],
+    ["t", "Observe les gens autour de toi, dans la rue ou dans un café, sans rien attendre."],
+    ["t", "Va dans un endroit que tu aimes, sans rien y faire de précis."],
+    ["d", "Touche un arbre, une pierre, de l'eau, et sens la matière."],
+    ["d", "Prends le temps de regarder quelque chose de beau, sans le photographier."],
+    ["d", "Sors prendre l'air cinq minutes sans ton téléphone."],
+    ["a", "Rends un petit service sans qu'on te l'ait demandé."],
+    ["t", "Laisse un mot gentil à quelqu'un, sur un post-it ou dans un sac."],
+    ["t", "Tiens une porte, cède ta place, offre un vrai sourire : un geste pour un inconnu."],
+    ["a", "Aide quelqu'un à porter, à chercher ou à comprendre quelque chose."],
+    ["a", "Apprends à quelqu'un un petit truc que tu sais faire."],
+    ["t", "Écris à quelqu'un qui t'a marqué, même si c'était il y a longtemps."],
+    ["t", "Demande à un proche ce qui l'a fait rire récemment."],
+    ["t", "Écoute une personne plus âgée te raconter son enfance."],
+    ["t", "Retourne dans un lieu qui t'a déjà fait du bien."],
+    ["t", "Invite quelqu'un à partager un thé ou un café, sans programme."],
+    ["t", "Prends des nouvelles de quelqu'un qui traverse une période difficile."],
+    ["a", "Prépare quelque chose à partager, un gâteau ou un thé, et offre-le."],
+    ["t", "Demande à quelqu'un de quoi il ou elle est le plus fier ou fière, puis écoute."],
+    ["t", "Dis merci à quelqu'un pour quelque chose qui date de plus d'un an."],
+    ["a", "Propose une promenade à quelqu'un, sans but et sans regarder l'heure."],
+    ["t", "Donne dix minutes de ton attention entière à quelqu'un, sans regarder ton téléphone."],
+    ["a", "Repère quelqu'un qui semble avoir besoin d'un coup de main, et propose-le."],
+    ["t", "Raconte à quelqu'un un moment qui t'a fait du bien récemment."],
+    ["d", "Assieds-toi dehors et regarde passer les nuages, les gens, les feuilles."],
+    ["d", "Écoute un morceau de musique en entier, les yeux fermés."],
+    ["t", "Remarque la lumière à trois moments différents de la journée."],
+    ["d", "Sens l'odeur de la pluie, d'une fleur ou d'un arbre, et reste un instant avec elle."],
+    ["t", "Écris une carte postale ou une lettre à la main pour quelqu'un."],
+    ["t", "Dis bonjour à quelqu'un que tu croises souvent sans jamais lui parler."],
+    ["t", "Demande à quelqu'un « Comment ça va, vraiment ? » et prends le temps d'écouter."],
+    ["t", "Fais rire quelqu'un."],
+    ["a", "Prépare quelque chose avec quelqu'un, à deux mains et sans se presser."],
+    ["t", "Marche en remarquant ce qui pousse, vole ou chante autour de toi."],
+    ["a", "Passe un moment avec quelqu'un d'une autre génération que la tienne."],
+    ["t", "Raconte une histoire à un enfant, ou demande-lui de t'en raconter une."],
+    ["a", "Aide quelqu'un à faire une chose qu'il ou elle repousse depuis longtemps."],
+    ["t", "Remercie une personne dont on pense rarement à reconnaître le travail."],
+    ["d", "Regarde le lever ou le coucher du soleil, sans rien faire d'autre."],
+    ["a", "Joue à quelque chose avec quelqu'un, sans enjeu, juste pour le plaisir."],
+    ["t", "Écoute quelqu'un te parler de ce qui le passionne, sans l'interrompre."],
+    ["d", "Passe un moment au bord de l'eau ou près d'un grand arbre."],
+    ["a", "Propose à un ami perdu de vue de se retrouver."],
+    ["t", "Partage un livre, une chanson ou un film qui t'a touché avec quelqu'un."],
+    ["d", "Passe un moment à ne rien faire avec quelqu'un d'autre, sans rien dire."],
+    ["t", "Fais un compliment sincère à quelqu'un sur ce qu'il ou elle est, pas sur son apparence."],
+    ["a", "Organise un repas ou un goûter avec des gens qui ne se connaissent pas encore."],
+    ["a", "Propose à quelqu'un une sortie que vous n'avez jamais faite ensemble."],
+    ["a", "Écris un petit mot de remerciement à la main et va le déposer en personne."],
+    ["a", "Appelle deux personnes aujourd'hui, juste pour savoir comment elles vont."],
+    ["a", "Va découvrir un endroit de ta ville où tu n'es jamais allé."],
+    ["a", "Propose ton aide à un voisin ou à une voisine pour quelque chose qu'il ou elle repousse."],
+    ["a", "Apprends à quelqu'un une chose que tu aimes faire, puis demande-lui de t'en apprendre une."],
+    ["a", "Prépare un repas pour quelqu'un qui en a besoin en ce moment."],
+    ["a", "Rassemble des amis pour une promenade, un jeu ou un pique-nique."],
+    ["a", "Renseigne-toi auprès d'une association près de chez toi pour voir comment tu pourrais donner un coup de main."],
+    ["a", "Remercie quelqu'un devant d'autres personnes pour ce qu'il ou elle apporte."],
+    ["a", "Marche jusqu'à un point de vue et invite quelqu'un à venir le voir avec toi."],
+    ["a", "Prépare une petite surprise pour quelqu'un que tu aimes, sans occasion particulière."],
+    ["a", "Ramasse ce qui traîne sur un bout de chemin, juste pour que ce soit plus agréable pour tous."],
+    ["a", "Invite quelqu'un à essayer avec toi une chose que vous avez toujours voulu tester."],
+    ["a", "Propose à des collègues ou à des voisins de prendre un café ensemble, un jour de cette semaine."],
+    ["a", "Écris une lettre de remerciement à quelqu'un qui t'a transmis quelque chose, un enseignant, un ami, un ancien responsable, et envoie-la."],
+    ["a", "Invite quelqu'un à une balade dans un lieu que tu aimes, et fais-lui découvrir pourquoi."],
+    ["a", "Propose à un ami de faire quelque chose de nouveau ensemble : un atelier, une expo, un jeu."],
+    ["a", "Va rendre visite à quelqu'un qui n'a pas souvent de visite."],
+    ["a", "Prépare un petit panier ou un repas à offrir à quelqu'un qui traverse une période chargée."],
+    ["a", "Offre ton temps à quelqu'un pour une chose pratique : un déménagement, un dossier, un coup de main."],
+    ["a", "Organise une soirée jeux ou une soirée film avec des proches."],
+    ["a", "Va marcher dans un endroit que tu ne connais pas encore, seul ou à plusieurs, et reste ouvert à ce que tu vois."],
+    ["a", "Rassemble trois personnes qui comptent pour toi dans un même message de remerciement."],
+    ["a", "Propose à quelqu'un de cuisiner ensemble une recette que l'un de vous veut transmettre."],
+    ["a", "Apprends le prénom d'une personne que tu croises souvent, et utilise-le."],
+    ["a", "Va au marché ou dans une petite boutique de quartier et discute vraiment avec la personne derrière le comptoir."],
+    ["a", "Offre un livre que tu as aimé à quelqu'un qui pourrait l'aimer aussi."],
+    ["a", "Raconte à quelqu'un une idée qui t'enthousiasme, et demande-lui ce qu'il ou elle en pense."],
+    ["a", "Propose à un enfant de ton entourage de te montrer un jeu ou une passion qu'il ou elle aime."],
+    ["a", "Réunis deux personnes de ton entourage qui ne se connaissent pas encore."],
+    ["a", "Va voir quelqu'un en personne plutôt que d'écrire, pour lui dire quelque chose de bon."],
+    ["a", "Plante quelque chose, une graine, une bouture, une fleur, pour toi ou pour quelqu'un d'autre."],
+    ["a", "Passe un moment en pleine nature, forêt, rivière ou colline, et reste-y plus longtemps que prévu."],
+    ["a", "Essaie une activité de groupe près de chez toi, chorale, atelier ou club de lecture, juste pour voir."],
+    ["a", "Propose ton aide à une association ou à un voisin pour une petite tâche concrète."],
+    ["a", "Écris une carte ou un mot à quelqu'un qui a un jour important cette semaine."],
+    ["a", "Emmène quelqu'un dans un lieu de ta ville que tu trouves beau."],
+    ["a", "Prépare une petite fête pour célébrer une réussite chez quelqu'un, même modeste."],
+    ["a", "Rends visite à une personne âgée de ton entourage et demande-lui de te raconter un souvenir."],
+    ["a", "Demande à quelqu'un de te montrer comment il ou elle fait quelque chose, et apprends-le avec plaisir."],
+    ["a", "Dis oui à une invitation que tu aurais d'habitude refusée."],
+    ["a", "Rassemble quelques personnes pour un moment simple dehors : un banc, un parc, une plage."],
+    ["a", "Fais un cadeau sans occasion, quelque chose de petit qui fait penser à la personne."],
+    ["a", "Cherche ce qu'une personne de ton entourage aimerait vraiment, et aide-la à le réaliser, même en petit."],
+    ["a", "Fais le tour de ton quartier et dis bonjour à toutes les personnes que tu croises."],
+    ["a", "Écris une petite histoire ou un poème pour quelqu'un et offre-le-lui."],
+    ["a", "Propose à des amis d'apporter chacun un plat ou une chose à partager."],
+    ["a", "Va voir un spectacle, une expo ou un concert avec quelqu'un."],
+    ["a", "Donne un coup de main à quelqu'un sur un projet qui lui tient à cœur."],
+    ["a", "Raconte à quelqu'un un moment où l'on t'a aidé, et ce que ça a changé pour toi."],
+    ["a", "Appelle quelqu'un qui doit avoir une journée difficile et passe-lui un peu de ton énergie."],
+    ["a", "Fais une chose utile pour ceux qui vivent près de toi : réparer, ranger, partager."],
+    ["a", "Propose à quelqu'un de partager un coin de nature avec toi : un lever de soleil, un pique-nique, un feu."],
+    ["a", "Remercie une personne qui t'a donné confiance un jour."],
+    ["a", "Choisis quelqu'un que tu connais peu et pose-lui trois questions sincères."],
+    ["a", "Reprends contact avec quelqu'un avec qui tu as perdu le fil après un malentendu, et tends la main."],
+    ["a", "Fais découvrir à quelqu'un ta chanson, ton film ou ton lieu préféré."],
+    ["a", "Va à la rencontre de ton voisinage : frappe à une porte ou laisse un mot pour te présenter."],
+    ["a", "Fais quelque chose de joyeux avec des enfants : dessiner, danser, courir, inventer une histoire."],
+    ["a", "Propose à quelqu'un de faire un trajet ou une course ensemble pour lui faire gagner du temps."],
+    ["a", "Prépare une boisson chaude pour plusieurs personnes et offre-la pendant une pause."],
+    ["a", "Enregistre un message vocal chaleureux pour quelqu'un que tu aimes, qu'il ou elle pourra réécouter."],
+    ["a", "Aide quelqu'un à ranger, trier ou organiser quelque chose, en lui tenant compagnie."],
+    ["a", "Remercie la personne qui travaille derrière un service que tu utilises chaque jour."],
+    ["a", "Repère ce que ta ville a de beau, un mur, un jardin, une fontaine, et partage-le avec quelqu'un."],
+    ["a", "Invite quelqu'un à danser, chanter ou jouer d'un instrument avec toi, sans que ce soit parfait."],
+    ["a", "Organise une promenade ou un goûter pour le simple plaisir de vous voir."],
+    ["a", "Propose à quelqu'un d'aller voir un lieu qui lui tient à cœur, et demande-lui de te raconter pourquoi."],
+    ["a", "Passe voir quelqu'un que tu aimes bien, après l'avoir prévenu d'un petit mot."],
+    ["a", "Aide quelqu'un à essayer une chose qu'il ou elle n'ose pas faire seul."],
+    ["a", "Choisis un souvenir heureux avec un proche et retournez ensemble dans le même lieu."],
+    ["a", "Prends des nouvelles d'un voisin ou d'une voisine, surtout s'il ou elle vit seul."],
+    ["a", "Fais une pause avec un collègue ou un camarade, et demande-lui comment il ou elle va vraiment."],
+    ["a", "Fais un compliment sincère sur le travail de quelqu'un, et dis pourquoi tu l'apprécies."],
+    ["a", "Partage une bonne nouvelle avec plusieurs personnes aujourd'hui, et laisse-les se réjouir avec toi."],
+    ["a", "Offre ton écoute à quelqu'un qui a besoin de parler, et prends du temps pour lui."],
+    ["a", "Apprenez quelque chose à plusieurs : une chanson, un jeu, quelques mots dans une autre langue."],
+    ["a", "Écris à quelqu'un qui vit loin de toi et raconte-lui un détail de ta journée."],
+    ["a", "Propose à un proche une sortie à vélo, à pied ou en transport, juste pour le plaisir d'être ensemble."],
+    ["a", "Fais une liste de personnes à qui tu es reconnaissant, et choisis-en une à remercier aujourd'hui."],
+    ["a", "Accueille quelqu'un chez toi pour un simple moment : thé, discussion ou silence."],
+    ["a", "Prépare un repas pour quelqu'un qui n'en reçoit pas souvent."],
+    ["a", "Fais un geste pour la nature autour de toi : ramasser, arroser, nourrir les oiseaux."],
+    ["a", "Dis à quelqu'un ce qu'il ou elle t'a appris, même sans le savoir."],
+    ["a", "Propose à un ami d'inventer un petit rituel à deux : un café par mois, une promenade du dimanche."],
+    ["a", "Va voir quelqu'un qui traverse une épreuve, et sois simplement présent."],
+    ["a", "Demande à quelqu'un de te parler d'une personne qui compte beaucoup pour lui ou elle."],
+    ["a", "Organise une petite célébration pour quelqu'un : une réussite, un anniversaire, un retour."],
+    ["a", "Pars à la découverte d'un lieu de ta région que tu n'as jamais vu."],
+    ["a", "Offre à quelqu'un un moment dont il ou elle a envie : une sortie, du temps libre, une garde d'enfants."],
+    ["a", "Rends service à quelqu'un sans rien attendre, et sans le dire à personne."],
+    ["a", "Prends en charge une petite chose pratique pour quelqu'un : un appel, un rendez-vous, un papier."],
+    ["a", "Présente quelqu'un à une personne qui pourrait l'aider ou l'inspirer."],
+    ["a", "Écris un message d'encouragement à quelqu'un qui se lance dans quelque chose."],
+    ["a", "Propose à un ami un petit défi amical, juste pour rire."],
+    ["a", "Remercie quelqu'un qui t'a accueilli ou aidé à un moment de ta vie, et dis-lui ce que ça a changé."],
+    ["a", "Offre un sourire et quelques mots à une personne seule que tu croises."],
+    ["a", "Emmène quelqu'un qui ne le connaît pas dans un lieu de culture ou de nature, et regardez ensemble."],
+    ["a", "Propose à un enfant ou à un adolescent de ton entourage un moment rien que pour lui ou elle."],
+    ["a", "Chante ou fredonne en marchant, puis partage une chanson avec quelqu'un."],
+    ["a", "Fixe dès aujourd'hui une date pour un prochain moment avec une personne que tu aimes."],
+    ["a", "Fais découvrir un endroit calme de ta ville à quelqu'un qui est stressé."],
+    ["a", "Dis à quelqu'un « Tu comptes pour moi », avec tes propres mots."],
+    ["a", "Prépare un petit mot ou un dessin pour quelqu'un qui en aura besoin demain."],
+    ["a", "Pars marcher avec un ami, téléphone dans la poche, et discutez longuement."],
+    ["t", "Écris à une personne que tu aimes ce qu'elle t'apporte dans ta vie."],
+    ["t", "Bois quelque chose de chaud avec quelqu'un, sans regarder l'heure."],
+    ["t", "Remarque trois sons différents autour de toi, puis raconte-les à quelqu'un."],
+    ["t", "Demande à un proche quelle chanson lui rappelle de bons moments, puis écoutez-la ensemble."],
+    ["t", "Salue chaleureusement quelqu'un que tu croises chaque jour, un commerçant ou un voisin."],
+    ["t", "Relis un message qui t'a fait du bien, puis réponds-y s'il est resté sans réponse."],
+    ["t", "Prends dix minutes pour regarder, depuis un banc ou une fenêtre, ce qui se passe dehors."],
+    ["t", "Pose une question simple à quelqu'un : « Qu'est-ce qui t'a fait plaisir cette semaine ? »"],
+    ["t", "Raconte une anecdote drôle à quelqu'un qui a besoin de sourire."],
+    ["t", "Prends des nouvelles d'un ancien collègue ou d'un ancien camarade."],
+    ["t", "Cuisine quelque chose de simple et garde-en une part pour quelqu'un."],
+    ["t", "Écoute quelqu'un jusqu'au bout de sa phrase, sans préparer ta réponse."],
+    ["t", "Regarde un vieux souvenir, photo ou lettre, avec quelqu'un qui y figure."],
+    ["t", "Passe un moment dehors, puis décris à quelqu'un ce que tu as vu."],
+    ["t", "Lis quelques pages d'un livre à voix haute à quelqu'un."],
+    ["t", "Note dans tes lumières trois choses que d'autres ont faites pour toi cette semaine."],
+    ["t", "Écoute quelqu'un te raconter sa journée, avec tout ton intérêt."],
+    ["t", "Lis un chapitre d'un livre, puis parle-en à quelqu'un."],
+    ["t", "Observe les arbres de ta rue et remarque ce qui change avec la saison."],
+    ["t", "Fais une promenade lente dans un lieu que tu connais bien, et cherche ce que tu n'avais jamais remarqué."],
+    ["t", "Demande à quelqu'un ce qu'il ou elle aime dans sa vie en ce moment."],
+    ["t", "Envoie à un ami une chose qui t'a fait penser à lui ou à elle."],
+    ["t", "Prépare une boisson pour quelqu'un qui est là, et pose-la devant lui sans rien dire."],
+    ["t", "Écris dans un carnet ce qui t'a rendu reconnaissant aujourd'hui."],
+    ["t", "Écoute les conversations d'un café, d'un parc ou d'un marché, comme une musique."],
+    ["t", "Prends un repas lentement avec quelqu'un et parle de ce que vous aimez."],
+    ["t", "Regarde un film ou une série avec quelqu'un, et partagez ce que vous en avez pensé."],
+    ["t", "Écris à quelqu'un qui t'a aidé un jour pour lui dire où tu en es aujourd'hui."],
+    ["t", "Remarque combien les gens autour de toi sont gentils aujourd'hui, et note-en trois exemples."],
+    ["t", "Va t'asseoir dans un endroit calme et prends le temps d'y rester."],
+    ["t", "Rappelle à quelqu'un un bon souvenir que vous avez vécu ensemble."],
+    ["t", "Dis à tes proches ce que tu apprécies dans vos habitudes ensemble."],
+    ["t", "Écris une liste de petits plaisirs partagés avec des gens que tu aimes."],
+    ["t", "Cuisine une recette qui te rappelle quelqu'un, et pense à cette personne en la préparant."],
+    ["t", "Installe-toi à une terrasse ou sur un banc et regarde passer les gens avec bienveillance."],
+    ["t", "Demande à un proche de te conseiller un livre, un lieu ou une chanson."],
+    ["t", "Répare ou range quelque chose qui gêne quelqu'un chez toi."],
+    ["t", "Écris une petite phrase d'encouragement à quelqu'un qui en a besoin."],
+    ["t", "Va voir un voisin et demande-lui comment se passe sa semaine."],
+    ["t", "Remarque un geste de gentillesse entre des inconnus, et laisse-le te réchauffer."],
+    ["t", "Fais un tour dans un jardin, un parc ou une cour, et sois attentif aux petits détails."],
+    ["t", "Relis un souvenir heureux écrit dans tes lumières et partage-le avec quelqu'un."],
+    ["t", "Dis à quelqu'un ce que tu as aimé dans le moment que vous avez passé ensemble."],
+    ["t", "Parle à quelqu'un d'un lieu qui compte pour toi, et dis-lui pourquoi."],
+    ["t", "Écoute la voix de quelqu'un que tu aimes au téléphone, sans faire autre chose."],
+    ["t", "Regarde les nuages en essayant d'y voir des formes, seul ou avec quelqu'un."],
+    ["t", "Aide quelqu'un à choisir ou à décider d'une petite chose, sans te presser."],
+    ["t", "Fais goûter à quelqu'un quelque chose que tu aimes."],
+    ["t", "Demande à quelqu'un de ta famille de te raconter une histoire de son enfance."],
+    ["t", "Dis au revoir à quelqu'un vraiment, en le regardant."],
+    ["t", "Pense à trois personnes qui ont été importantes dans ta vie et écris ce qu'elles t'ont appris."],
+    ["t", "Va chercher du pain, des fruits ou des fleurs, et prends le temps de discuter avec la personne qui te sert."],
+    ["t", "Offre une fleur, une feuille ou un petit objet trouvé à quelqu'un."],
+    ["t", "Écris quelques lignes à quelqu'un qui est loin pour lui parler de ton quotidien."],
+    ["t", "Prends un moment dans un lieu apaisant, puis raconte-le à quelqu'un."],
+    ["t", "Remercie quelqu'un qui te supporte dans les moments un peu difficiles."],
+    ["t", "Fais le tour de ta maison ou de ton quartier en cherchant ce qui te plaît."],
+    ["t", "Regarde le ciel du soir, puis partage-le avec quelqu'un par un message."],
+    ["t", "Écoute une personne qui n'a pas souvent la parole : un enfant, un aîné, quelqu'un de timide."],
+    ["t", "Prends des nouvelles d'un ami dont la vie a changé récemment."],
+    ["t", "Passe un moment à observer un animal, ou à jouer avec lui."],
+    ["t", "Choisis une personne et remarque tout ce qu'elle fait de bien aujourd'hui."],
+    ["t", "Écris un souvenir qui te fait sourire, puis envoie-le à la personne qui y était."],
+    ["t", "Demande à quelqu'un de te montrer une photo qui lui est chère, et montre-lui la tienne."],
+    ["t", "Dis à quelqu'un que tu es content de le voir."],
+    ["t", "Fais un petit détour pour dire bonjour à quelqu'un que tu apprécies."],
+    ["t", "Regarde pendant cinq minutes les détails d'un lieu familier, comme si tu le découvrais."],
+    ["t", "Demande à un collègue ou à un camarade ce qui le passionne."],
+    ["t", "Écris une liste de ce qui te rend heureux dans la compagnie des autres."],
+    ["t", "Remarque ce qu'une personne de ton entourage fait pour que les choses se passent bien, et dis-le-lui."],
+    ["t", "Partage avec quelqu'un un moment de silence agréable, sans avoir besoin de parler."],
+    ["t", "Demande-toi comment va quelqu'un de ta famille, puis appelle."],
+    ["t", "Raconte à un enfant quelque chose de beau que tu as vu aujourd'hui."],
+    ["t", "Écoute la pluie, le vent ou les oiseaux, et reste là une minute."],
+    ["t", "Dis à quelqu'un « Merci d'être là », simplement."],
+    ["t", "Écris quelque chose de gentil sur un bout de papier et laisse-le là où quelqu'un le trouvera."],
+    ["t", "Fais un compliment à un inconnu, sur son énergie, son rire ou son aide."],
+    ["t", "Remarque ce que tu aimes dans ton lieu de travail ou d'étude, et dis-le à quelqu'un."],
+    ["t", "Va à la bibliothèque ou dans une librairie et feuillette sans but."],
+    ["t", "Propose à quelqu'un de te lire ou de te raconter quelque chose qui lui plaît."],
+    ["t", "Écris à un ami d'enfance et raconte-lui un souvenir que vous avez en commun."],
+    ["t", "Prends des nouvelles de quelqu'un qui est malade ou fatigué, et propose ton aide."],
+    ["t", "Offre un moment d'écoute à quelqu'un sans rien conseiller, juste en l'accompagnant."],
+    ["t", "Remarque trois qualités que tu aimes chez des gens que tu aimes."],
+    ["t", "Fais un geste tout simple pour rendre la journée d'un collègue plus agréable."],
+    ["t", "Regarde travailler quelqu'un d'habile, un artisan, un cuisinier, un jardinier, et dis-lui ton admiration."],
+    ["t", "Partage une phrase ou un poème que tu aimes avec quelqu'un."],
+    ["t", "Raconte à un proche un petit moment de joie que tu as vécu cette semaine."],
+    ["t", "Marche vers un endroit où il y a de l'eau ou de la verdure, et regarde ce que fait la lumière."],
+    ["t", "Remercie quelqu'un pour une qualité que tu admires chez lui ou elle."],
+    ["t", "Raconte à quelqu'un ce qui t'a touché dans un livre, un film ou une rencontre."],
+    ["t", "Remercie quelqu'un pour sa douceur quand il ou elle te parle."],
+    ["t", "Regarde un enfant jouer et laisse-toi gagner par sa joie."],
+    ["t", "Écris une courte lettre de remerciement, même si tu ne l'envoies pas."],
+    ["t", "Va voir un lieu qui a de l'histoire et demande-toi qui y est passé avant toi."],
+    ["t", "Aide quelqu'un à se détendre : un thé, un mot, un moment calme à deux."],
+    ["t", "Pense à une personne que tu n'as pas vue depuis longtemps et souris à ce souvenir."],
+    ["t", "Fais un moment de gratitude avec quelqu'un : chacun dit trois choses qui l'ont touché aujourd'hui."],
+    ["d", "Envoie un simple « Je pense à toi » à quelqu'un."],
+    ["d", "Regarde le ciel par la fenêtre une minute, sans rien faire d'autre."],
+    ["d", "Parle deux minutes à quelqu'un qui te fait du bien."],
+    ["d", "Bois quelque chose de chaud, doucement, sans écran."],
+    ["d", "Dis merci, même par un simple mot, à quelqu'un qui t'a aidé."],
+    ["d", "Pose ta main sur quelque chose de doux, un plaid, un animal, une plante, et reste là un instant."],
+    ["d", "Écoute une chanson qui te fait du bien, les yeux fermés."],
+    ["d", "Souris à la première personne que tu croises."],
+    ["d", "Regarde une photo d'un moment heureux avec des gens que tu aimes."],
+    ["d", "Réponds à un message resté en attente avec une phrase toute simple."],
+    ["d", "Ouvre la fenêtre et respire l'air du dehors un instant."],
+    ["d", "Pense à quelqu'un qui t'a fait du bien un jour, et dis-lui merci, dans ta tête ou pour de vrai."],
+    ["d", "Laisse quelqu'un t'aider aujourd'hui, même pour une toute petite chose."],
+    ["d", "Observe un oiseau, un animal ou une plante pendant une minute."],
+    ["d", "Autorise-toi un moment sans rien faire, puis note-le dans tes lumières."],
+    ["d", "Allume une bougie ou une lampe douce et reste un instant avec la lumière."],
+    ["d", "Écris une seule phrase de gratitude, la plus simple possible."],
+    ["d", "Respire doucement trois fois en regardant quelque chose de beau."],
+    ["d", "Écoute la voix de quelqu'un que tu aimes, même par un court message vocal."],
+    ["d", "Sors un instant sur le pas de ta porte, ou ouvre la fenêtre, et sens l'air."],
+    ["d", "Pense à quelqu'un qui te sourit toujours, et souris à ton tour."],
+    ["d", "Pose ton téléphone une demi-heure et laisse venir ce qui vient."],
+    ["d", "Choisis un coin de ta maison où tu te sens bien et reste-y un moment."],
+    ["d", "Regarde une plante, une fleur ou une feuille, et observe ses détails."],
+    ["d", "Prépare-toi une boisson que tu aimes et prends le temps de la boire."],
+    ["d", "Réponds « merci » à un compliment, simplement, sans le minimiser."],
+    ["d", "Envoie un petit cœur ou un mot doux à quelqu'un qui compte pour toi."],
+    ["d", "Relis un message gentil qu'on t'a envoyé un jour."],
+    ["d", "Écoute un bruit doux, la pluie, une rivière, des oiseaux, et reste-y un instant."],
+    ["d", "Regarde par la fenêtre et trouve trois choses que tu trouves jolies."],
+    ["d", "Pense à un moment où quelqu'un t'a fait du bien, et laisse ce souvenir te réchauffer."],
+    ["d", "Si l'occasion s'y prête, serre quelqu'un dans tes bras, ou prends sa main un instant."],
+    ["d", "Dis « bonne journée » à quelqu'un avec un vrai sourire."],
+    ["d", "Mets une musique douce et écoute-la sans rien faire d'autre."],
+    ["d", "Sens quelque chose qui sent bon, un thé, une fleur, du pain, et reste avec cette odeur."],
+    ["d", "Écris-toi un mot gentil, comme tu l'écrirais à un ami."],
+    ["d", "Regarde le ciel une minute, et dis-toi que tout le monde le regarde aussi."],
+    ["d", "Laisse quelqu'un te raconter sa journée, sans rien dire."],
+    ["d", "Accueille un moment de calme sans le remplir."],
+    ["d", "Pose un mot de remerciement sur la porte de quelqu'un : un voisin, un livreur, un proche."],
+    ["d", "Souris à un enfant, à un animal ou à une personne âgée que tu croises."],
+    ["d", "Remarque une chose que tu as pu faire aujourd'hui, même minuscule, et sois-en content."],
+    ["d", "Éloigne-toi du bruit quelques minutes, et laisse le silence faire son travail."],
+    ["d", "Dis à quelqu'un que tu es fatigué, et laisse-le te réconforter."],
+    ["d", "Regarde un vieil objet qui te rappelle quelqu'un de cher."],
+    ["d", "Écris les prénoms de trois personnes qui t'ont fait du bien dans ta vie."],
+    ["d", "Laisse-toi bercer par une chanson de ton enfance."],
+    ["d", "Regarde la lumière qui entre dans la pièce et suis-la du regard."],
+    ["d", "Dis à quelqu'un une chose simple qui te fait plaisir aujourd'hui."],
+    ["d", "Prends quelques minutes pour regarder des photos de moments heureux entre amis ou en famille."],
+    ["d", "Remarque un geste de gentillesse que quelqu'un a eu pour toi aujourd'hui, même petit."],
+    ["d", "Offre-toi un moment dehors, même très court, pour voir un peu de ciel."],
+    ["d", "Pense à quelqu'un qui est loin et envoie-lui une pensée douce."],
+    ["d", "Lis un poème, une phrase ou une citation qui te fait du bien."],
+    ["d", "Assieds-toi près d'une fenêtre avec quelque chose de chaud et regarde dehors."],
+    ["d", "Écoute les bruits de ta maison ou de ta rue et remarque ceux qui sont doux."],
+    ["d", "Mets de l'ordre dans un petit coin, un tiroir, une étagère, juste pour te sentir bien."],
+    ["d", "Écris dans tes lumières une chose, même toute petite, qui t'a fait du bien aujourd'hui."],
+    ["d", "Relis une lumière ancienne et laisse-la te réchauffer."],
+    ["d", "Ferme les yeux et pense à un lieu où tu te sens en paix."],
+    ["d", "Prends le temps de goûter quelque chose de bon, lentement, sans autre chose à faire."],
+    ["d", "Remarque une qualité que tu as dans ta façon d'être avec les autres, et dis-toi merci."],
+    ["d", "Écoute le bruit de tes pas pendant quelques mètres."],
+    ["d", "Réponds à quelqu'un qui t'a écrit, même en deux mots."],
+    ["d", "Regarde quelque chose de vert, un arbre, une plante, de l'herbe, et laisse ton regard s'y reposer."],
+    ["d", "Pense à une personne qui compte pour toi et souhaite-lui du bien en silence."],
+    ["d", "Demande à quelqu'un de te raconter quelque chose de simple, juste pour entendre sa voix."],
+    ["d", "Reste un moment avec un animal ou une plante, et prends le temps de lui parler."],
+    ["d", "Enveloppe-toi dans une couverture ou un pull doux, et prends une pause."],
+    ["d", "Glisse un petit mot gentil dans un livre, un manteau ou un sac pour quelqu'un."],
+    ["d", "Dis « ça va aller » à quelqu'un qui doute, simplement."],
+    ["d", "Regarde l'eau couler, un robinet, une rivière ou la pluie, un instant."],
+    ["d", "Prends cinq minutes pour ne penser à rien d'autre qu'à ce que tu vois."],
+    ["d", "Pense à une chose pour laquelle quelqu'un t'a déjà remercié."],
+    ["d", "Dis bonjour à une personne que tu croises, même d'un petit signe de tête."],
+    ["d", "Fais-toi un petit plaisir, un thé, une pause, une chanson, puis dis-le à quelqu'un si tu en as envie."],
+    ["d", "Regarde une photo ancienne de quelqu'un que tu aimes."],
+    ["d", "Laisse un message gentil à quelqu'un qui n'attend rien."],
+    ["d", "Remarque ce que ta journée a eu de doux, même si le reste était pesant."],
+    ["d", "Pose les yeux sur quelque chose de beau dans ta pièce et reste-y un instant."],
+    ["d", "Fais quelques pas dehors, même sur le palier, et regarde où se posent tes yeux."],
+    ["d", "Dis à quelqu'un « Je suis content de te connaître »."],
+    ["d", "Imagine une personne qui te veut du bien te dire une phrase gentille, et écoute-la."],
+    ["d", "Écris à un ami qui doit avoir une journée longue : « Courage, je pense à toi. »"],
+    ["d", "Pense à tout ce qu'un proche a fait pour toi sans que tu le remarques."],
+    ["d", "Regarde la lumière d'une lampe, d'une bougie ou d'une fenêtre, et laisse-la t'apaiser."],
+    ["d", "Accorde-toi un moment pour penser à des gens qui te soutiennent."],
+    ["d", "Autorise-toi à dire « pas aujourd'hui » à une chose, et dis-toi que c'est permis."],
+    ["d", "Écoute quelqu'un qui rit, même au loin, et laisse ce rire te toucher."],
+    ["d", "Choisis un objet simple et agréable à tenir, une tasse, une pierre, un livre, et garde-le un moment dans tes mains."],
+    ["d", "Pense à quelqu'un qui est toujours resté près de toi, et envoie-lui une pensée de remerciement."],
+    ["d", "Relis une carte ou un mot qu'on t'a écrit, et prends le temps d'y croire."],
+    ["d", "Laisse un moment passer sans te juger, regarde-le simplement."],
+    ["d", "Dis à quelqu'un que sa présence compte, même par un simple « merci d'être là »."],
+    ["d", "Aère une pièce, ouvre grand une fenêtre et respire."],
+    ["d", "Choisis quelque chose de simple à regarder pendant une minute : une flamme, des nuages, la rue."],
+    ["d", "Écris le prénom de quelqu'un qui t'a fait du bien et ajoute un mot pour dire pourquoi."],
+    ["d", "Offre à quelqu'un un moment de calme : un thé, un silence, une présence."],
+    ["d", "Laisse-toi un peu de calme avant de répondre à quelque chose qui te presse."],
+    ["d", "Prends une minute pour sentir ce que tu es en train de vivre, sans chercher à le changer."],
+    ["d", "Souris à quelqu'un par message, avec un mot ou un emoji doux."],
+    ["d", "Laisse un instant de gratitude te traverser pour quelqu'un, puis garde-le dans tes lumières."],
+    ["d", "Choisis une chanson douce et dédie-la en pensée à quelqu'un."],
+    ["d", "Dis à quelqu'un que son message t'a fait plaisir, même s'il date de quelques jours."]
   ];
 
   var THEMES = [
     {
       title: `Se voir comme un projet`,
       paragraphs: [
-        `On vit dans une époque qui répète qu'il faut s'améliorer sans cesse : être meilleur, plus sûr de soi, plus beau. Présenté comme un chemin vers le bonheur, ce mouvement devient vite un regard posé en permanence sur soi.`,
-        `À force, on se scrute à chaque échange, devant le miroir, plusieurs fois par jour. Et sur les réseaux, on voit en continu le meilleur de chacun, dans tous les domaines à la fois, comme un idéal. Or personne ne peut être parfait partout. S'installent alors l'insatisfaction, un jugement cruel envers soi-même, puis le désamour de soi.`,
-        `Imagine un simple dîner avec une amie. Ce pourrait être un beau moment. Mais quand on se vit comme une performance, on arrive avec ses questions : suis-je assez drôle, assez à l'aise, assez bien dans son regard ? La soirée devient une épreuve, et la spontanéité s'en va.`,
-        `C'est comme une cage, ou une roue de hamster aux barreaux hérissés de piques : on court sans cesse, on se blesse, et on n'avance pas. Pendant ce temps, les moments précieux avec les autres et avec le monde passent à côté de nous.`,
-        `Se vouloir du bien, c'est peut-être justement sortir de cette course, pour regarder l'autre au lieu de se regarder.`
+        `Notre époque répète qu'il faut s'améliorer sans cesse : devenir meilleur, plus sûr de soi, plus beau. Présentée comme un chemin vers le bonheur, cette quête finit par installer un regard permanent posé sur soi-même.`,
+        `À force, on se scrute à chaque échange, devant le miroir, plusieurs fois par jour. Sur les réseaux, on voit défiler sans interruption le meilleur de chacun, dans tous les domaines à la fois, comme un idéal à atteindre. Or personne ne peut être parfait partout. S'installent alors l'insatisfaction, un jugement cruel envers soi-même, puis le désamour de soi.`,
+        `Imagine un simple dîner avec une amie : ce pourrait être un beau moment. Mais lorsque l'on se vit comme une performance, on arrive avec ses questions : suis-je assez drôle, assez à l'aise, assez bien dans son regard ? La soirée devient une épreuve, et la spontanéité s'en va.`,
+        `C'est une cage, une roue de hamster aux barreaux hérissés de piques : on court sans cesse, on se blesse et l'on n'avance pas. Pendant ce temps, les moments précieux passés avec les autres et avec le monde nous échappent.`,
+        `Se vouloir du bien, c'est peut-être justement sortir de cette course, pour regarder l'autre au lieu de se regarder soi-même.`
       ],
       questions: [
         `À quels moments te surprends-tu à te scruter comme dans un miroir invisible ?`,
         `Quand as-tu vécu un moment sans te regarder une seule fois, et qu'est-ce qui l'a permis ?`,
-        `Qu'est-ce que tu remarquerais autour de toi si tu cessais de t'évaluer une heure ?`
+        `Que remarquerais-tu autour de toi si tu cessais de t'évaluer pendant une heure ?`
       ]
     },
     {
       title: `Les corps`,
       paragraphs: [
-        `On vit dans une société très tournée vers l'image et vers le corps. Un modèle y est montré partout, surtout sur les réseaux, et présenté comme un idéal à atteindre.`,
-        `Les corps qui n'y ressemblent pas semblent presque n'avoir pas le droit d'exister sans être jugés. On les regarde comme des projets en cours, comme si un corps ne pouvait pas être beau tel qu'il est et devait forcément être en route vers autre chose.`,
-        `Des phrases sur le corps des autres, ou sur ce qu'on mange, circulent dans tous les milieux, répétées au point de paraître banales. Elles ne le sont pas : elles stigmatisent, nourrissent la détestation de soi et peuvent abîmer profondément le rapport au corps.`,
-        `Souvent, ceux qui les prononcent ne cherchent pas à blesser. Ils projettent leur propre peur de ne pas entrer dans la case, leur propre inconfort avec leur corps. Leur jugement dit leur inquiétude, pas la valeur de la personne en face.`,
-        `On ne lit pas la santé ou la valeur de quelqu'un sur sa silhouette, et personne n'a à décider si un corps est aimable ou non.`,
-        `Et si on le regardait autrement ? Un corps est un bel outil : il permet de courir, de voyager, de serrer ses proches dans ses bras, d'aller dans des lieux qu'on trouve beaux, d'exercer un métier qui nous passionne, de porter des enfants. On peut l'aimer pour tout ce qu'il permet de vivre, plutôt que pour sa ressemblance avec une norme fixée par les insécurités des autres.`,
+        `Nous vivons dans une société très tournée vers l'image et vers le corps. Un modèle y est montré partout, surtout sur les réseaux, et présenté comme un idéal à atteindre.`,
+        `Les corps qui ne lui ressemblent pas semblent presque n'avoir pas le droit d'exister sans être jugés. On les regarde comme des projets en cours, comme si un corps ne pouvait pas être beau tel qu'il est et devait forcément être en route vers autre chose.`,
+        `Des phrases sur le corps des autres, ou sur ce que l'on mange, circulent dans tous les milieux et se répètent au point de paraître banales. Elles ne le sont pas : elles stigmatisent, nourrissent la détestation de soi et peuvent abîmer profondément le rapport que l'on entretient avec son corps.`,
+        `Souvent, ceux qui les prononcent ne cherchent pas à blesser. Ils projettent leur propre crainte de ne pas entrer dans la case, leur propre inconfort avec leur corps. Leur jugement dit leur inquiétude, et non la valeur de la personne qui leur fait face.`,
+        `La santé ou la valeur d'une personne ne se lit pas sur sa silhouette, et nul n'a à décider si un corps est aimable ou non.`,
+        `Et si nous le regardions autrement ? Un corps est un bel outil : il permet de courir, de voyager, de serrer ses proches dans ses bras, d'aller dans des lieux que l'on trouve beaux, d'exercer un métier qui nous passionne, de porter des enfants. Il peut être aimé pour tout ce qu'il permet de vivre, plutôt que pour sa ressemblance avec une norme née des insécurités des autres.`,
         `Si ce sujet te touche de près, le coin d'aide est là.`
       ],
       questions: [
         `Qu'est-ce que ton corps te permet de vivre de beau, que tu oublies de remarquer ?`,
-        `Quelle phrase sur les corps entends-tu si souvent qu'elle te paraît normale, et à qui parle-t-elle vraiment ?`,
+        `Quelle phrase sur les corps entends-tu si souvent qu'elle te paraît normale, et à qui s'adresse-t-elle vraiment ?`,
         `Qu'est-ce qui changerait dans ta journée si tu aimais ton corps pour ce qu'il te permet de faire ?`
+      ]
+    },
+    {
+      title: `Le repos et la productivité`,
+      paragraphs: [
+        `Dans notre société, une journée semble devoir être utile, remplie, rentable. Se reposer devient presque suspect, et ne rien faire, une faute que l'on doit justifier.`,
+        `Beaucoup de personnes ressentent alors de la culpabilité dès qu'elles s'arrêtent. Même les loisirs se transforment en objectifs : lire davantage, marcher plus vite, apprendre plus. Le temps libre devient un nouveau terrain de performance.`,
+        `Pourtant, le repos n'est pas le contraire d'une vie réussie : il en est une condition. C'est souvent dans les moments sans projet que naissent les plus belles conversations, les observations sincères, la présence aux autres.`,
+        `Une journée n'a pas à être rentabilisée pour avoir de la valeur. Il est permis de s'asseoir, de regarder par la fenêtre, de ne rien accomplir, sans avoir à le mériter.`
+      ],
+      questions: [
+        `À quels moments te sens-tu coupable de t'arrêter, et à qui cette voix appartient-elle, selon toi ?`,
+        `Qu'aimes-tu faire sans aucun but, simplement pour le plaisir ?`,
+        `Que se passerait-il, concrètement, si tu t'accordais une heure sans rien accomplir ?`
       ]
     },
     {
       title: `L'argent et le travail`,
       paragraphs: [
-        `On nous répète que réussir sa vie, c'est réussir financièrement. Comme si l'argent était l'aboutissement de tout, le seul projet qui vaille, et la clé du bonheur.`,
-        `Pourtant, l'argent est une construction de la société. Il est bien sûr indispensable : il faut pouvoir se loger, se nourrir, vivre correctement, et vouloir de la sécurité n'a rien de honteux. Mais être à l'aise ne veut pas dire être heureux, et être heureux ne veut pas dire être riche. La richesse d'une vie se mesure à beaucoup d'autres endroits.`,
-        `Le vrai risque, c'est de tout centrer sur sa propre réussite et de passer à côté de ce qui compte : être présent pour ses proches, accomplir des actes beaux et généreux, vivre des moments avec les gens qu'on aime, du temps, des sourires, des fous rires. Ces instants précieux sont les premiers sacrifiés quand on court après l'argent.`,
-        `Cette course s'accompagne d'une pression de plus : celle de la performance. Pour être « un vrai homme » ou « une vraie femme », il faudrait un business qui marche. On ne pourrait être aimé que si on est riche. C'est superficiel, et ça efface ce qui fait la valeur d'une personne : ce qu'elle est, la manière dont elle aime, ce qu'elle apporte aux autres.`,
-        `Tu as le droit de vouloir une vie confortable, et de ne pas en faire ta seule mesure. Il y a tant d'autres choses belles à développer dans une vie.`
+        `Notre société répète que réussir sa vie, c'est réussir financièrement, comme si l'argent était l'aboutissement de tout, le seul projet qui vaille et la clé du bonheur.`,
+        `Pourtant, l'argent est une construction sociale. Il est bien sûr indispensable : il faut pouvoir se loger, se nourrir, vivre correctement, et désirer la sécurité n'a rien de honteux. Mais être à l'aise ne signifie pas être heureux, et être heureux ne signifie pas être riche. La richesse d'une vie se mesure en bien d'autres endroits.`,
+        `Le véritable risque est de tout centrer sur sa propre réussite et de passer à côté de l'essentiel : être présent pour ses proches, accomplir des actes beaux et généreux, vivre des moments avec les personnes que l'on aime, partager du temps, des sourires, des fous rires. Ces instants précieux sont les premiers sacrifiés lorsque l'on court après l'argent.`,
+        `Cette course s'accompagne d'une pression supplémentaire, celle de la performance. Pour être « un vrai homme » ou « une vraie femme », il faudrait posséder une entreprise prospère ; l'on ne pourrait être aimé que si l'on est riche. C'est superficiel, et cela efface ce qui fait la valeur d'une personne : ce qu'elle est, sa manière d'aimer, ce qu'elle apporte aux autres.`,
+        `Tu as le droit de vouloir une vie confortable, et de ne pas en faire ta seule mesure. Il existe tant d'autres belles choses à cultiver dans une vie.`
       ],
       questions: [
-        `Quels moments récents t'ont fait te sentir riche, sans qu'aucun argent n'y soit lié ?`,
+        `Quels moments récents t'ont fait te sentir riche, sans que l'argent y soit pour quelque chose ?`,
         `À qui as-tu envie d'accorder plus de temps, et qu'est-ce qui t'en empêche vraiment ?`,
-        `Si ta valeur ne dépendait ni de ton salaire ni de ta réussite, qu'est-ce que tu aurais envie de faire autrement ?`
+        `Si ta valeur ne dépendait ni de ton salaire ni de ta réussite, qu'aurais-tu envie de faire autrement ?`
       ]
     },
     {
       title: `Les cases`,
       paragraphs: [
-        `Dès tout petits, on nous glisse dans des cases. Les garçons doivent être forts, ne pas pleurer, réussir, gagner de l'argent. Les filles doivent être douces, belles, s'occuper des autres, ne pas trop prendre de place. Ces règles ne sont écrites nulle part, et pourtant presque tout le monde les connaît.`,
-        `Ces cases sont des constructions de la société. Elles changent selon les époques et les pays, preuve qu'elles n'ont rien de naturel. Pourtant, on finit par les prendre pour des vérités : « un vrai homme fait ceci », « une vraie femme fait cela ».`,
-        `Le problème, c'est qu'aucune personne ne tient entièrement dans une case. Un homme peut être sensible, avoir besoin de tendresse, aimer prendre soin des autres. Une femme peut être ambitieuse, directe, ne pas avoir envie de ce qu'on attend d'elle. Quand on se force à entrer dans la case, on s'éloigne de ce qu'on est vraiment. Et quand on n'y rentre pas, on se sent à part, comme si quelque chose clochait.`,
-        `Souvent, les cases se maintiennent par de petites phrases du quotidien : « sois un homme », « ce n'est pas féminin », « une fille ne devrait pas ». Elles ont l'air anodines, mais elles disent à chacun ce qu'il a le droit d'être. Et elles nous coupent aussi des autres : on joue un rôle au lieu de se rencontrer vraiment.`,
-        `Tu n'as pas à choisir une case, ni à en sortir pour en rejoindre une autre. Tu peux simplement être une personne, avec ta façon d'aimer, de ressentir, de t'engager. Ce qui a de la valeur, c'est ce que tu es, pas la case dans laquelle on voudrait que tu rentres.`
+        `Dès l'enfance, on nous glisse dans des cases. Les garçons doivent être forts, ne pas pleurer, réussir, gagner de l'argent. Les filles doivent être douces, belles, prendre soin des autres, ne pas trop prendre de place. Ces règles ne sont écrites nulle part, et pourtant presque tout le monde les connaît.`,
+        `Ces cases sont des constructions sociales. Elles changent selon les époques et les pays, preuve qu'elles n'ont rien de naturel. Pourtant, nous finissons par les prendre pour des vérités : « un vrai homme fait ceci », « une vraie femme fait cela ».`,
+        `Le problème est qu'aucune personne ne tient entièrement dans une case. Un homme peut être sensible, avoir besoin de tendresse, aimer prendre soin des autres. Une femme peut être ambitieuse, directe, ne pas désirer ce que l'on attend d'elle. Lorsque l'on se force à entrer dans la case, on s'éloigne de ce que l'on est vraiment ; lorsque l'on n'y entre pas, on se sent à part, comme si quelque chose clochait.`,
+        `Ces cases se maintiennent souvent par de petites phrases du quotidien : « sois un homme », « ce n'est pas féminin », « une fille ne devrait pas ». Elles semblent anodines, mais elles disent à chacun ce qu'il a le droit d'être. Elles nous coupent aussi des autres : nous jouons un rôle au lieu de nous rencontrer vraiment.`,
+        `Tu n'as pas à choisir une case, ni à en sortir pour en rejoindre une autre. Tu peux simplement être une personne, avec ta façon d'aimer, de ressentir et de t'engager. Ce qui a de la valeur, c'est ce que tu es, et non la case dans laquelle on voudrait te faire entrer.`
       ],
       questions: [
-        `Quelle phrase sur ce qu'« un homme » ou « une femme » doit être as-tu si souvent entendue que tu ne la questionnes plus ?`,
-        `Qu'est-ce que tu t'interdis, ou te forces à faire, parce que « ça ne se fait pas » ou « il faut » ?`,
+        `Quelle phrase sur ce que « doit » être un homme ou une femme as-tu entendue si souvent que tu ne la questionnes plus ?`,
+        `Qu'est-ce que tu t'interdis, ou te forces à faire, parce que « cela ne se fait pas » ou parce qu'« il faut » ?`,
         `Quand te sens-tu le plus libre d'être toi, et avec qui ?`
+      ]
+    },
+    {
+      title: `Les étapes de la vie`,
+      paragraphs: [
+        `Il existerait un calendrier de la vie réussie : les études, l'emploi, le couple, le logement, le mariage, les enfants, chacun à son âge. Sans que personne ne l'écrive, nous l'avons tous en tête.`,
+        `Chacun se compare alors à cette liste et se demande s'il est « en avance » ou « en retard ». Cette pression pèse sur les choix de vie, parfois au point de les faire davantage pour les autres que pour soi.`,
+        `Pourtant, les trajectoires sont multiples. Certains trouvent leur voie tard, d'autres changent de direction, d'autres encore construisent une vie qui ne ressemble à aucun modèle, et qui n'est pas moins pleine.`,
+        `Une vie n'est pas une suite d'étapes à valider. Elle se compose de rencontres, de lieux, de périodes, qui ont chacune leur temps.`
+      ],
+      questions: [
+        `Quelle étape de la vie te sens-tu « censé » avoir déjà franchie, et d'où vient cette idée ?`,
+        `Qu'as-tu vécu qui ne figurait sur aucune liste, et qui compte beaucoup pour toi ?`,
+        `Que ferais-tu si personne n'attendait de toi une étape précise ?`
       ]
     },
     {
       title: `Les comparaisons`,
       paragraphs: [
-        `Aujourd'hui, on se compare tout le temps, souvent sans s'en rendre compte. Il suffit d'ouvrir son téléphone : des vies qui ont l'air parfaites, des corps, des voyages, des réussites, des couples qui semblent toujours heureux. Et sans le vouloir, on se met à mesurer sa propre vie à cette vitrine.`,
-        `Mais ce qu'on voit, c'est un choix. Les gens montrent leurs meilleurs moments, retouchés, mis en scène, parfois pensés pour plaire ou pour vendre. On compare alors notre vie entière, avec ses doutes, ses journées ordinaires, ses fatigues, à quelques secondes soigneusement sélectionnées chez les autres. La comparaison n'est jamais juste.`,
-        `Et c'est un jeu sans fin : il y aura toujours quelqu'un de plus beau, de plus riche, de plus accompli, de plus entouré. Se comparer pousse à toujours vouloir plus, et à ne plus voir ce qu'on a déjà. Ça éloigne aussi des autres : au lieu de se réjouir pour eux ou de les rencontrer, on les voit comme des concurrents, ou comme des modèles qu'on n'atteindra jamais.`,
-        `Ta vie n'est pas une course, et personne ne peut en juger la valeur à ta place. Ce qui te rend heureux ne ressemble peut-être pas à ce que montrent les autres, et c'est très bien ainsi. Tu peux regarder ce que vivent les autres avec curiosité et bienveillance, sans en faire une mesure de ce que tu vaux.`
+        `Aujourd'hui, nous nous comparons sans cesse, souvent sans nous en rendre compte. Il suffit d'ouvrir son téléphone : des vies qui paraissent parfaites, des voyages, des réussites, des couples qui semblent toujours heureux. Sans le vouloir, on se met à mesurer sa propre vie à cette vitrine.`,
+        `Pourtant, ce que l'on voit est un choix. Les personnes montrent leurs meilleurs moments, retouchés, mis en scène, parfois pensés pour plaire ou pour vendre. Nous comparons alors notre vie entière, avec ses doutes, ses journées ordinaires et ses fatigues, à quelques secondes soigneusement sélectionnées chez les autres. La comparaison n'est jamais juste.`,
+        `C'est de plus un jeu sans fin : il y aura toujours quelqu'un de plus beau, de plus riche, de plus accompli, de plus entouré. Se comparer pousse à vouloir toujours davantage et à ne plus voir ce que l'on possède déjà. Cela éloigne aussi des autres : au lieu de se réjouir pour eux ou d'aller à leur rencontre, on finit par les voir comme des concurrents, ou comme des modèles que l'on n'atteindra jamais.`,
+        `Ta vie n'est pas une course, et nul ne peut en juger la valeur à ta place. Ce qui te rend heureux ne ressemble peut-être pas à ce que montrent les autres, et cela est tout à fait légitime. Tu peux regarder ce que vivent les autres avec curiosité et bienveillance, sans en faire la mesure de ce que tu vaux.`
       ],
       questions: [
-        `Qui, ou quoi, te fait te sentir « pas assez » quand tu le regardes, et que ne montre-t-il pas ?`,
+        `Qui, ou quoi, te donne le sentiment de ne « pas être assez » lorsque tu le regardes, et que ne montre-t-il pas ?`,
         `Qu'as-tu dans ta vie que tu ne voyais plus, parce que tu regardais celle des autres ?`,
         `De qui peux-tu te réjouir sincèrement cette semaine, sans te comparer ?`
       ]
     },
     {
-      title: `Le regard des autres`,
+      title: `Les réseaux et l'attention`,
       paragraphs: [
-        `On vit souvent avec une petite voix qui demande : « Qu'est-ce qu'ils vont penser de moi ? » Elle influence ce qu'on porte, ce qu'on dit, ce qu'on ose ou non, parfois même ce qu'on rêve de devenir.`,
-        `Mais ceux qui jugent ont eux aussi grandi dans cette société, avec ses images, ses normes, ses injonctions. Leur regard reflète souvent ce qu'on leur a appris à trouver « bien » ou « pas bien ». Et il traduit aussi leurs propres peurs et insécurités : on critique parfois chez l'autre ce qu'on n'ose pas accepter chez soi.`,
-        `Un jugement dit donc souvent plus de la personne qui le porte que de celle qui le reçoit. Il n'est pas une vérité sur toi. Ça ne veut pas dire que tout avis est à écarter : une remarque d'une personne qui t'aime et te veut du bien, ça s'écoute. Mais tu n'as pas à te plier au regard de tous.`,
-        `Prendre de la distance ne rend pas dur ni indifférent. C'est pouvoir regarder un jugement, se demander d'où il vient, ce qu'il dit de celui qui le porte, puis décider de ce qui t'appartient vraiment. Tu peux choisir qui compte pour toi : ceux qui te voient pour ce que tu es.`,
-        `Plus tu t'appuies sur ce qui te fait du bien et sur les personnes qui t'entourent avec bienveillance, moins le regard des autres a de poids. Et tu peux, à ton tour, poser sur les autres un regard plus doux.`
+        `Il suffit d'un instant d'inattention pour que le téléphone s'ouvre presque tout seul. Les écrans sont conçus pour retenir notre attention le plus longtemps possible, et chaque défilement promet quelque chose de nouveau.`,
+        `À force, une petite inquiétude s'installe : celle de manquer quelque chose, une nouvelle, une sortie, une vie que les autres mèneraient mieux que nous. Elle nous éloigne de ce qui se passe réellement autour de nous.`,
+        `Or l'attention est ce que nous avons de plus précieux à offrir : à une personne qui parle, à un paysage, à un enfant qui raconte sa journée. Là où elle se pose, nous vivons.`,
+        `Il ne s'agit pas de renoncer à tout écran, mais de choisir, de temps en temps, où l'on pose son regard. Un moment sans téléphone n'est pas un moment perdu : c'est souvent là que l'on rencontre vraiment les autres.`
       ],
       questions: [
-        `Quel jugement as-tu entendu un jour qui continue de te suivre, et d'où venait-il, à ton avis ?`,
-        `Qu'est-ce que tu ferais ou dirais si tu n'avais pas peur du regard des autres ?`,
-        `Quelles personnes te voient telles que tu es, et comment peux-tu leur donner plus de place ?`
+        `Quand as-tu pris ton téléphone aujourd'hui sans savoir pourquoi ?`,
+        `Qu'as-tu manqué, autour de toi, pendant que tu regardais un écran ?`,
+        `À qui pourrais-tu offrir toute ton attention aujourd'hui, ne serait-ce que dix minutes ?`
+      ]
+    },
+    {
+      title: `Le regard des autres`,
+      paragraphs: [
+        `Nous vivons souvent avec une petite voix qui demande : « Qu'est-ce qu'ils vont penser de moi ? » Elle influence ce que l'on porte, ce que l'on dit, ce que l'on ose ou non, et parfois même ce que l'on rêve de devenir.`,
+        `Mais ceux qui jugent ont eux aussi grandi dans cette société, avec ses images, ses normes et ses injonctions. Leur regard reflète souvent ce que l'on leur a appris à trouver « bien » ou « pas bien ». Il traduit aussi leurs propres peurs et insécurités : on critique parfois chez autrui ce que l'on n'ose pas accepter chez soi.`,
+        `Un jugement en dit donc souvent plus sur celui qui le porte que sur celui qui le reçoit. Il n'est pas une vérité sur toi. Cela ne signifie pas que tout avis soit à écarter : la remarque d'une personne qui t'aime et te veut du bien mérite d'être écoutée. Mais tu n'as pas à te plier au regard de tous.`,
+        `Prendre de la distance ne rend ni dur ni indifférent. Il s'agit de regarder un jugement, de se demander d'où il vient et ce qu'il dit de celui qui le porte, puis de décider de ce qui t'appartient vraiment. Tu peux choisir ceux qui comptent pour toi : ceux qui te voient pour ce que tu es.`,
+        `Plus tu t'appuies sur ce qui te fait du bien et sur les personnes qui t'entourent avec bienveillance, moins le regard des autres pèse. Et tu peux, à ton tour, poser sur autrui un regard plus doux.`
+      ],
+      questions: [
+        `Quel jugement as-tu entendu un jour qui continue de te suivre, et d'où venait-il, selon toi ?`,
+        `Que ferais-tu ou dirais-tu si tu n'avais pas peur du regard des autres ?`,
+        `Quelles personnes te voient telles que tu es, et comment peux-tu leur faire davantage de place ?`
+      ]
+    },
+    {
+      title: `Le bonheur obligatoire`,
+      paragraphs: [
+        `Nous vivons dans une société qui demande d'aller bien, d'être positif, de sourire. Les journées grises y deviennent une faute personnelle, comme s'il fallait toujours trouver le bon côté des choses.`,
+        `Cette injonction est fatigante. Elle laisse peu de place à la tristesse, à la lassitude, au doute, pourtant très humains et très ordinaires. Se sentir mal ne signifie pas avoir échoué.`,
+        `On peut traverser un jour sans éclat sans en avoir honte. Un bonheur qui exige de ne jamais ressentir autre chose cesse d'être un bonheur : il devient une performance de plus.`,
+        `Éclaircie ne te demande pas d'aller bien. Elle te propose seulement de remarquer, au milieu de tout cela, ce qui t'a fait du bien, même un peu, même peu de temps.`,
+        `Si cette période dure, ou si tu te sens trop mal, le coin d'aide est là.`
+      ],
+      questions: [
+        `Quelle phrase du type « Il faut penser positif » t'a déjà fait te sentir mal d'aller mal ?`,
+        `Qu'est-ce qui t'a fait du bien, même un peu, dans une journée difficile ?`,
+        `À qui peux-tu dire simplement : « Aujourd'hui, je ne vais pas très bien » ?`
       ]
     },
     {
       title: `Le bonheur qui vient des autres`,
       paragraphs: [
-        `On nous dit souvent que le bonheur se trouve en soi : qu'il faut d'abord s'aimer, se perfectionner, se réaliser seul. Prendre soin de soi est précieux, et se faire du bien seul est beau : une promenade, un livre, un moment de calme. Mais quand on repense aux moments qui nous ont rendus le plus heureux, il y a très souvent quelqu'un d'autre : un rire partagé, une conversation sincère, un repas à plusieurs, une main tendue.`,
-        `Les deux ne s'opposent pas. Le bonheur seul est beau, le bonheur avec l'autre l'est aussi, et c'est peut-être de les avoir tous les deux qui fait une vie riche. Il ne faut simplement pas oublier le second sous prétexte qu'on cherche à aller mieux.`,
-        `Il y a aussi une joie plus discrète : celle d'être utile à quelqu'un. Écouter un ami, rendre service, offrir un peu de son temps. Ce sont souvent de petits gestes, mais ils font du bien à celui qui les reçoit comme à celui qui les donne.`,
-        `Et tu n'as pas besoin d'être parfait pour aller vers les autres. Pas besoin d'avoir tout réglé, d'être « bien dans ta vie » ou au meilleur de toi-même. On peut être fatigué, hésitant, imparfait, et offrir sa présence. C'est même souvent dans ces moments-là que la présence de l'autre compte le plus.`,
-        `Se tourner vers les autres, c'est aussi se tourner vers le monde : la nature, les histoires qu'on partage, les moments simples qui nous dépassent. Tu n'as pas à tout porter seul ni à te construire seul. Tu peux être bien avec toi, et bien avec les autres.`
+        `On nous dit souvent que le bonheur se trouve en soi : qu'il faut d'abord s'aimer, se perfectionner, se réaliser seul. Prendre soin de soi est précieux, et se faire du bien seul est beau : une promenade, un livre, un moment de calme. Mais lorsque l'on repense aux moments qui nous ont rendus le plus heureux, il y a très souvent quelqu'un d'autre : un rire partagé, une conversation sincère, un repas à plusieurs, une main tendue.`,
+        `Les deux ne s'opposent pas. Le bonheur seul est beau, le bonheur avec l'autre l'est aussi, et c'est peut-être de les avoir tous les deux que naît une vie riche. Il ne faut simplement pas oublier le second sous prétexte que l'on cherche à aller mieux.`,
+        `Il existe aussi une joie plus discrète : celle d'être utile à quelqu'un. Écouter un ami, rendre service, offrir un peu de son temps. Ce sont souvent de petits gestes, mais ils font du bien à celui qui les reçoit comme à celui qui les donne.`,
+        `Et tu n'as pas besoin d'être parfait pour aller vers les autres. Inutile d'avoir tout réglé, d'être « bien dans sa vie » ou au meilleur de soi-même. On peut être fatigué, hésitant, imparfait, et offrir sa présence. C'est même souvent dans ces moments-là que la présence de l'autre compte le plus.`,
+        `Se tourner vers les autres, c'est aussi se tourner vers le monde : la nature, les histoires que l'on partage, les moments simples qui nous dépassent. Tu n'as pas à tout porter seul ni à te construire seul. Tu peux être bien avec toi-même, et bien avec les autres.`
       ],
       questions: [
-        `Quel est le dernier moment avec quelqu'un qui t'a vraiment fait du bien, et qu'est-ce qui l'a rendu précieux ?`,
-        `Qu'est-ce qui te fait du bien quand tu es seul, et qu'est-ce qui change quand tu le partages ?`,
+        `Quel est le dernier moment passé avec quelqu'un qui t'a vraiment fait du bien, et qu'est-ce qui l'a rendu précieux ?`,
+        `Qu'est-ce qui te fait du bien lorsque tu es seul, et qu'est-ce qui change lorsque tu le partages ?`,
         `À qui pourrais-tu faire du bien cette semaine, par un petit geste ou un mot, même sans être au meilleur de ta forme ?`
       ]
     }
@@ -365,6 +731,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     addOpen: false,
     answer: null,
     offset: 0,
+    cur: null,
+    energy: null,
+    notifMsg: '',
     noteDone: null,
     deleting: null,
     msg: '',
@@ -400,7 +769,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   }
 
   function saveToday() {
-    lsSet('ec-day', JSON.stringify({ day: dayNum, a: S.answer, off: S.offset, done: S.noteDone }));
+    lsSet('ec-day', JSON.stringify({ day: dayNum, a: S.answer, off: S.offset, done: S.noteDone, cur: S.cur, en: S.energy }));
   }
   function loadToday() {
     var raw = lsGet('ec-day');
@@ -411,19 +780,116 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
         S.answer = o.a || null;
         S.offset = o.off || 0;
         S.noteDone = o.done || null;
+        S.cur = (typeof o.cur === 'number' && MOMENTS[o.cur]) ? o.cur : null;
+        S.energy = (o.en === 'a' || o.en === 't' || o.en === 'd') ? o.en : null;
       }
     } catch (e) { /* ignoré */ }
   }
 
   /* ---------- Écrans ---------- */
 
+  var ENERGIES = [['a', 'Plein d\'élan'], ['t', 'Tranquille'], ['d', 'Besoin de douceur']];
+
+  function loadSeen() {
+    try { var a = JSON.parse(lsGet('ec-seen') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+  function pickMoment(energy) {
+    var seen = loadSeen();
+    var pool = [];
+    for (var i = 0; i < MOMENTS.length; i++) { if (!energy || MOMENTS[i][0] === energy) pool.push(i); }
+    var fresh = pool.filter(function (i) { return seen.indexOf(i) < 0; });
+    if (!fresh.length) {
+      seen = seen.filter(function (i) { return pool.indexOf(i) < 0; });
+      fresh = pool;
+    }
+    var idx = fresh[Math.floor(Math.random() * fresh.length)];
+    seen.push(idx);
+    lsSet('ec-seen', JSON.stringify(seen));
+    return idx;
+  }
+  function ensureMoment() {
+    if (S.cur === null || !MOMENTS[S.cur]) { S.cur = pickMoment(S.energy); saveToday(); }
+  }
+
+  function dayKey(d) { return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
   function retroCard() {
-    if (S.lights.length < 2) return '';
-    var l = S.lights[mod(dayNum, S.lights.length)];
-    if (!l || !(l.title || l.text)) return '';
-    var r = '<div class="retro"><span class="label">Une lumière d\'avant</span><p class="q">' + esc(l.title || l.text) + '</p>';
+    var ls = S.lights.filter(function (l) {
+      return l && (l.title || l.text) && l.createdAt && !isNaN(new Date(l.createdAt).getTime());
+    });
+    var today = new Date();
+    var tk = dayKey(today);
+    var past = ls.filter(function (l) { return dayKey(new Date(l.createdAt)) !== tk; });
+    if (!past.length) return '';
+    var oldest = Math.min.apply(null, past.map(function (l) { return new Date(l.createdAt).getTime(); }));
+    var older30 = (today.getTime() - oldest) >= 30 * 86400000;
+    var m = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    var last = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+    m.setDate(Math.min(today.getDate(), last));
+    var w = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    function on(d) { var k = dayKey(d); return past.filter(function (l) { return dayKey(new Date(l.createdAt)) === k; }); }
+    var label = '';
+    var pool = [];
+    if (older30) { pool = on(m); if (pool.length) label = 'Il y a un mois, tu notais…'; }
+    if (!pool.length) { pool = on(w); if (pool.length) label = 'Il y a une semaine, tu notais…'; }
+    if (!pool.length) { pool = past; label = 'Une lumière d\'avant'; }
+    var l = pool[mod(dayNum, pool.length)];
+    var r = '<div class="retro"><span class="label">' + label + '</span><p class="q">' + esc(l.title || l.text) + '</p>';
     if (l.title && l.text) r += '<p class="small">' + esc(l.text) + '</p>';
     return r + '</div>';
+  }
+
+  /* ---------- Rappel quotidien (version iPhone / Android uniquement) ---------- */
+
+  function nativeLN() {
+    try {
+      var C = window.Capacitor;
+      if (C && typeof C.isNativePlatform === 'function' && C.isNativePlatform() && C.Plugins && C.Plugins.LocalNotifications) return C.Plugins.LocalNotifications;
+    } catch (e) { /* ignoré */ }
+    return null;
+  }
+  function loadNotif() {
+    try {
+      var o = JSON.parse(lsGet('ec-notif') || 'null');
+      if (o && typeof o.h === 'number' && typeof o.m === 'number') return o;
+    } catch (e) { /* ignoré */ }
+    return null;
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  async function enableNotif(h, m) {
+    var LN = nativeLN();
+    if (!LN) return 'unavailable';
+    var perm = await LN.requestPermissions();
+    if (!perm || perm.display !== 'granted') return 'denied';
+    await LN.cancel({ notifications: [{ id: 1 }] });
+    await LN.schedule({ notifications: [{ id: 1, title: 'Éclaircie', body: 'Un petit moment t\'attend.', schedule: { on: { hour: h, minute: m }, allowWhileIdle: true } }] });
+    lsSet('ec-notif', JSON.stringify({ h: h, m: m }));
+    return 'ok';
+  }
+  async function disableNotif() {
+    var LN = nativeLN();
+    try { if (LN) await LN.cancel({ notifications: [{ id: 1 }] }); } catch (e) { /* ignoré */ }
+    lsSet('ec-notif', 'null');
+  }
+  function notifCard() {
+    if (!nativeLN()) return '';
+    var cur = loadNotif();
+    var t = cur ? pad2(cur.h) + ':' + pad2(cur.m) : '09:00';
+    var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Un rappel chaque jour</h2>';
+    h += '<p class="muted">' + (cur ? 'Tu recevras une douce notification chaque jour à ' + pad2(cur.h) + ' h ' + pad2(cur.m) + '.' : 'Si tu veux, une douce notification peut t\'inviter à découvrir ton moment du jour.') + '</p>';
+    h += '<label for="notif-time">Heure du rappel</label><input type="time" id="notif-time" value="' + t + '">';
+    if (S.notifMsg) h += '<p class="msg" role="status">' + esc(S.notifMsg) + '</p>';
+    h += '<div class="stack"><button type="button" class="btn secondary" data-a="notifOn">' + (cur ? 'Changer l\'heure' : 'Activer le rappel') + '</button>';
+    if (cur) h += '<button type="button" class="link" style="align-self:center" data-a="notifOff">Désactiver le rappel</button>';
+    return h + '</div></div>';
+  }
+
+  function energyCard() {
+    var h = '<div class="card tight"><p class="small muted">Comment est ton énergie aujourd\'hui ? <span class="opt">(si tu veux)</span></p><div style="display:flex;flex-wrap:wrap;gap:8px">';
+    for (var i = 0; i < ENERGIES.length; i++) {
+      var on = S.energy === ENERGIES[i][0];
+      h += '<button type="button" class="btn' + (on ? '' : ' secondary') + '" style="min-height:44px;padding:0 14px;font-size:15px;flex:1 1 auto" aria-pressed="' + (on ? 'true' : 'false') + '" data-a="energy" data-p="' + (on ? '' : ENERGIES[i][0]) + '">' + esc(ENERGIES[i][1]) + '</button>';
+    }
+    return h + '</div></div>';
   }
 
   function aiBlock() {
@@ -443,9 +909,11 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   }
 
   function tToday() {
-    var inv = S.custom ? S.custom.text : INVITES[mod(dayNum + S.offset, INVITES.length)];
+    ensureMoment();
+    var inv = S.custom ? S.custom.text : MOMENTS[S.cur][1];
     var h = '<div class="screen"><header class="head"><p class="eyebrow">' + esc(dateLabel()) + '</p><h1>Bonjour.</h1></header>';
     if (!S.answer) {
+      h += energyCard();
       h += '<div class="card"><span class="pill">' + (S.custom ? 'Inspiré de tes lumières' : (S.offset > 0 ? 'Un autre moment' : 'Le moment du jour')) + '</span><p class="quote">' + esc(inv) + '</p><p class="muted">' + esc(S.custom && S.custom.why ? S.custom.why : 'À ton rythme. Aucune réponse n\'est mauvaise.') + '</p></div>';
       h += '<div class="stack"><button type="button" class="btn" data-a="answer" data-p="done">C\'est fait</button>';
       h += '<div class="row"><button type="button" class="btn secondary" data-a="answer" data-p="later">Un autre jour</button><button type="button" class="btn secondary" data-a="answer" data-p="no">Pas envie</button></div><button type="button" class="link" style="align-self:center" data-a="again">Un autre moment</button></div>';
@@ -470,6 +938,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }
     h += aiBlock();
     h += retroCard();
+    h += notifCard();
     h += '<p class="muted small" style="text-align:center">Ici, rien n\'est compté.</p></div>';
     return h;
   }
@@ -520,7 +989,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       for (var i = 0; i < THEMES.length; i++) {
         h += '<button type="button" class="list-btn" data-a="reculOpen" data-p="' + i + '"><span>' + esc(THEMES[i].title) + '</span><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M9 6l6 6-6 6"></path></svg></button>';
       }
-      h += '<p class="muted small" style="text-align:center">Tu peux ne pas être d\'accord. C\'est très bien.</p>';
+      h += '<p class="muted small" style="text-align:center">Tu peux ne pas être d\'accord.</p>';
     } else {
       var t = THEMES[S.reculIdx];
       h += '<div><button type="button" class="link" data-a="reculList">Tous les regards</button></div><h1>' + esc(t.title) + '</h1>';
@@ -550,7 +1019,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var h = '<div class="screen"><header class="head"><h1>Un coin d\'aide</h1><p class="muted">Pas besoin d\'aller très mal pour demander de l\'aide.</p></header>';
     h += helpCard(`En danger immédiat`, `Pour une urgence médicale ou vitale, appelle le 15 (Samu) ou le 112.`, ['15', '112'], true);
     h += helpCard(`Idées noires, grande détresse`, `Le 3114 est le numéro national de prévention du suicide : gratuit, joignable jour et nuit.`, ['3114'], false);
-    h += helpCard(`Un rapport difficile à la nourriture ou au corps`, `Anorexie Boulimie Info Écoute est une ligne d'écoute spécialisée dans les troubles du comportement alimentaire.`, ['0 810 037 037'], false);
+    h += helpCard(`Un rapport difficile à la nourriture ou au corps`, `Anorexie Boulimie Info Écoute est une ligne d'écoute spécialisée dans les troubles du comportement alimentaire. Elle est ouverte les lundis, mardis, jeudis et vendredis de 16 h à 18 h, hors jours fériés. Appel non surtaxé.`, ['09 69 32 59 00'], false);
+    h += helpCard(`Un enfant en danger`, `Le 119 est le numéro national de l'enfance en danger. L'appel est gratuit.`, ['119'], false);
+    h += helpCard(`Sourd ou malentendant`, `Le 114 est le numéro d'urgence pour les personnes sourdes et malentendantes. L'appel est gratuit.`, ['114'], false);
     h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Parler à quelqu\'un près de toi</h2><p>Ton médecin traitant peut t\'écouter et t\'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.</p></div>';
     h += '<p class="muted small">Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.</p>';
     h += '<p class="muted small" style="text-align:center">Cette app ne remplace pas un professionnel.</p></div>';
@@ -559,7 +1030,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   /* ---------- Rendu ---------- */
 
-  var FIELDS = ['note-title', 'note', 'light-title', 'light-text', 'light-place'];
+  var FIELDS = ['note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time'];
 
   function captureFields() {
     var out = {};
@@ -732,8 +1203,22 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     } else if (a === 'answer') {
       S.answer = p; S.err = ''; saveToday();
       render({ top: true, focus: p === 'done' ? 'note-title' : null });
+    } else if (a === 'notifOn') {
+      var tv = val('notif-time') || '09:00';
+      var parts = tv.split(':');
+      var hh = parseInt(parts[0], 10), mm = parseInt(parts[1], 10);
+      if (isNaN(hh) || isNaN(mm)) { S.notifMsg = 'Choisis une heure.'; render(); return; }
+      enableNotif(hh, mm).then(function (r) {
+        S.notifMsg = r === 'ok' ? 'C\'est enregistré.' : r === 'denied' ? 'Les notifications sont désactivées pour Éclaircie. Tu peux les autoriser dans les réglages de ton téléphone.' : 'Le rappel n\'est pas disponible ici.';
+        render();
+      }).catch(function () { S.notifMsg = 'Je n\'ai pas réussi à programmer le rappel.'; render(); });
+    } else if (a === 'notifOff') {
+      disableNotif().then(function () { S.notifMsg = 'Le rappel est désactivé.'; render(); });
+    } else if (a === 'energy') {
+      S.energy = (p === 'a' || p === 't' || p === 'd') ? p : null;
+      S.cur = pickMoment(S.energy); S.custom = null; S.answer = null; S.noteDone = null; S.err = ''; saveToday(); render({ top: true });
     } else if (a === 'again') {
-      S.offset += 1; S.answer = null; S.noteDone = null; S.err = ''; S.custom = null; S.ai.err = ''; saveToday(); render({ top: true });
+      S.offset += 1; S.cur = pickMoment(S.energy); S.answer = null; S.noteDone = null; S.err = ''; S.custom = null; S.ai.err = ''; saveToday(); render({ top: true });
     } else if (a === 'reopen') {
       S.answer = null; S.noteDone = null; S.err = ''; saveToday(); render({ top: true });
     } else if (a === 'noteLight') {
