@@ -136,6 +136,13 @@ input[type="text"] { min-height: 48px; padding-top: 0; padding-bottom: 0; }
 .light-title { font-family: var(--font-display); font-size: 20px; line-height: 1.25; font-weight: 500; }
 .light-text { font-size: 17px; line-height: 1.4; }
 .photo { width: 100%; max-height: 340px; object-fit: cover; border-radius: 16px; display: block; background: var(--soft); }
+.seg { display: flex; gap: 6px; background: var(--soft); border-radius: 16px; padding: 4px; }
+.seg button { flex: 1; min-height: 44px; border: none; border-radius: 12px; background: transparent; color: var(--soft-ink); font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
+.chips { display: flex; flex-direction: column; gap: 8px; }
+.chip { min-height: 46px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--field); color: var(--ink); font-family: var(--font-body); font-size: 15px; text-align: left; padding: 0 14px; cursor: pointer; }
+.chip[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); font-weight: 600; }
+.cat-title { font-family: var(--font-display); font-size: 20px; font-weight: 500; margin-top: 6px; }
 .photo.empty { min-height: 0; height: 0; }
 .photo-pick { display: flex; flex-direction: column; gap: 10px; }
 .photo-pick input[type="file"] { display: none; }
@@ -735,6 +742,14 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     coll: null,
     addOpen: false,
     photoData: null,
+    lview: 'lights',
+    elans: null,
+    elanOpen: false,
+    elanCat: 'm',
+    elanQi: null,
+    elanDraft: null,
+    elanDel: null,
+    noteMsg: '',
     answer: null,
     offset: 0,
     cur: null,
@@ -1041,8 +1056,100 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     });
   }
 
+
+  /* ---------- Ce qui me fait vibrer ---------- */
+
+  var ELAN_CATS = [
+    ['m', "Ce qui m'émerveille"],
+    ['e', "Ce que j'aimerais essayer un jour"],
+    ['q', "Ce que j'aimerais vivre avec quelqu'un"]
+  ];
+  var ELAN_QS = [
+    "Qu'est-ce que tu faisais, enfant, sans voir le temps passer ?",
+    "Quel lieu aimerais-tu connaître, sans raison particulière ?",
+    "Qu'est-ce qui te donnerait envie de te lever tôt, simplement par plaisir ?",
+    "Quelle activité te fait oublier ton téléphone ?",
+    "Qu'est-ce qui te touche chez les autres, au point de te donner envie ?",
+    "Que voudrais-tu apprendre, même sans jamais le maîtriser ?",
+    "Avec qui aimerais-tu partager un seul moment, juste pour le plaisir ?",
+    "Qu'est-ce qui, récemment, t'a fait t'arrêter un instant pour regarder ?",
+    "Quel endroit près de chez toi n'as-tu jamais vraiment pris le temps de découvrir ?",
+    "Qu'est-ce que tu aimerais faire lentement, pour une fois ?",
+    "Quel savoir-faire d'une autre personne t'a toujours fasciné ?",
+    "Si rien n'avait à être utile, que ferais-tu ce week-end ?"
+  ];
+  function loadElans() {
+    if (S.elans) return;
+    var a = [];
+    try { a = JSON.parse(lsGet('ec-elans') || '[]'); } catch (e) { a = []; }
+    S.elans = Array.isArray(a) ? a.filter(function (x) { return x && x.title; }) : [];
+  }
+  function saveElans() { lsSet('ec-elans', JSON.stringify(S.elans)); }
+  function elanQuestion() {
+    if (S.elanQi === null) S.elanQi = mod(dayNum, ELAN_QS.length);
+    return ELAN_QS[mod(S.elanQi, ELAN_QS.length)];
+  }
+  function addElan(title, text, cat, photo) {
+    loadElans();
+    var rec = { id: 'e' + Date.now(), title: title, text: text, cat: cat, createdAt: new Date().toISOString() };
+    function keep() { S.elans.unshift(rec); saveElans(); return true; }
+    if (photo) { rec.photo = true; return idbPut(rec.id, photo).then(keep); }
+    return Promise.resolve(keep());
+  }
+  function removeElan(id) {
+    loadElans();
+    S.elans = S.elans.filter(function (x) { return x.id !== id; });
+    saveElans();
+    return idbDel(id);
+  }
+  function tElans(h) {
+    loadElans();
+    h += '<div class="card tight" style="background:var(--warm);color:var(--warm-ink)"><span class="label" style="font-size:13px;font-weight:600;color:var(--warm-label)">Une question, sans bonne réponse</span><p class="q" style="font-family:var(--font-display);font-size:19px;line-height:1.3;font-weight:500">' + esc(elanQuestion()) + '</p><button type="button" class="link sm" style="align-self:flex-start" data-a="elanQ">Une autre question</button></div>';
+    var showForm = S.elanOpen || S.elans.length === 0;
+    if (showForm) {
+      var d = S.elanDraft || {};
+      h += '<div class="card"><h2>' + (S.elans.length === 0 ? 'Ton premier élan' : 'Un nouvel élan') + '</h2><div class="chips" role="group" aria-label="Rangé dans">';
+      for (var c = 0; c < ELAN_CATS.length; c++) {
+        h += '<button type="button" class="chip" aria-pressed="' + (S.elanCat === ELAN_CATS[c][0]) + '" data-a="elanCat" data-p="' + ELAN_CATS[c][0] + '">' + esc(ELAN_CATS[c][1]) + '</button>';
+      }
+      h += '</div><label for="elan-title">Un titre</label><input type="text" id="elan-title" autocomplete="off" placeholder="Quelques mots" value="' + esc(d.title || '') + '"><label for="elan-text">Raconte-le <span class="opt">(si tu veux)</span></label><textarea id="elan-text" rows="4">' + esc(d.text || '') + '</textarea>';
+      h += photoField();
+      h += '<p class="muted small">Un élan n\'a pas de date. Il peut rester un rêve, changer ou s\'effacer.</p>';
+      if (S.err) h += '<p class="err" role="status">' + esc(S.err) + '</p>';
+      h += '<div class="stack"><button type="button" class="btn" data-a="saveElan">Garder cet élan</button>';
+      if (S.elans.length > 0) h += '<button type="button" class="btn secondary" data-a="cancelElan">Annuler</button>';
+      h += '</div></div>';
+    } else {
+      h += '<button type="button" class="btn" data-a="openElan">Ajouter un élan</button>';
+    }
+    for (var k = 0; k < ELAN_CATS.length; k++) {
+      var cat = ELAN_CATS[k][0];
+      var items = S.elans.filter(function (x) { return (x.cat || 'm') === cat; });
+      if (!items.length) continue;
+      h += '<p class="cat-title">' + esc(ELAN_CATS[k][1]) + '</p>';
+      for (var i = 0; i < items.length; i++) {
+        var l = items[i];
+        h += '<div class="card tight">' + photoImg(l) + '<p class="light-title">' + esc(l.title) + '</p>' + (l.text ? '<p class="light-text">' + esc(l.text) + '</p>' : '');
+        if (S.elanDel === l.id) {
+          h += '<div class="row"><button type="button" class="btn danger" style="min-height:48px;font-size:16px" data-a="elanDelConfirm" data-p="' + esc(l.id) + '">Supprimer</button><button type="button" class="btn secondary" style="min-height:48px" data-a="elanDelCancel">Garder</button></div>';
+        } else {
+          h += '<button type="button" class="link sm" style="align-self:flex-start" data-a="elanDelAsk" data-p="' + esc(l.id) + '">Supprimer</button>';
+        }
+        h += '</div>';
+      }
+    }
+    h += '<p class="muted small">Tes élans sont gardés sur cet appareil seulement.</p>';
+    return h + '</div>';
+  }
+  function loadNotes() {
+    try { var o = JSON.parse(lsGet('ec-notes') || '{}'); return (o && typeof o === 'object') ? o : {}; } catch (e) { return {}; }
+  }
+
   function tLights() {
-    var h = '<div class="screen"><header class="head"><h1>Mes lumières</h1><p class="muted">Ce qui t\'a fait du bien. Rien d\'autre.</p></header>';
+    var isE = S.lview === 'elans';
+    var h = '<div class="screen"><header class="head"><h1>' + (isE ? 'Ce qui me fait vibrer' : 'Mes lumières') + '</h1><p class="muted">' + (isE ? 'Ce qui t\'attire, t\'émerveille, te donne envie. Sans objectif ni échéance.' : 'Ce qui t\'a fait du bien. Rien d\'autre.') + '</p></header>';
+    h += '<div class="seg" role="group" aria-label="Choisir"><button type="button" aria-pressed="' + !isE + '" data-a="lview" data-p="lights">Mes lumières</button><button type="button" aria-pressed="' + isE + '" data-a="lview" data-p="elans">Ce qui me fait vibrer</button></div>';
+    if (isE) return tElans(h);
     if (!S.loaded) {
       return h + '<p class="muted">Un instant…</p></div>';
     }
@@ -1069,7 +1176,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       if (S.deleting === l.id) {
         h += '<div class="row"><button type="button" class="btn danger" style="min-height:48px;font-size:16px" data-a="delConfirm" data-p="' + esc(l.id) + '">Supprimer</button><button type="button" class="btn secondary" style="min-height:48px" data-a="delCancel">Garder</button></div>';
       } else {
-        h += '<button type="button" class="link sm" style="align-self:flex-start" data-a="delAsk" data-p="' + esc(l.id) + '">Supprimer</button>';
+        h += '<div class="row" style="align-items:center;justify-content:space-between"><button type="button" class="link sm" style="flex:0 0 auto" data-a="delAsk" data-p="' + esc(l.id) + '">Supprimer</button><button type="button" class="link sm" style="flex:0 1 auto;text-align:right" data-a="toElan" data-p="' + esc(l.id) + '">Garder aussi dans ce qui me fait vibrer</button></div>';
       }
       h += '</div>';
     }
@@ -1096,8 +1203,12 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       for (var j = 0; j < t.paragraphs.length; j++) h += '<p class="body-lg">' + esc(t.paragraphs[j]) + '</p>';
       h += '</div><div class="retro" style="gap:14px;border-radius:24px;padding:22px"><span class="label">À garder en tête, sans bonne réponse</span>';
       for (var k = 0; k < t.questions.length; k++) h += '<p class="q">' + esc(t.questions[k]) + '</p>';
+      h += '</div>';
+      var nts = loadNotes();
+      h += '<div class="card"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Ce que j\'en pense</h2><label for="reg-note" class="muted" style="font-weight:400">Pour toi seulement, rien n\'est envoyé.</label><textarea id="reg-note" rows="4">' + esc(nts[t.title] || '') + '</textarea><button type="button" class="btn secondary" data-a="noteReg">Garder pour moi</button>';
+      if (S.noteMsg) h += '<p class="muted small" role="status">' + esc(S.noteMsg) + '</p>';
       h += '</div><button type="button" class="btn" data-a="reculNext">Un autre regard</button>';
-      h += '<p class="muted small" style="text-align:center">Rien à noter, rien à retenir.</p>';
+      h += '<p class="muted small" style="text-align:center">Écrire est facultatif. Rien à retenir.</p>';
     }
     return h + '</div>';
   }
@@ -1129,7 +1240,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   /* ---------- Rendu ---------- */
 
-  var FIELDS = ['note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time'];
+  var FIELDS = ['note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time', 'elan-title', 'elan-text'];
 
   function captureFields() {
     var out = {};
@@ -1352,6 +1463,56 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       S.photoData = null; S.noteDone = 'private'; S.err = ''; saveToday(); render({ top: true });
     } else if (a === 'openAdd') {
       S.addOpen = true; S.err = ''; render({ focus: 'light-title' });
+    } else if (a === 'lview') {
+      S.lview = p === 'elans' ? 'elans' : 'lights'; S.err = ''; S.photoData = null; S.elanOpen = false; S.elanDraft = null; render({ top: true });
+    } else if (a === 'elanQ') {
+      S.elanQi = (S.elanQi === null ? mod(dayNum, ELAN_QS.length) : S.elanQi) + 1; render();
+    } else if (a === 'elanCat') {
+      S.elanDraft = { title: val('elan-title'), text: (document.getElementById('elan-text') || {}).value || '' };
+      S.elanCat = p; render();
+      S.elanDraft = null;
+    } else if (a === 'openElan') {
+      S.elanOpen = true; S.err = ''; S.elanDraft = null; render({ focus: 'elan-title' });
+    } else if (a === 'cancelElan') {
+      S.elanOpen = false; S.err = ''; S.photoData = null; S.elanDraft = null; render();
+    } else if (a === 'saveElan') {
+      var et = val('elan-title');
+      var ex = val('elan-text');
+      if (!et) { S.err = 'Donne un titre à cet élan, quelques mots suffisent.'; render({ focus: 'elan-title' }); return; }
+      S.err = '';
+      var ph3 = S.photoData;
+      addElan(et, ex, S.elanCat, ph3).then(function () {
+        S.photoData = null; S.elanOpen = false; S.elanDraft = null; render({ top: true });
+      }).catch(function () {
+        S.err = 'Impossible d\'enregistrer pour l\'instant. Réessaie dans un instant.'; render();
+      });
+    } else if (a === 'elanDelAsk') {
+      S.elanDel = p; render();
+    } else if (a === 'elanDelCancel') {
+      S.elanDel = null; render();
+    } else if (a === 'elanDelConfirm') {
+      S.elanDel = null;
+      removeElan(p).then(function () { render(); });
+    } else if (a === 'toElan') {
+      var src = null;
+      for (var q = 0; q < S.lights.length; q++) if (S.lights[q].id === p) src = S.lights[q];
+      if (src) {
+        S.lview = 'elans'; S.elanOpen = true; S.err = ''; S.photoData = null;
+        S.elanDraft = { title: src.title || '', text: src.text || '' };
+        if (src.photo && S.mode === 'local') {
+          idbGet(src.id).then(function (d) { if (d) { S.photoData = d; render(); } });
+        }
+        render({ top: true });
+        S.elanDraft = null;
+      }
+    } else if (a === 'noteReg') {
+      var rn = val('reg-note');
+      var all = loadNotes();
+      var tk = THEMES[S.reculIdx].title;
+      if (rn) all[tk] = rn; else delete all[tk];
+      lsSet('ec-notes', JSON.stringify(all));
+      S.noteMsg = rn ? 'C\'est gardé, pour toi seulement.' : 'Ta note est effacée.';
+      render();
     } else if (a === 'photoRemove') {
       S.photoData = null; render();
     } else if (a === 'cancelAdd') {
@@ -1384,11 +1545,11 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       S.deleting = null;
       removeLight(p).then(function () { render(); }).catch(function () { S.err = 'Impossible de supprimer pour l\'instant.'; render(); });
     } else if (a === 'reculOpen') {
-      S.reculView = 'detail'; S.reculIdx = parseInt(p, 10) || 0; render({ top: true });
+      S.reculView = 'detail'; S.noteMsg = ''; S.reculIdx = parseInt(p, 10) || 0; render({ top: true });
     } else if (a === 'reculList') {
-      S.reculView = 'list'; render({ top: true });
+      S.noteMsg = ''; S.reculView = 'list'; render({ top: true });
     } else if (a === 'reculNext') {
-      S.reculIdx = (S.reculIdx + 1) % THEMES.length; render({ top: true });
+      S.noteMsg = ''; S.reculIdx = (S.reculIdx + 1) % THEMES.length; render({ top: true });
     } else if (a === 'aiAsk') {
       askAI();
     } else if (a === 'aiStop') {
