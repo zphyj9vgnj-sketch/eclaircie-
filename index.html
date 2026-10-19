@@ -135,6 +135,11 @@ input[type="text"] { min-height: 48px; padding-top: 0; padding-bottom: 0; }
 
 .light-title { font-family: var(--font-display); font-size: 20px; line-height: 1.25; font-weight: 500; }
 .light-text { font-size: 17px; line-height: 1.4; }
+.photo { width: 100%; max-height: 340px; object-fit: cover; border-radius: 16px; display: block; background: var(--soft); }
+.photo.empty { min-height: 0; height: 0; }
+.photo-pick { display: flex; flex-direction: column; gap: 10px; }
+.photo-pick input[type="file"] { display: none; }
+.photo-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 16px; background: var(--soft); color: var(--soft-ink); font-size: 16px; font-weight: 500; padding: 0 18px; cursor: pointer; }
 .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .meta .date { font-size: 13px; color: var(--muted); }
 
@@ -729,6 +734,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     mode: 'local',
     coll: null,
     addOpen: false,
+    photoData: null,
     answer: null,
     offset: 0,
     cur: null,
@@ -833,7 +839,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     if (!pool.length) { pool = on(w); if (pool.length) label = 'Il y a une semaine, tu notais…'; }
     if (!pool.length) { pool = past; label = 'Une lumière d\'avant'; }
     var l = pool[mod(dayNum, pool.length)];
-    var r = '<div class="retro"><span class="label">' + label + '</span><p class="q">' + esc(l.title || l.text) + '</p>';
+    var r = '<div class="retro"><span class="label">' + label + '</span>' + photoImg(l) + '<p class="q">' + esc(l.title || l.text) + '</p>';
     if (l.title && l.text) r += '<p class="small">' + esc(l.text) + '</p>';
     return r + '</div>';
   }
@@ -919,7 +925,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       h += '<div class="row"><button type="button" class="btn secondary" data-a="answer" data-p="later">Un autre jour</button><button type="button" class="btn secondary" data-a="answer" data-p="no">Pas envie</button></div><button type="button" class="link" style="align-self:center" data-a="again">Un autre moment</button></div>';
     } else if (S.answer === 'done') {
       if (!S.noteDone) {
-        h += '<div class="card"><h2>Merci d\'avoir pris ce moment.</h2><label for="note-title">Un titre pour cette lumière</label><input type="text" id="note-title" autocomplete="off" placeholder="Quelques mots"><label for="note">Un petit mot sur ce que ça t\'a fait vivre <span class="opt">(si tu veux)</span></label><textarea id="note" rows="4"></textarea>';
+        h += '<div class="card"><h2>Merci d\'avoir pris ce moment.</h2><label for="note-title">Un titre pour cette lumière</label><input type="text" id="note-title" autocomplete="off" placeholder="Quelques mots"><label for="note">Un petit mot sur ce que ça t\'a fait vivre <span class="opt">(si tu veux)</span></label><textarea id="note" rows="4"></textarea>' + photoField();
         if (S.err) h += '<p class="err" role="status">' + esc(S.err) + '</p>';
         h += '</div><div class="stack"><button type="button" class="btn" data-a="noteLight">Garder dans mes lumières</button><button type="button" class="btn secondary" data-a="notePrivate">Garder pour moi</button></div>';
       } else if (S.noteDone === 'light') {
@@ -943,6 +949,98 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     return h;
   }
 
+
+  /* ---------- Photos (gardées sur l'appareil, dans IndexedDB) ---------- */
+
+  var photoCache = {};
+  function idb() {
+    return new Promise(function (res, rej) {
+      try {
+        var rq = indexedDB.open('eclaircie-photos', 1);
+        rq.onupgradeneeded = function () { rq.result.createObjectStore('p'); };
+        rq.onsuccess = function () { res(rq.result); };
+        rq.onerror = function () { rej(rq.error); };
+      } catch (e) { rej(e); }
+    });
+  }
+  function idbPut(id, data) {
+    return idb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction('p', 'readwrite');
+        tx.objectStore('p').put(data, id);
+        tx.oncomplete = function () { photoCache[id] = data; res(); };
+        tx.onerror = function () { rej(tx.error); };
+        tx.onabort = function () { rej(tx.error); };
+      });
+    });
+  }
+  function idbGet(id) {
+    if (photoCache[id]) return Promise.resolve(photoCache[id]);
+    return idb().then(function (db) {
+      return new Promise(function (res) {
+        var rq = db.transaction('p', 'readonly').objectStore('p').get(id);
+        rq.onsuccess = function () { if (rq.result) photoCache[id] = rq.result; res(rq.result || null); };
+        rq.onerror = function () { res(null); };
+      });
+    }).catch(function () { return null; });
+  }
+  function idbDel(id) {
+    delete photoCache[id];
+    return idb().then(function (db) {
+      return new Promise(function (res) {
+        var tx = db.transaction('p', 'readwrite');
+        tx.objectStore('p').delete(id);
+        tx.oncomplete = function () { res(); };
+        tx.onerror = function () { res(); };
+      });
+    }).catch(function () { /* ignoré */ });
+  }
+  function hydratePhotos() {
+    var imgs = document.querySelectorAll('img[data-photo]');
+    for (var i = 0; i < imgs.length; i++) {
+      (function (img) {
+        idbGet(img.getAttribute('data-photo')).then(function (d) {
+          if (d && img.isConnected) img.src = d;
+          else if (!d) img.style.display = 'none';
+        });
+      })(imgs[i]);
+    }
+  }
+  function photoImg(l) {
+    return l && l.photo ? '<img class="photo" data-photo="' + esc(l.id) + '" alt="Photo de cette lumière">' : '';
+  }
+  function photoField() {
+    if (S.mode !== 'local') return '';
+    var h = '<div class="photo-pick"><span class="photo-label">Une photo du moment <span class="opt">(si tu veux)</span></span>';
+    if (S.photoData) {
+      h += '<img class="photo" src="' + S.photoData + '" alt="Aperçu de ta photo"><button type="button" class="link sm" style="align-self:flex-start" data-a="photoRemove">Retirer la photo</button>';
+    } else {
+      h += '<label class="photo-btn" for="photo-input">Ajouter une photo</label>';
+    }
+    h += '<input type="file" id="photo-input" accept="image/*"></div>';
+    return h;
+  }
+  function shrinkPhoto(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file);
+      var im = new Image();
+      im.onload = function () {
+        try {
+          var max = 1280, w = im.naturalWidth, h = im.naturalHeight;
+          var k = Math.min(1, max / Math.max(w, h));
+          var c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          var out = c.toDataURL('image/jpeg', 0.8);
+          URL.revokeObjectURL(url);
+          res(out);
+        } catch (e) { URL.revokeObjectURL(url); rej(e); }
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); rej(new Error('image')); };
+      im.src = url;
+    });
+  }
+
   function tLights() {
     var h = '<div class="screen"><header class="head"><h1>Mes lumières</h1><p class="muted">Ce qui t\'a fait du bien. Rien d\'autre.</p></header>';
     if (!S.loaded) {
@@ -954,6 +1052,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       h += '<div class="card"><h2>' + (S.lights.length === 0 ? 'Ta première lumière' : 'Une nouvelle lumière') + '</h2>';
       h += '<label for="light-title">Un titre</label><input type="text" id="light-title" autocomplete="off" placeholder="Quelques mots"><label for="light-text">Raconte-le <span class="opt">(si tu veux)</span></label><textarea id="light-text" rows="4"></textarea>';
       h += '<label for="light-place">Où, ou avec qui ? <span class="opt">(si tu veux)</span></label><input type="text" id="light-place" autocomplete="off">';
+      h += photoField();
       h += '<p class="muted small">Pas de note, pas de catégorie.</p>';
       if (S.err) h += '<p class="err" role="status">' + esc(S.err) + '</p>';
       h += '<div class="stack"><button type="button" class="btn" data-a="saveLight">Garder cette lumière</button>';
@@ -964,7 +1063,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }
     for (var i = 0; i < S.lights.length; i++) {
       var l = S.lights[i];
-      h += '<div class="card tight">' + (l.title ? '<p class="light-title">' + esc(l.title) + '</p>' : '') + (l.text ? '<p class="light-text">' + esc(l.text) + '</p>' : '') + '<div class="meta">';
+      h += '<div class="card tight">' + photoImg(l) + (l.title ? '<p class="light-title">' + esc(l.title) + '</p>' : '') + (l.text ? '<p class="light-text">' + esc(l.text) + '</p>' : '') + '<div class="meta">';
       if (l.place) h += '<span class="pill soft">' + esc(l.place) + '</span>';
       h += '<span class="date">' + esc(whenLabel(l.createdAt)) + '</span></div>';
       if (S.deleting === l.id) {
@@ -1067,6 +1166,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     view.innerHTML = html;
     restoreFields(keep);
     updateNav();
+    hydratePhotos();
     if (opts && opts.top) view.scrollTop = 0;
     if (opts && opts.focus) {
       var f = document.getElementById(opts.focus);
@@ -1078,15 +1178,22 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   function persistLocal() { lsSet('ec-lights', JSON.stringify(S.lights)); }
 
-  function addLight(title, text, place) {
+  function addLight(title, text, place, photo) {
     var rec = { title: title, text: text, place: place, createdAt: new Date().toISOString() };
     if (S.mode === 'db' && S.coll) {
       return S.coll.add(rec).then(function () { return true; });
     }
     rec.id = 'l' + Date.now();
-    S.lights.unshift(rec);
-    persistLocal();
-    return Promise.resolve(true);
+    function keep() {
+      S.lights.unshift(rec);
+      persistLocal();
+      return true;
+    }
+    if (photo) {
+      rec.photo = true;
+      return idbPut(rec.id, photo).then(keep);
+    }
+    return Promise.resolve(keep());
   }
 
   function removeLight(id) {
@@ -1095,7 +1202,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }
     S.lights = S.lights.filter(function (l) { return l.id !== id; });
     persistLocal();
-    return Promise.resolve();
+    return idbDel(id);
   }
 
   function startLocal() {
@@ -1228,7 +1335,9 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       S.err = '';
       var noteEl = document.getElementById('note');
       var noteTitleEl = document.getElementById('note-title');
-      addLight(ntitle, text, 'Le moment du jour').then(function () {
+      var ph1 = S.photoData;
+      addLight(ntitle, text, 'Le moment du jour', ph1).then(function () {
+        S.photoData = null;
         if (noteEl) noteEl.value = '';
         if (noteTitleEl) noteTitleEl.value = '';
         S.noteDone = 'light'; saveToday(); render({ top: true });
@@ -1240,11 +1349,13 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       if (ne) ne.value = '';
       var nte = document.getElementById('note-title');
       if (nte) nte.value = '';
-      S.noteDone = 'private'; S.err = ''; saveToday(); render({ top: true });
+      S.photoData = null; S.noteDone = 'private'; S.err = ''; saveToday(); render({ top: true });
     } else if (a === 'openAdd') {
       S.addOpen = true; S.err = ''; render({ focus: 'light-title' });
+    } else if (a === 'photoRemove') {
+      S.photoData = null; render();
     } else if (a === 'cancelAdd') {
-      S.addOpen = false; S.err = '';
+      S.addOpen = false; S.err = ''; S.photoData = null;
       var tt1 = document.getElementById('light-title'); if (tt1) tt1.value = '';
       var t1 = document.getElementById('light-text'); if (t1) t1.value = '';
       var p1 = document.getElementById('light-place'); if (p1) p1.value = '';
@@ -1255,7 +1366,9 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       var pl = val('light-place');
       if (!ti) { S.err = 'Donne un titre à cette lumière, quelques mots suffisent.'; render({ focus: 'light-title' }); return; }
       S.err = '';
-      addLight(ti, tx, pl).then(function () {
+      var ph2 = S.photoData;
+      addLight(ti, tx, pl, ph2).then(function () {
+        S.photoData = null;
         var tt2 = document.getElementById('light-title'); if (tt2) tt2.value = '';
         var t2 = document.getElementById('light-text'); if (t2) t2.value = '';
         var p2 = document.getElementById('light-place'); if (p2) p2.value = '';
@@ -1292,6 +1405,16 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     var t = e.target.closest('[data-a]');
     if (!t) return;
     act(t.getAttribute('data-a'), t.getAttribute('data-p'));
+  });
+
+  document.getElementById('app').addEventListener('change', function (e) {
+    var t = e.target;
+    if (!t || t.id !== 'photo-input' || !t.files || !t.files[0]) return;
+    shrinkPhoto(t.files[0]).then(function (d) {
+      S.photoData = d; S.err = ''; render();
+    }).catch(function () {
+      S.err = 'Cette photo n\'a pas pu être lue. Essaie-en une autre.'; render();
+    });
   });
 
   loadToday();
