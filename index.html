@@ -12,9 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fonts.css">
 <style>
 /* Concept : une page de téléphone, calme, tournée vers l'extérieur. Vert doux, soleil pâle, aucun chiffre. */
 :root {
@@ -1718,7 +1716,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     h += helpCard(`Sourd ou malentendant`, `Le 114 est le numéro d'urgence pour les personnes sourdes et malentendantes. L'appel est gratuit.`, ['114'], false);
     h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Parler à quelqu\'un près de toi</h2><p>Ton médecin traitant peut t\'écouter et t\'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.</p></div>';
     h += '<p class="muted small">Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.</p>';
-    h += '<p class="muted small" style="text-align:center">Cette app ne remplace pas un professionnel.</p></div>';
+    h += '<p class="muted small" style="text-align:center">Cette app ne remplace pas un professionnel.</p>';
+    h += '<p class="muted small" style="text-align:center"><a href="' + APP_URL + 'confidentialite.html" target="_blank" rel="noopener" style="color:var(--accent)">Confidentialité et assistance</a></p></div>';
     return h;
   }
 
