@@ -1554,7 +1554,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   }
 
   function dayKey(d) { return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
-  function retroCard() {
+  function retroCard(where) {
     var ls = S.lights.filter(function (l) {
       return l && (l.title || l.text) && l.createdAt && !isNaN(new Date(l.createdAt).getTime());
     });
@@ -1573,7 +1573,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var pool = [];
     if (older30) { pool = on(m); if (pool.length) label = 'Il y a un mois, tu notais…'; }
     if (!pool.length) { pool = on(w); if (pool.length) label = 'Il y a une semaine, tu notais…'; }
-    if (!pool.length) { pool = past; label = 'Un souvenir d\'avant'; }
+    if (!pool.length) { if (where === 'today') return ''; pool = past; label = 'Un souvenir d\'avant'; }
     var l = pool[mod(dayNum, pool.length)];
     var r = '<div class="retro"><span class="label">' + label + '</span>' + photoImg(l) + '<p class="q">' + esc(l.title || l.text) + '</p>';
     if (l.title && l.text) r += '<p class="small">' + esc(l.text) + '</p>';
@@ -1731,7 +1731,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       h += '<div class="stack"><button type="button" class="btn secondary" data-a="again">Un autre moment</button><button type="button" class="link" style="align-self:center" data-a="reopen">Revoir cette invitation</button></div>';
     }
     h += aiBlock();
-    h += retroCard();
+    h += retroCard('today');
     h += notifCard('today');
     h += '<p class="muted small" style="text-align:center">Ici, rien n\'est compté.</p></div>';
     return h;
@@ -1943,7 +1943,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     if (!S.loaded) {
       return h + '<p class="muted">Un instant…</p></div>';
     }
-    h += retroCard();
+    h += retroCard('lights');
     var showForm = S.addOpen || S.lights.length === 0;
     if (showForm) {
       h += '<div class="card"><h2>' + (S.lights.length === 0 ? 'Ton premier souvenir' : 'Un nouveau souvenir') + '</h2>';
@@ -1975,7 +1975,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     } else {
       h += '<p class="muted small">Tes souvenirs sont gardés sur cet appareil seulement.</p>';
     }
-    h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Un souvenir qui revient</h2><p class="muted small">De temps en temps, un de tes souvenirs réapparaît en haut de cet écran et sur « Aujourd\'hui » : celui d\'il y a une semaine, d\'il y a un mois, ou un autre au hasard. Rien à faire, c\'est juste pour te faire sourire.</p></div>';
+    h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Un souvenir qui revient</h2><p class="muted small">De temps en temps, un de tes souvenirs réapparaît : celui d\'il y a une semaine ou d\'il y a un mois, en haut de cet écran et sur « Aujourd\'hui ». Quand il n\'y en a pas, un souvenir plus ancien, choisi au hasard, s\'affiche ici seulement. Rien à faire, c\'est juste pour te faire sourire.</p></div>';
     return h + '</div>';
   }
 
