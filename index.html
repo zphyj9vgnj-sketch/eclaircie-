@@ -79,7 +79,7 @@
   color-scheme: dark;
 }
 
-html, body { height: 100%; max-width: 100%; overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; }
+html, body { height: 100%; max-width: 100%; overflow-x: hidden; overflow-x: clip; overscroll-behavior-x: none; touch-action: pan-y; }
 body {
   margin: 0;
   box-sizing: border-box;
@@ -95,7 +95,7 @@ body {
 
 #app { position: relative; height: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; overflow: hidden; }
 .sun { position: absolute; top: -130px; right: -130px; width: 300px; height: 300px; border-radius: 50%; background: var(--sun); opacity: 0.55; pointer-events: none; }
-#view { position: relative; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; padding: 20px 0 16px; outline: none; }
+#view { position: relative; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overflow-x: clip; overscroll-behavior-x: none; touch-action: pan-y; padding: 20px 0 16px; outline: none; }
 
 #view { scrollbar-width: none; -ms-overflow-style: none; }
 #view::-webkit-scrollbar { display: none; width: 0; height: 0; }
@@ -1036,6 +1036,226 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Un jeu calme"
   ];
 
+  /* ---------- Moments de saison ----------
+     Ajoutés après les moments habituels : leur numéro ne change jamais.
+     Un moment de saison n'apparaît que pendant sa période (mois, jour). */
+  var SEASON_OF = {};
+  var SEASON_BASE = MOMENTS.length;
+  (function () {
+    var ADVENT = [
+    ["t", "Ouvre la première case de décembre : écris à quelqu'un que tu aimerais revoir avant la fin de l'année.", "Une première case"],
+    ["d", "À la tombée de la nuit, regarde par la fenêtre et remarque les premières lumières allumées.", "Les premières lumières"],
+    ["a", "Propose à quelqu'un d'aller voir les illuminations de ta ville, sans rien acheter.", "Des illuminations à deux"],
+    ["t", "Prépare une boisson chaude pour quelqu'un et buvez-la ensemble, sans rien d'autre à faire.", "Une boisson chaude partagée"],
+    ["d", "Écris trois mots doux sur un papier et glisse-le là où quelqu'un le trouvera.", "Un mot glissé"],
+    ["a", "Passe voir un voisin ou une voisine et demande-lui comment l'hiver se passe.", "Des nouvelles du voisinage"],
+    ["t", "Demande à quelqu'un quel est son plus ancien souvenir de Noël, et écoute.", "Un vieux souvenir d'hiver"],
+    ["d", "Allume une bougie et reste quelques minutes devant sa flamme, sans écran.", "Une flamme tranquille"],
+    ["a", "Propose à quelqu'un de faire des petits sablés ensemble, même imparfaits.", "Des sablés imparfaits"],
+    ["t", "Envoie un message à quelqu'un qui passera peut-être les fêtes seul, pour lui dire que tu penses à lui.", "Une pensée envoyée"],
+    ["d", "Marche dehors un moment et regarde comment la lumière d'hiver change les couleurs.", "Une lumière d'hiver"],
+    ["a", "Va faire un tour au marché de Noël avec quelqu'un et regardez tout, sans rien acheter.", "Un marché sans achat"],
+    ["t", "Écoute avec quelqu'un une chanson d'hiver qui vous rappelle quelque chose.", "Une chanson d'hiver"],
+    ["d", "Regarde un sapin, un arbre ou une simple branche, et remarque ses détails.", "Un arbre regardé"],
+    ["a", "Propose à quelqu'un de donner ensemble des affaires dont vous ne vous servez plus.", "Un don à deux"],
+    ["t", "Écris une carte ou une lettre à quelqu'un, même courte, pour le remercier de cette année.", "Une carte de merci"],
+    ["d", "Installe-toi sous un plaid avec une boisson chaude et laisse le monde ralentir.", "Un plaid et du temps"],
+    ["a", "Invite quelqu'un à regarder un film d'hiver, et choisissez-le ensemble.", "Un film d'hiver"],
+    ["t", "Demande à quelqu'un ce qu'il espère pour l'année qui vient, et écoute sans conseiller.", "Un souhait écouté"],
+    ["d", "Remarque trois lumières dans ton quartier et pense à ceux qui les ont allumées.", "Trois lumières du quartier"],
+    ["t", "C'est la nuit la plus longue de l'année : sors un instant regarder le ciel avec quelqu'un, ou allumez une bougie.", "La nuit la plus longue"],
+    ["a", "Aide quelqu'un à préparer quelque chose pour les fêtes : un repas, une table, un trajet.", "Un coup de main de fête"],
+    ["d", "Remarque la fatigue de quelqu'un autour de toi et propose-lui de souffler un peu à ta place.", "Un peu de repos offert"],
+    ["t", "Ce soir, rien à prouver : dis simplement « joyeuses fêtes » à quelqu'un, en le regardant.", "Un vœu dit en face"]
+    ];
+    var GROUPS = [
+    { w: [12, 25, 12, 26], hi: true, items: [
+      ["t", "Prends le temps d'une vraie conversation avec quelqu'un aujourd'hui, sans parler de cadeaux.", "Une conversation sans cadeaux"],
+      ["d", "Si les fêtes pèsent aujourd'hui, ralentis : sors marcher dix minutes ou appelle quelqu'un qui te fait du bien.", "Une pause pendant les fêtes"],
+      ["a", "Propose une balade ou un jeu à ceux qui sont autour de toi, pour sortir de table.", "Une balade après le repas"]
+    ] },
+    { w: [12, 27, 12, 31], hi: true, items: [
+      ["t", "Plutôt qu'une résolution, écris trois choses que tu as aimées cette année et à qui tu voudrais le dire.", "Trois choses aimées cette année"],
+      ["a", "Appelle quelqu'un pour lui dire ce que tu as aimé vivre avec lui cette année.", "Un appel de fin d'année"],
+      ["d", "Ne fais aucun bilan aujourd'hui : regarde le ciel de fin d'année et laisse l'année se terminer sans note.", "Une année sans note"],
+      ["t", "Envoie un petit mot à quelqu'un qui t'a aidé cette année, sans attendre minuit.", "Un merci avant minuit"]
+    ] },
+    { w: [1, 1, 1, 15], hi: true, items: [
+      ["a", "Souhaite une bonne année à quelqu'un que tu n'as pas entendu depuis longtemps.", "Des vœux retrouvés"],
+      ["a", "Partage une galette avec quelqu'un et laisse la fève faire sourire.", "Une galette partagée"],
+      ["t", "Plutôt qu'une résolution, choisis une petite chose agréable à faire avec quelqu'un ce mois-ci.", "Une envie à deux"],
+      ["d", "Un matin de janvier, regarde le jour se lever sans rien attendre de cette année.", "Un lever de jour"],
+      ["t", "Demande à quelqu'un ce qui l'a fait sourire pendant les fêtes.", "Un sourire des fêtes"]
+    ] },
+    { w: [12, 21, 3, 19], hi: false, items: [
+      ["a", "Invite quelqu'un pour une soupe chaude, simple et partagée.", "Une soupe à deux"],
+      ["d", "Un matin froid, regarde ton souffle ou la buée d'une vitre, et souris.", "Un matin de buée"],
+      ["t", "Prends des nouvelles d'une personne âgée de ton entourage pendant les grands froids.", "Des nouvelles par grand froid"],
+      ["a", "Propose à quelqu'un une balade d'hiver, bien couverts, avec une boisson chaude dans un thermos.", "Une balade d'hiver"],
+      ["t", "Lis ou écoute une histoire d'hiver avec quelqu'un.", "Une histoire d'hiver"],
+      ["d", "Écoute la pluie, le vent ou le silence d'une journée d'hiver pendant quelques minutes.", "Le bruit de l'hiver"],
+      ["a", "Prépare un plat de saison à partager avec un voisin ou un ami.", "Un plat d'hiver partagé"],
+      ["t", "Remarque les oiseaux dehors en hiver, et mets-leur de l'eau ou des graines si tu peux.", "Des oiseaux d'hiver"],
+      ["d", "Réchauffe tes mains autour d'une tasse et pense à quelqu'un qui te réchauffe le cœur.", "Une tasse et une pensée"],
+      ["a", "Sors dix minutes avec quelqu'un, même par temps gris, et regardez ce qui vous entoure.", "Dix minutes dehors à deux"]
+    ] },
+    { w: [1, 30, 2, 3], hi: true, items: [
+      ["a", "Fais sauter des crêpes avec quelqu'un, même ratées.", "Des crêpes ratées"],
+      ["t", "Invite quelqu'un à partager des crêpes et demande-lui sa garniture préférée.", "Des crêpes à partager"],
+      ["d", "Savoure une crêpe lentement, sans rien d'autre à faire pendant quelques minutes.", "Une crêpe lentement"],
+      ["a", "Apporte quelques crêpes à un voisin ou à un collègue, rien que pour lui faire plaisir.", "Des crêpes en cadeau"]
+    ] },
+    { w: [2, 10, 2, 14], hi: true, items: [
+      ["t", "Écris un mot d'affection à quelqu'un que tu aimes : un ami, un proche, ou quelqu'un qui compte pour toi.", "Un mot d'affection"],
+      ["a", "Propose un moment ensemble à quelqu'un que tu aimes, ami, proche ou couple, sans cadeau.", "Un moment sans cadeau"],
+      ["d", "Pense à une personne qui t'aime comme tu es, et remercie-la dans ta tête ou en vrai.", "Aimé comme on est"],
+      ["a", "Dis « tu comptes pour moi » à quelqu'un qui n'attend pas ce mot.", "Un mot qui compte"]
+    ] },
+    { w: [2, 20, 3, 19], hi: false, items: [
+      ["t", "Remarque les premiers signes du printemps : un bourgeon, un oiseau, une journée un peu plus longue.", "Un premier signe"],
+      ["a", "Propose à quelqu'un un jeu de déguisement ou de grimaces, juste pour rire.", "Un jeu de carnaval"],
+      ["d", "Ouvre une fenêtre et laisse entrer l'air, même un peu froid, en pensant à la saison qui change.", "Une fenêtre ouverte"]
+    ] },
+    { w: [3, 6, 3, 8], hi: true, items: [
+      ["t", "Écoute une femme de ton entourage te raconter ce qu'elle a traversé ou construit.", "Un récit écouté"]
+    ] },
+    { w: [3, 20, 6, 20], hi: false, items: [
+      ["a", "Pique-nique avec quelqu'un sur l'herbe ou sur un banc : un simple sandwich suffit.", "Un pique-nique simple"],
+      ["d", "Regarde longuement un arbre en fleurs ou en feuilles tendres.", "Un arbre qui renaît"],
+      ["t", "Propose à quelqu'un une balade pour voir la nature se réveiller.", "Une balade de printemps"],
+      ["a", "Plante quelque chose avec quelqu'un, une graine ou une aromatique, et donne-lui un nom.", "Une plante à deux"],
+      ["d", "Allonge-toi un instant dehors et regarde passer les nuages.", "Des nuages qui passent"],
+      ["t", "Ouvre ta fenêtre le matin, écoute les oiseaux, puis envoie un « bonjour » à quelqu'un.", "Les oiseaux du matin"],
+      ["a", "Propose une balade à quelqu'un, sans objectif de distance ni de temps.", "Une balade sans chrono"],
+      ["t", "Offre à quelqu'un un petit bouquet de fleurs des champs ou une jolie feuille.", "Un petit bouquet"],
+      ["d", "Respire l'odeur de la pluie de printemps ou de l'herbe coupée.", "L'odeur du printemps"],
+      ["a", "Rends visite à quelqu'un qui est resté enfermé tout l'hiver et sortez ensemble au soleil.", "Sortir au soleil"],
+      ["t", "Fais un rangement de printemps avec quelqu'un et gardez ce qui vous a fait sourire.", "Un rangement à deux"],
+      ["d", "Écoute une musique qui vient d'une fenêtre ouverte, d'un oiseau ou d'un voisin, un moment.", "Une musique de fenêtre"]
+    ] },
+    { w: [3, 31, 4, 1], hi: true, items: [
+      ["a", "Fais une blague douce à quelqu'un : une blague qui fait rire sans vexer.", "Une blague douce"],
+      ["t", "Raconte à quelqu'un ton plus drôle souvenir de classe ou d'enfance.", "Un rire d'enfance"]
+    ] },
+    { w: [4, 28, 5, 1], hi: true, items: [
+      ["t", "Offre un brin de muguet, ou une fleur, à quelqu'un qui compte pour toi.", "Un brin de muguet"],
+      ["a", "Dis merci à quelqu'un qui travaille aujourd'hui ou qui travaille dur.", "Un merci à ceux qui travaillent"]
+    ] },
+    { w: [5, 20, 5, 31], hi: true, items: [
+      ["a", "Dis bonjour à tes voisins et propose-leur une boisson ou un petit partage devant la porte.", "Un bonjour de voisin"],
+      ["t", "Demande à un voisin depuis quand il habite ici, et écoute son histoire du quartier.", "L'histoire d'un voisin"]
+    ] },
+    { w: [5, 24, 6, 20], hi: true, items: [
+      ["t", "Pense à quelqu'un qui a pris soin de toi comme un parent, et dis-lui merci.", "Un merci pour avoir pris soin de moi"],
+      ["a", "Appelle quelqu'un de ton entourage et demande-lui un souvenir de ton enfance.", "Un souvenir d'enfance raconté"],
+      ["d", "Si cette période est difficile pour toi, ralentis et pense à une personne douce de ta vie.", "Une personne douce"]
+    ] },
+    { w: [6, 17, 6, 21], hi: true, items: [
+      ["a", "Sors écouter de la musique dans la rue avec quelqu'un, simplement.", "Une musique dans la rue"],
+      ["t", "Fredonne une chanson avec quelqu'un, même faux.", "Une chanson fredonnée"],
+      ["d", "Écoute un morceau en entier, les yeux fermés, sans rien faire d'autre.", "Un morceau écouté en entier"]
+    ] },
+    { w: [6, 21, 9, 22], hi: false, items: [
+      ["a", "Propose à quelqu'un une baignade, ou simplement de mettre les pieds dans l'eau.", "Les pieds dans l'eau"],
+      ["t", "Partage une glace avec quelqu'un à l'ombre, sans te presser.", "Une glace à l'ombre"],
+      ["d", "Regarde le coucher du soleil jusqu'à la dernière lueur.", "Un coucher de soleil"],
+      ["a", "Dîne dehors avec quelqu'un et restez à table jusqu'à la nuit.", "Un dîner jusqu'à la nuit"],
+      ["t", "Regarde les étoiles avec quelqu'un, un soir d'été.", "Des étoiles à deux"],
+      ["d", "Marche pieds nus dans l'herbe ou sur le sable un instant.", "Pieds nus"],
+      ["a", "Va au marché avec quelqu'un, goûte, discute avec un commerçant.", "Un marché d'été"],
+      ["t", "Écris une carte postale à quelqu'un, même si tu es chez toi.", "Une carte postale"],
+      ["d", "Reste à l'ombre et écoute les cigales, le vent ou le silence de l'été.", "Le silence de l'été"],
+      ["a", "Propose une partie de cartes, de pétanque ou de badminton, sans compter les points.", "Un jeu sans points"],
+      ["t", "Offre de l'eau fraîche ou un fruit à quelqu'un qui a chaud.", "Un fruit à partager"],
+      ["d", "Lis une page ou deux à l'ombre, sans te presser.", "Une page à l'ombre"],
+      ["a", "Invite quelqu'un à une soirée simple dehors, où chacun apporte quelque chose.", "Une soirée à partager"],
+      ["t", "Prends des nouvelles d'une personne fragile pendant la chaleur et propose-lui de l'aide.", "Des nouvelles par grande chaleur"]
+    ] },
+    { w: [7, 10, 7, 14], hi: true, items: [
+      ["a", "Regarde un feu d'artifice ou une fête de quartier avec quelqu'un.", "Un feu d'artifice partagé"],
+      ["t", "À une fête de quartier, dis bonjour à des voisins que tu connais peu.", "Des voisins retrouvés"]
+    ] },
+    { w: [8, 25, 9, 15], hi: true, items: [
+      ["t", "Demande à quelqu'un comment s'est passé son été, et écoute les petites choses.", "Un été raconté"],
+      ["a", "Propose à quelqu'un de vous voir pour parler de la rentrée, sans liste de résolutions.", "Un café de rentrée"],
+      ["d", "Marche tranquillement dans ton quartier et remarque ce qui a changé depuis l'été.", "Un quartier à la rentrée"],
+      ["t", "Remercie quelqu'un qui t'a aidé pendant l'été.", "Un merci d'été"],
+      ["a", "Si quelqu'un commence quelque chose de nouveau, école ou travail, envoie-lui un mot d'encouragement.", "Un mot de rentrée"],
+      ["d", "Ouvre un cahier ou une page blanche et écris une chose douce pour la saison qui vient.", "Une page blanche douce"]
+    ] },
+    { w: [9, 14, 9, 20], hi: true, items: [
+      ["a", "Visite avec quelqu'un un lieu ouvert au public : un monument, un musée, une rue à pied.", "Un lieu découvert à deux"],
+      ["t", "Demande à quelqu'un l'histoire d'un lieu de ton quartier.", "L'histoire d'un lieu"]
+    ] },
+    { w: [9, 23, 12, 20], hi: false, items: [
+      ["a", "Ramasse des feuilles ou des marrons avec quelqu'un et gardez les plus beaux.", "Des feuilles ramassées"],
+      ["t", "Promène-toi dans un parc ou une forêt avec quelqu'un en regardant les couleurs d'automne.", "Les couleurs d'automne"],
+      ["d", "Écoute les feuilles craquer sous tes pas et prends ton temps.", "Le bruit des feuilles"],
+      ["a", "Prépare une soupe ou une tarte de saison à partager.", "Une tarte de saison"],
+      ["t", "Invite quelqu'un à boire un chocolat chaud ou un thé, quand la nuit tombe tôt.", "Un chocolat de saison"],
+      ["d", "Allume une lumière douce à la tombée du jour et prends un moment pour toi.", "Une lumière à la tombée du jour"],
+      ["a", "Propose à quelqu'un une balade au bord de l'eau ou en forêt.", "Une balade d'automne"],
+      ["t", "Partage des fruits de saison, pommes, noix ou châtaignes, avec quelqu'un.", "Des fruits de saison"],
+      ["d", "Regarde la pluie à la fenêtre avec une boisson chaude.", "Une pluie derrière la vitre"],
+      ["a", "Cuisine un plat réconfortant pour quelqu'un qui en a besoin.", "Un plat réconfortant"],
+      ["t", "Appelle quelqu'un à la tombée de la nuit : ces soirées donnent envie de se confier.", "Un appel du soir"],
+      ["d", "Reste sous un plaid avec un livre ou une musique douce, sans culpabilité.", "Un soir sous un plaid"],
+      ["a", "Plante un bulbe avec quelqu'un, pour voir la fleur au printemps.", "Un bulbe pour le printemps"],
+      ["t", "Raconte à quelqu'un ce que tu aimes dans l'automne.", "L'automne raconté"]
+    ] },
+    { w: [10, 8, 10, 10], hi: true, items: [
+      ["t", "Demande à quelqu'un comment il va vraiment, et prends le temps d'écouter la réponse.", "Un vrai « comment vas-tu ? »"]
+    ] },
+    { w: [10, 15, 10, 31], hi: true, items: [
+      ["a", "Sculpte une citrouille avec quelqu'un, même pour rire.", "Une citrouille sculptée"],
+      ["t", "Raconte à quelqu'un une petite histoire qui fait un peu peur, juste pour rire.", "Une histoire pour frissonner"],
+      ["a", "Propose à quelqu'un de vous déguiser avec trois objets trouvés chez toi.", "Un déguisement de fortune"],
+      ["d", "Regarde avec quelqu'un un film doux d'automne, pas effrayant.", "Un film d'automne"],
+      ["a", "Si des enfants passent déguisés dans ta rue ou ton immeuble, souris-leur et dis-leur qu'ils sont beaux.", "Un sourire d'Halloween"],
+      ["t", "Prépare une soupe de potiron avec quelqu'un.", "Une soupe de potiron"]
+    ] },
+    { w: [10, 24, 10, 31], hi: true, items: [
+      ["d", "Profite de l'heure en plus : passe une heure sans écran et offre-la à quelqu'un, ou à toi.", "Une heure en plus"]
+    ] },
+    { w: [10, 30, 11, 2], hi: true, items: [
+      ["d", "Pense à quelqu'un qui n'est plus là et laisse revenir un bon souvenir de lui.", "Un souvenir de quelqu'un qui manque"],
+      ["t", "Raconte à quelqu'un un souvenir heureux d'une personne chère qui n'est plus là.", "Un souvenir raconté"]
+    ] },
+    { w: [11, 10, 11, 11], hi: true, items: [
+      ["t", "Pense à un geste de paix que tu peux faire aujourd'hui, avec quelqu'un avec qui tu es en désaccord.", "Un geste de paix"]
+    ] },
+    { w: [11, 13, 11, 13], hi: true, items: [
+      ["a", "Fais aujourd'hui une petite gentillesse inattendue pour quelqu'un que tu ne connais pas.", "Une gentillesse inattendue"]
+    ] },
+    { w: [11, 24, 11, 30], hi: true, items: [
+      ["a", "Aujourd'hui, ne regarde aucune promotion : propose à quelqu'un un moment qui ne coûte rien.", "Un moment qui ne coûte rien"],
+      ["t", "Remplace un achat que tu voulais faire par un message, un service ou du temps offert à quelqu'un.", "Du temps plutôt qu'un achat"],
+      ["d", "Regarde autour de toi ce que tu as déjà et qui te fait du bien.", "Ce que j'ai déjà"]
+    ] }
+    ];
+    ADVENT.forEach(function (it, k) {
+      var idx = MOMENTS.length;
+      MOMENTS.push([it[0], it[1]]);
+      MOMENT_TITLES.push(it[2]);
+      SEASON_OF[idx] = { w: [12, k + 1, 12, k + 1], adv: true, hi: true };
+    });
+    GROUPS.forEach(function (g) {
+      g.items.forEach(function (it) {
+        var idx = MOMENTS.length;
+        MOMENTS.push([it[0], it[1]]);
+        MOMENT_TITLES.push(it[2]);
+        SEASON_OF[idx] = { w: g.w, adv: false, hi: g.hi };
+      });
+    });
+  })();
+  function seasonOn(s) {
+    var t = new Date();
+    var v = (t.getMonth() + 1) * 100 + t.getDate();
+    var a = s.w[0] * 100 + s.w[1];
+    var b = s.w[2] * 100 + s.w[3];
+    return a <= b ? (v >= a && v <= b) : (v >= a || v <= b);
+  }
+
   var THEMES = [
     {
       title: `Se voir comme un projet`,
@@ -1227,6 +1447,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     energy: null,
     notifMsg: '',
     nameMsg: '',
+    notifJust: false,
+    editId: null,
+    backupMsg: '',
     noteDone: null,
     deleting: null,
     msg: '',
@@ -1286,16 +1509,42 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   function loadSeen() {
     try { var a = JSON.parse(lsGet('ec-seen') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
   }
+  function loadSeenS() {
+    try { var o = JSON.parse(lsGet('ec-seen-s') || '{}'); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; } catch (e) { return {}; }
+  }
+  function pickFrom(list) { return list[Math.floor(Math.random() * list.length)]; }
   function pickMoment(energy) {
     var seen = loadSeen();
-    var pool = [];
-    for (var i = 0; i < MOMENTS.length; i++) { if (!energy || MOMENTS[i][0] === energy) pool.push(i); }
+    var seenS = loadSeenS();
+    var yr = new Date().getFullYear();
+    var base = [], hi = [], lo = [], adv = -1;
+    for (var i = 0; i < MOMENTS.length; i++) {
+      if (energy && MOMENTS[i][0] !== energy) continue;
+      var sn = SEASON_OF[i];
+      if (!sn) { base.push(i); continue; }
+      if (!seasonOn(sn)) continue;
+      if (sn.adv) { adv = i; continue; }
+      if (seenS[i] === yr) continue;
+      (sn.hi ? hi : lo).push(i);
+    }
+    /* Calendrier de l'Avent : le moment du jour, tant qu'on n'a pas demandé un autre moment. */
+    if (adv >= 0 && S.offset === 0) return adv;
+    var r = Math.random();
+    var pick = -1;
+    if (hi.length && r < 0.7) pick = pickFrom(hi);
+    else if (lo.length && r < 0.35) pick = pickFrom(lo);
+    if (pick >= 0) {
+      seenS[pick] = yr;
+      lsSet('ec-seen-s', JSON.stringify(seenS));
+      return pick;
+    }
+    var pool = base;
     var fresh = pool.filter(function (i) { return seen.indexOf(i) < 0; });
     if (!fresh.length) {
       seen = seen.filter(function (i) { return pool.indexOf(i) < 0; });
       fresh = pool;
     }
-    var idx = fresh[Math.floor(Math.random() * fresh.length)];
+    var idx = pickFrom(fresh);
     seen.push(idx);
     lsSet('ec-seen', JSON.stringify(seen));
     return idx;
@@ -1365,17 +1614,24 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var LN = nativeLN();
     try { if (LN) await LN.cancel({ notifications: [{ id: 1 }] }); } catch (e) { /* ignoré */ }
     lsSet('ec-notif', 'null');
+    lsSet('ec-notif-skip', '1');
   }
-  function notifCard() {
+  function notifSkipped() { return lsGet('ec-notif-skip') === '1'; }
+  function notifCard(where) {
     if (!nativeLN()) return '';
     var cur = loadNotif();
     var t = cur ? pad2(cur.h) + ':' + pad2(cur.m) : '09:00';
+    if (where === 'today') {
+      if (S.notifJust && cur) return '<p class="muted small" style="text-align:center">Rappel enregistré à ' + pad2(cur.h) + ' h ' + pad2(cur.m) + '. Tu pourras le changer dans « Un coin d\'aide ».</p>';
+      if (cur || notifSkipped()) return '';
+    }
     var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Un rappel chaque jour</h2>';
-    h += '<p class="muted">' + (cur ? 'Tu recevras une douce notification chaque jour à ' + pad2(cur.h) + ' h ' + pad2(cur.m) + '.' : 'Si tu veux, une douce notification peut t\'inviter à découvrir ton moment du jour.') + '</p>';
+    h += '<p class="muted">' + (cur ? 'Tu recevras une douce notification chaque jour à ' + pad2(cur.h) + ' h ' + pad2(cur.m) + '.' : 'Si tu veux, une douce notification peut t\'inviter à découvrir ton moment du jour.' + (where === 'today' ? ' Tu pourras la changer dans « Un coin d\'aide ».' : '')) + '</p>';
     h += '<label for="notif-time">Heure du rappel</label><input type="time" id="notif-time" value="' + t + '">';
     if (S.notifMsg) h += '<p class="msg" role="status">' + esc(S.notifMsg) + '</p>';
     h += '<div class="stack"><button type="button" class="btn secondary" data-a="notifOn">' + (cur ? 'Changer l\'heure' : 'Activer le rappel') + '</button>';
     if (cur) h += '<button type="button" class="link" style="align-self:center" data-a="notifOff">Désactiver le rappel</button>';
+    else if (where === 'today') h += '<button type="button" class="link" style="align-self:center" data-a="notifSkip">Non merci</button>';
     return h + '</div></div>';
   }
 
@@ -1476,7 +1732,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }
     h += aiBlock();
     h += retroCard();
-    h += notifCard();
+    h += notifCard('today');
     h += '<p class="muted small" style="text-align:center">Ici, rien n\'est compté.</p></div>';
     return h;
   }
@@ -1545,7 +1801,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     if (S.mode !== 'local') return '';
     var h = '<div class="photo-pick"><span class="photo-label">Une photo du moment <span class="opt">(si tu veux)</span></span>';
     if (S.photoData) {
-      h += '<img class="photo" src="' + S.photoData + '" alt="Aperçu de ta photo"><button type="button" class="link sm" style="align-self:flex-start" data-a="photoRemove">Retirer la photo</button>';
+      h += '<img class="photo" src="' + S.photoData + '" alt="Aperçu de ta photo"><label class="photo-btn" for="photo-input">Changer la photo</label><button type="button" class="link sm" style="align-self:flex-start" data-a="photoRemove">Retirer la photo</button>';
     } else {
       h += '<label class="photo-btn" for="photo-input">Ajouter une photo</label>';
     }
@@ -1662,6 +1918,23 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     try { var o = JSON.parse(lsGet('ec-notes') || '{}'); return (o && typeof o === 'object') ? o : {}; } catch (e) { return {}; }
   }
 
+  function localDateStr(iso) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) d = new Date();
+    var m = d.getMonth() + 1, j = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (j < 10 ? '0' : '') + j;
+  }
+  function editCard(l) {
+    var h = '<div class="card"><h2>Modifier ce souvenir</h2>';
+    h += '<label for="edit-title">Un titre</label><input type="text" id="edit-title" autocomplete="off" value="' + esc(l.title || '') + '">';
+    h += '<label for="edit-text">Ce que tu en dis <span class="opt">(si tu veux)</span></label><textarea id="edit-text" rows="4">' + esc(l.text || '') + '</textarea>';
+    h += '<label for="edit-date">Date du souvenir</label><input type="date" id="edit-date" value="' + localDateStr(l.createdAt) + '" max="' + localDateStr(new Date().toISOString()) + '">';
+    h += photoField();
+    if (S.err) h += '<p class="err" role="status">' + esc(S.err) + '</p>';
+    h += '<div class="stack"><button type="button" class="btn" data-a="editSave">Enregistrer</button><button type="button" class="btn secondary" data-a="editCancel">Annuler</button></div></div>';
+    return h;
+  }
+
   function tLights() {
     var isE = S.lview === 'elans';
     var h = '<div class="screen"><header class="head"><h1>' + (isE ? 'Ce qui me fait vibrer' : 'Mes souvenirs') + '</h1><p class="muted">' + (isE ? 'Ce qui t\'attire, t\'émerveille, te donne envie. Sans objectif ni échéance.' : 'Ce qui t\'a fait du bien. Rien d\'autre.') + '</p></header>';
@@ -1675,7 +1948,6 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     if (showForm) {
       h += '<div class="card"><h2>' + (S.lights.length === 0 ? 'Ton premier souvenir' : 'Un nouveau souvenir') + '</h2>';
       h += '<label for="light-title">Un titre</label><input type="text" id="light-title" autocomplete="off" placeholder="Quelques mots"><label for="light-text">Raconte-le <span class="opt">(si tu veux)</span></label><textarea id="light-text" rows="4"></textarea>';
-      h += '<label for="light-place">Où, ou avec qui ? <span class="opt">(si tu veux)</span></label><input type="text" id="light-place" autocomplete="off">';
       h += photoField();
       h += '<p class="muted small">Pas de note, pas de catégorie.</p>';
       if (S.err) h += '<p class="err" role="status">' + esc(S.err) + '</p>';
@@ -1687,13 +1959,14 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }
     for (var i = 0; i < S.lights.length; i++) {
       var l = S.lights[i];
+      if (S.editId === l.id) { h += editCard(l); continue; }
       h += '<div class="card tight">' + photoImg(l) + (l.title ? '<p class="light-title">' + esc(l.title) + '</p>' : '') + (l.text ? '<p class="light-text">' + esc(l.text) + '</p>' : '') + '<div class="meta">';
-      if (l.place) h += '<span class="pill soft">' + esc(l.place) + '</span>';
       h += '<span class="date">' + esc(whenLabel(l.createdAt)) + '</span></div>';
       if (S.deleting === l.id) {
         h += '<div class="row"><button type="button" class="btn danger" style="min-height:48px;font-size:16px" data-a="delConfirm" data-p="' + esc(l.id) + '">Supprimer</button><button type="button" class="btn secondary" style="min-height:48px" data-a="delCancel">Garder</button></div>';
       } else {
-        h += '<div class="row" style="align-items:center;justify-content:space-between"><button type="button" class="link sm" style="flex:0 0 auto" data-a="delAsk" data-p="' + esc(l.id) + '">Supprimer</button><button type="button" class="link sm" style="flex:0 1 auto;text-align:right" data-a="toElan" data-p="' + esc(l.id) + '">Garder aussi dans ce qui me fait vibrer</button></div>';
+        h += '<div class="row" style="align-items:center;justify-content:space-between"><button type="button" class="link sm" style="flex:0 0 auto" data-a="editOpen" data-p="' + esc(l.id) + '">Modifier</button><button type="button" class="link sm" style="flex:0 0 auto" data-a="delAsk" data-p="' + esc(l.id) + '">Supprimer</button></div>';
+        h += '<div class="row"><button type="button" class="link sm" style="flex:1 1 auto;text-align:left" data-a="toElan" data-p="' + esc(l.id) + '">Garder aussi dans ce qui me fait vibrer</button></div>';
       }
       h += '</div>';
     }
@@ -1743,6 +2016,72 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     return h + '</div>';
   }
 
+
+  /* ---------- Sauvegarde : export / import ---------- */
+  function backupCard() {
+    var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Sauvegarder mes souvenirs</h2>';
+    h += '<p>Tes souvenirs, tes élans et tes photos restent sur ton téléphone. Pour les garder en sécurité ou les retrouver sur un autre téléphone, crée un fichier de sauvegarde, puis rouvre-le ici.</p>';
+    h += '<div class="stack"><button type="button" class="btn secondary" data-a="exportData">Créer ma sauvegarde</button>';
+    h += '<label class="photo-btn" for="import-input" style="text-align:center">Retrouver mes souvenirs</label><input type="file" id="import-input" accept=".json,application/json,text/plain" style="display:none"></div>';
+    if (S.backupMsg) h += '<p class="small" role="status">' + esc(S.backupMsg) + '</p>';
+    return h + '</div>';
+  }
+  function collectPhotoIds() {
+    var ids = [];
+    (S.lights || []).forEach(function (l) { if (l && l.photo && l.id) ids.push(l.id); });
+    loadElans();
+    (S.elans || []).forEach(function (l) { if (l && l.photo && l.id) ids.push(l.id); });
+    return ids;
+  }
+  function exportData() {
+    loadElans();
+    var ids = collectPhotoIds();
+    return Promise.all(ids.map(function (id) { return idbGet(id); })).then(function (arr) {
+      var photos = {};
+      ids.forEach(function (id, i) { if (arr[i]) photos[id] = arr[i]; });
+      var n = nameNow();
+      return JSON.stringify({ app: 'eclaircie', v: 1, saved: new Date().toISOString(), name: n, lights: S.lights || [], elans: S.elans || [], notes: loadNotes(), photos: photos });
+    });
+  }
+  function deliverBackup(json) {
+    var d = new Date(); var pad = function (x) { return (x < 10 ? '0' : '') + x; };
+    var fname = 'eclaircie-sauvegarde-' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.json';
+    var file = null;
+    try { file = new File([json], fname, { type: 'application/json' }); } catch (e) { file = null; }
+    if (file && navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+      return navigator.share({ files: [file], title: 'Sauvegarde Éclaircie' }).then(function () { return 'ok'; }).catch(function (err) { return (err && err.name === 'AbortError') ? 'abort' : 'fail'; });
+    }
+    try {
+      var url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      var a = document.createElement('a'); a.href = url; a.download = fname; document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 2000);
+      return Promise.resolve('ok');
+    } catch (e) { return Promise.resolve('fail'); }
+  }
+  function importData(text) {
+    var o; try { o = JSON.parse(text); } catch (e) { return Promise.resolve('bad'); }
+    if (!o || o.app !== 'eclaircie' || !Array.isArray(o.lights)) return Promise.resolve('bad');
+    loadElans();
+    var have = {}; S.lights.forEach(function (l) { have[l.id] = 1; });
+    var addL = o.lights.filter(function (l) { return l && l.id && (l.title || l.text) && !have[l.id]; });
+    var haveE = {}; S.elans.forEach(function (l) { haveE[l.id] = 1; });
+    var addE = (Array.isArray(o.elans) ? o.elans : []).filter(function (l) { return l && l.id && l.title && !haveE[l.id]; });
+    var photos = (o.photos && typeof o.photos === 'object') ? o.photos : {};
+    var jobs = [];
+    addL.concat(addE).forEach(function (l) {
+      if (l.photo) { if (typeof photos[l.id] === 'string' && photos[l.id].indexOf('data:image/') === 0) jobs.push(idbPut(l.id, photos[l.id]).catch(function () {})); else l.photo = false; }
+    });
+    return Promise.all(jobs).then(function () {
+      S.lights = S.lights.concat(addL).sort(function (a, b) { return String(b.createdAt || '').localeCompare(String(a.createdAt || '')); });
+      persistLocal();
+      S.elans = S.elans.concat(addE); saveElans();
+      var notes = loadNotes(), added = 0;
+      if (o.notes && typeof o.notes === 'object') { Object.keys(o.notes).forEach(function (k) { if (!(k in notes)) { notes[k] = o.notes[k]; added++; } }); lsSet('ec-notes', JSON.stringify(notes)); }
+      var nm = nameNow(); if ((!nm) && typeof o.name === 'string' && o.name) lsSet('ec-name', JSON.stringify({ n: cleanName(o.name) }));
+      return { l: addL.length, e: addE.length };
+    }).catch(function () { return 'bad'; });
+  }
+
   function tHelp() {
     var h = '<div class="screen"><header class="head"><h1>Un coin d\'aide</h1><p class="muted">Pas besoin d\'aller très mal pour demander de l\'aide.</p></header>';
     h += helpCard(`En danger immédiat`, `Pour une urgence médicale ou vitale, appelle le 15 (Samu) ou le 112.`, ['15', '112'], true);
@@ -1752,7 +2091,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     h += helpCard(`Sourd ou malentendant`, `Le 114 est le numéro d'urgence pour les personnes sourdes et malentendantes. L'appel est gratuit.`, ['114'], false);
     h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Parler à quelqu\'un près de toi</h2><p>Ton médecin traitant peut t\'écouter et t\'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.</p></div>';
     h += '<p class="muted small">Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.</p>';
+    h += notifCard('help');
     h += nameEditCard();
+    h += backupCard();
     h += '<p class="muted small" style="text-align:center">Cette app ne remplace pas un professionnel.</p>';
     h += '<p class="muted small" style="text-align:center"><a href="' + APP_URL + 'confidentialite.html" target="_blank" rel="noopener" style="color:var(--accent)">Confidentialité et assistance</a></p></div>';
     return h;
@@ -1760,7 +2101,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   /* ---------- Rendu ---------- */
 
-  var FIELDS = ['name-input', 'note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time', 'elan-title', 'elan-text'];
+  var FIELDS = ['edit-title', 'edit-text', 'edit-date', 'name-input', 'note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time', 'elan-title', 'elan-text'];
 
   function captureFields() {
     var out = {};
@@ -1936,7 +2277,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
   function act(a, p) {
     S.msg = '';
     if (a === 'tab') {
-      S.tab = p; S.err = ''; S.shareMsg = ''; S.nameMsg = '';
+      S.tab = p; S.err = ''; S.shareMsg = ''; S.nameMsg = ''; S.notifMsg = ''; S.notifJust = false; S.editId = null;
       render({ top: true });
     } else if (a === 'answer') {
       S.answer = p; S.err = ''; saveToday();
@@ -1947,6 +2288,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       var hh = parseInt(parts[0], 10), mm = parseInt(parts[1], 10);
       if (isNaN(hh) || isNaN(mm)) { S.notifMsg = 'Choisis une heure.'; render(); return; }
       enableNotif(hh, mm).then(function (r) {
+        if (r === 'ok' && S.tab === 'today') { S.notifJust = true; }
         S.notifMsg = r === 'ok' ? 'C\'est enregistré.' : r === 'denied' ? 'Les notifications sont désactivées pour Éclaircie. Tu peux les autoriser dans les réglages de ton téléphone.' : 'Le rappel n\'est pas disponible ici.';
         render();
       }).catch(function () { S.notifMsg = 'Je n\'ai pas réussi à programmer le rappel.'; render(); });
@@ -1955,8 +2297,17 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       lsSet('ec-name', JSON.stringify({ n: nv }));
       S.nameMsg = S.tab === 'help' ? (nv ? 'C\'est enregistré.' : 'Ton prénom est effacé.') : '';
       render();
+    } else if (a === 'exportData') {
+      S.backupMsg = '';
+      exportData().then(deliverBackup).then(function (r) {
+        S.backupMsg = r === 'ok' ? 'Ta sauvegarde est prête. Garde-la précieusement, par exemple dans Fichiers ou dans un e-mail à toi-même.' : r === 'abort' ? '' : 'Je n\'ai pas réussi à créer la sauvegarde.';
+        render();
+      });
     } else if (a === 'nameSkip') {
       lsSet('ec-name', JSON.stringify({ n: '' }));
+      render();
+    } else if (a === 'notifSkip') {
+      lsSet('ec-notif-skip', '1');
       render();
     } else if (a === 'notifOff') {
       disableNotif().then(function () { S.notifMsg = 'Le rappel est désactivé.'; render(); });
@@ -1990,6 +2341,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       if (nte) nte.value = '';
       S.photoData = null; S.noteDone = 'private'; S.err = ''; saveToday(); render({ top: true });
     } else if (a === 'openAdd') {
+      S.editId = null;
       S.addOpen = true; S.err = ''; render({ focus: 'light-title' });
     } else if (a === 'shareWa') {
       var wa = 'https://wa.me/?text=' + encodeURIComponent(shareText());
@@ -2007,7 +2359,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
         navigator.share({ text: tx0 }).catch(function (err) { if (!err || err.name !== 'AbortError') fallback(); });
       } else { fallback(); }
     } else if (a === 'lview') {
-      S.lview = p === 'elans' ? 'elans' : 'lights'; S.err = ''; S.photoData = null; S.elanOpen = false; S.elanDraft = null; render({ top: true });
+      S.lview = p === 'elans' ? 'elans' : 'lights'; S.err = ''; S.photoData = null; S.editId = null; S.elanOpen = false; S.elanDraft = null; render({ top: true });
     } else if (a === 'elanQ') {
       S.elanQi = (S.elanQi === null ? mod(dayNum, ELAN_QS.length) : S.elanQi) + 1; render();
     } else if (a === 'elanCat') {
@@ -2056,6 +2408,44 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
       lsSet('ec-notes', JSON.stringify(all));
       S.noteMsg = rn ? 'C\'est gardé, pour toi seulement.' : 'Ta note est effacée.';
       render();
+    } else if (a === 'editOpen') {
+      var er = null;
+      for (var e1 = 0; e1 < S.lights.length; e1++) if (S.lights[e1].id === p) er = S.lights[e1];
+      if (er) {
+        S.editId = er.id; S.addOpen = false; S.err = ''; S.photoData = null; S.deleting = null;
+        if (er.photo && S.mode === 'local') {
+          idbGet(er.id).then(function (d) { if (d && S.editId === er.id) { S.photoData = d; render(); } });
+        }
+        render();
+      }
+    } else if (a === 'editCancel') {
+      S.editId = null; S.err = ''; S.photoData = null; render();
+    } else if (a === 'editSave') {
+      var etitle = val('edit-title'), etext = val('edit-text'), edate = val('edit-date');
+      var erec = null;
+      for (var e2 = 0; e2 < S.lights.length; e2++) if (S.lights[e2].id === S.editId) erec = S.lights[e2];
+      if (!erec) { S.editId = null; render(); return; }
+      if (!etitle) { S.err = 'Donne un titre à ce souvenir, quelques mots suffisent.'; render({ focus: 'edit-title' }); return; }
+      var todayStr = localDateStr(new Date().toISOString());
+      if (edate && edate > todayStr) { S.err = 'Un souvenir ne peut pas être daté dans le futur.'; render(); return; }
+      S.err = '';
+      erec.title = etitle; erec.text = etext;
+      if (edate && edate !== localDateStr(erec.createdAt)) {
+        var dp = edate.split('-');
+        erec.createdAt = new Date(parseInt(dp[0], 10), parseInt(dp[1], 10) - 1, parseInt(dp[2], 10), 12, 0, 0).toISOString();
+        S.lights.sort(function (x, y) { return new Date(y.createdAt).getTime() - new Date(x.createdAt).getTime(); });
+      }
+      var newPhoto = S.photoData;
+      var work;
+      if (newPhoto) { erec.photo = true; work = idbPut(erec.id, newPhoto); }
+      else if (erec.photo) { erec.photo = false; work = idbDel(erec.id); }
+      else { work = Promise.resolve(); }
+      persistLocal();
+      work.then(function () {
+        S.editId = null; S.photoData = null; render();
+      }).catch(function () {
+        S.err = 'Impossible d\'enregistrer pour l\'instant. Réessaie dans un instant.'; render();
+      });
     } else if (a === 'photoRemove') {
       S.photoData = null; render();
     } else if (a === 'cancelAdd') {
@@ -2067,7 +2457,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     } else if (a === 'saveLight') {
       var ti = val('light-title');
       var tx = val('light-text');
-      var pl = val('light-place');
+      var pl = '';
       if (!ti) { S.err = 'Donne un titre à ce souvenir, quelques mots suffisent.'; render({ focus: 'light-title' }); return; }
       S.err = '';
       var ph2 = S.photoData;
@@ -2113,6 +2503,21 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
 
   document.getElementById('app').addEventListener('change', function (e) {
     var t = e.target;
+    if (t && t.id === 'import-input' && t.files && t.files[0]) {
+      var f = t.files[0];
+      var rd = new FileReader();
+      rd.onload = function () {
+        importData(String(rd.result || '')).then(function (r) {
+          if (r === 'bad') S.backupMsg = 'Ce fichier n\'est pas une sauvegarde Éclaircie.';
+          else if (r.l + r.e === 0) S.backupMsg = 'Tout était déjà là : rien à ajouter.';
+          else S.backupMsg = 'C\'est fait : ' + r.l + ' souvenir' + (r.l > 1 ? 's' : '') + ' et ' + r.e + ' élan' + (r.e > 1 ? 's' : '') + ' retrouvé' + (r.l + r.e > 1 ? 's' : '') + '.';
+          S.elans = null; render();
+        });
+      };
+      rd.onerror = function () { S.backupMsg = 'Je n\'ai pas pu lire ce fichier.'; render(); };
+      rd.readAsText(f);
+      return;
+    }
     if (!t || t.id !== 'photo-input' || !t.files || !t.files[0]) return;
     shrinkPhoto(t.files[0]).then(function (d) {
       S.photoData = d; S.err = ''; render();
