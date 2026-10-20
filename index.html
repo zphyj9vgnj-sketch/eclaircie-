@@ -663,7 +663,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Cuisiner à deux",
     "Une marche attentive",
     "Une autre génération",
-    "Une histoire à un enfant",
+    "Une histoire partagée",
     "Une chose enfin faite",
     "Un merci discret",
     "Le soleil, sans rien d'autre",
@@ -704,7 +704,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Un mot au marché",
     "Un livre offert",
     "Une idée partagée",
-    "La passion d'un enfant",
+    "La passion de quelqu'un",
     "Deux personnes réunies",
     "Un mot, en vrai",
     "Une graine plantée",
@@ -734,7 +734,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "La main tendue",
     "Mon coup de cœur à partager",
     "Un mot au voisinage",
-    "Jouer avec des enfants",
+    "Un moment joyeux",
     "Un trajet partagé",
     "Une boisson pour tous",
     "Un message vocal doux",
@@ -774,7 +774,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Ce que ça a changé",
     "Un sourire pour quelqu'un de seul",
     "Un lieu découvert à deux",
-    "Un moment pour un jeune",
+    "Un moment rien que pour lui",
     "Une chanson en marchant",
     "Une date fixée",
     "Un endroit calme pour lui",
@@ -865,7 +865,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Une attention pour quelqu'un de fatigué",
     "Une écoute sans conseil",
     "Trois qualités",
-    "Une journée plus douce pour un collègue",
+    "Une journée plus douce",
     "L'admiration pour un savoir-faire",
     "Un poème partagé",
     "Une petite joie racontée",
@@ -873,7 +873,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Une qualité remerciée",
     "Ce qui m'a touché",
     "Merci pour la douceur",
-    "La joie d'un enfant",
+    "La joie des autres",
     "Une lettre, même gardée",
     "Un lieu avec de l'histoire",
     "Un moment calme à deux",
@@ -983,7 +983,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Une gratitude gardée",
     "Une chanson dédiée",
     "Un message qui a fait plaisir",
-    "Un film au cinéma",
+    "Un film à deux",
     "Une partie sans points",
     "Un verre en terrasse",
     "Flâner dans les boutiques",
@@ -1024,9 +1024,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     "Un goûter simple",
     "Un album en entier",
     "Un banc pour longtemps",
-    "Les règles d'un aîné",
+    "Les règles de quelqu'un",
     "Un verre et une surprise",
-    "Un cinéma tranquille",
+    "Un film tranquille",
     "Une fête de quartier",
     "Jouer sans gagner",
     "Un film côte à côte",
@@ -1422,6 +1422,381 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }
   ];
 
+  /* ---------- Langue : français (par défaut) ou anglais ---------- */
+  var LANG = (function () {
+    var v = lsGet('ec-lang');
+    if (v === 'en' || v === 'fr') return v;
+    var old = ['ec-lights', 'ec-elans', 'ec-notes', 'ec-name', 'ec-notif', 'ec-seen', 'ec-day'];
+    for (var i = 0; i < old.length; i++) { if (lsGet(old[i]) !== null) { lsSet('ec-lang', 'fr'); return 'fr'; } }
+    return '';
+  })();
+  var THEMES_EN = [
+    {
+      title: `Seeing yourself as a project`,
+      paragraphs: [
+        `Our age keeps repeating that we must constantly improve: become better, more confident, better looking. Presented as a path to happiness, this quest ends up setting a permanent gaze on ourselves.`,
+        `Little by little, we scrutinise ourselves in every conversation, in front of the mirror, several times a day. On social media, the best of everyone scrolls past without a break, in every area at once, like an ideal to reach. But no one can be perfect everywhere. Dissatisfaction sets in, then a cruel judgement of ourselves, then a loss of love for ourselves.`,
+        `Picture a simple dinner with a friend: it could be a lovely moment. But when we experience ourselves as a performance, we arrive with our questions: am I funny enough, relaxed enough, good enough in their eyes? The evening becomes an ordeal, and spontaneity slips away.`,
+        `It is a cage, a hamster wheel with spikes on the bars: we run endlessly, we hurt ourselves, and we get nowhere. Meanwhile, the precious moments spent with others and with the world slip past us.`,
+        `Wishing yourself well may be exactly this: stepping out of that race, to look at the other person instead of looking at yourself.`
+      ],
+      questions: [
+        `When do you catch yourself scrutinising yourself as if in an invisible mirror?`,
+        `When did you last live a moment without looking at yourself once, and what made it possible?`,
+        `What would you notice around you if you stopped assessing yourself for an hour?`
+      ]
+    },
+    {
+      title: `Bodies`,
+      paragraphs: [
+        `We live in a society very focused on image and on the body. One model is shown everywhere, especially on social media, and presented as an ideal to reach.`,
+        `Bodies that don't resemble it seem almost to have no right to exist without being judged. They are looked at as works in progress, as if a body couldn't be beautiful as it is and had to be on its way to something else.`,
+        `Remarks about other people's bodies, or about what we eat, circulate in every circle and are repeated so often they seem ordinary. They are not: they stigmatise, feed self-hatred and can deeply damage our relationship with our own body.`,
+        `Often, the people who say them don't mean to hurt. They are projecting their own fear of not fitting the box, their own discomfort with their body. Their judgement speaks of their worry, not of the worth of the person in front of them.`,
+        `A person's health or worth can't be read from their silhouette, and no one has the right to decide whether a body is lovable or not.`,
+        `And what if we looked at it differently? A body is a wonderful tool: it lets us run, travel, hug the people we love, go to places we find beautiful, do a job we are passionate about, carry children. It can be loved for everything it lets us live, rather than for resembling a norm born from other people's insecurities.`,
+        `If this subject touches you closely, the help corner is there.`
+      ],
+      questions: [
+        `What beautiful things does your body let you live that you forget to notice?`,
+        `What sentence about bodies do you hear so often that it seems normal, and who is it really aimed at?`,
+        `What would change in your day if you loved your body for what it lets you do?`
+      ]
+    },
+    {
+      title: `Rest and productivity`,
+      paragraphs: [
+        `In our society, a day seems to have to be useful, full, profitable. Resting becomes almost suspect, and doing nothing a fault you must justify.`,
+        `Many people then feel guilty as soon as they stop. Even hobbies turn into goals: read more, walk faster, learn more. Free time becomes a new field of performance.`,
+        `Yet rest is not the opposite of a successful life: it is a condition of it. It is often in moments with no plan that the loveliest conversations, the sincere observations, the presence with others are born.`,
+        `A day doesn't have to be made profitable to have value. You are allowed to sit down, look out of the window, achieve nothing, without having to earn it.`
+      ],
+      questions: [
+        `When do you feel guilty about stopping, and whose voice is it, do you think?`,
+        `What do you like doing with no purpose at all, simply for pleasure?`,
+        `What would actually happen if you gave yourself an hour of achieving nothing?`
+      ]
+    },
+    {
+      title: `Money and work`,
+      paragraphs: [
+        `Our society keeps repeating that succeeding in life means succeeding financially, as if money were the culmination of everything, the only project worth having and the key to happiness.`,
+        `Yet money is a social construction. It is of course essential: we need to be housed, fed, to live decently, and wanting security is nothing to be ashamed of. But being comfortable doesn't mean being happy, and being happy doesn't mean being rich. The richness of a life is measured in many other places.`,
+        `The real risk is centring everything on your own success and missing what matters most: being there for those close to you, doing beautiful and generous things, living moments with the people you love, sharing time, smiles, fits of laughter. These precious moments are the first to be sacrificed when we chase money.`,
+        `This race comes with an extra pressure, that of performance. To be "a real man" or "a real woman", you would need to own a thriving business; you could only be loved if you are rich. It is superficial, and it erases what gives a person value: who they are, how they love, what they bring to others.`,
+        `You have the right to want a comfortable life, and not to make it your only measure. There are so many other beautiful things to cultivate in a life.`
+      ],
+      questions: [
+        `Which recent moments made you feel rich, with money having nothing to do with it?`,
+        `Who would you like to give more time to, and what is really stopping you?`,
+        `If your worth depended on neither your salary nor your success, what would you want to do differently?`
+      ]
+    },
+    {
+      title: `Boxes`,
+      paragraphs: [
+        `From childhood, we are slipped into boxes. Boys must be strong, not cry, succeed, earn money. Girls must be gentle, pretty, look after others, not take up too much space. These rules are written nowhere, and yet almost everyone knows them.`,
+        `These boxes are social constructions. They change with the era and the country, proof that there is nothing natural about them. Still, we end up taking them for truths: "a real man does this", "a real woman does that".`,
+        `The problem is that no one fits entirely in a box. A man can be sensitive, need tenderness, love looking after others. A woman can be ambitious, direct, not want what is expected of her. When we force ourselves into the box, we drift away from who we really are; when we don't fit, we feel apart, as if something were wrong.`,
+        `These boxes are often kept in place by small everyday phrases: "be a man", "that's not feminine", "a girl shouldn't". They seem harmless, but they tell each of us what we are allowed to be. They also cut us off from others: we play a role instead of truly meeting.`,
+        `You don't have to choose a box, or leave one to join another. You can simply be a person, with your own way of loving, feeling and committing. What has value is who you are, not the box someone would like to put you in.`
+      ],
+      questions: [
+        `What sentence about what a man or a woman "should" be have you heard so often that you no longer question it?`,
+        `What do you forbid yourself, or force yourself to do, because "it isn't done" or because "you have to"?`,
+        `When do you feel freest to be yourself, and with whom?`
+      ]
+    },
+    {
+      title: `Life stages`,
+      paragraphs: [
+        `There would be a timetable for a successful life: studies, a job, a partner, a home, marriage, children, each at its own age. Without anyone writing it down, we all have it in mind.`,
+        `We each compare ourselves to this list and wonder whether we are "ahead" or "behind". This pressure weighs on life choices, sometimes to the point of making them more for others than for ourselves.`,
+        `Yet paths are many. Some find their way late, others change direction, others still build a life that looks like no model, and that is no less full.`,
+        `A life is not a series of stages to tick off. It is made of encounters, places, periods, each with its own time.`
+      ],
+      questions: [
+        `Which stage of life do you feel you're "supposed" to have already passed, and where does that idea come from?`,
+        `What have you lived that was on no list, and that matters a lot to you?`,
+        `What would you do if no one expected a particular stage from you?`
+      ]
+    },
+    {
+      title: `Comparisons`,
+      paragraphs: [
+        `Today, we compare ourselves constantly, often without realising. You only have to open your phone: lives that look perfect, trips, successes, couples who always seem happy. Without meaning to, we start measuring our own life against this shop window.`,
+        `Yet what we see is a choice. People show their best moments, retouched, staged, sometimes designed to please or to sell. We then compare our whole life, with its doubts, its ordinary days and its tiredness, to a few carefully selected seconds of other people's. The comparison is never fair.`,
+        `It is also a game without end: there will always be someone more beautiful, richer, more accomplished, more surrounded. Comparing pushes us to always want more and to stop seeing what we already have. It also distances us from others: instead of being glad for them or going to meet them, we end up seeing them as rivals, or as models we will never reach.`,
+        `Your life is not a race, and no one can judge its worth in your place. What makes you happy may not look like what others show, and that is perfectly legitimate. You can look at what others live with curiosity and kindness, without making it the measure of your worth.`
+      ],
+      questions: [
+        `Who, or what, makes you feel "not enough" when you look at it, and what does it not show?`,
+        `What do you have in your life that you stopped seeing because you were looking at other people's?`,
+        `Who can you sincerely be glad for this week, without comparing yourself?`
+      ]
+    },
+    {
+      title: `Social media and attention`,
+      paragraphs: [
+        `A moment of inattention is enough for the phone to open almost by itself. Screens are designed to hold our attention as long as possible, and every scroll promises something new.`,
+        `Little by little, a small worry sets in: that of missing something, news, an outing, a life that others would be living better than us. It pulls us away from what is really happening around us.`,
+        `Yet attention is the most precious thing we have to give: to a person speaking, to a landscape, to a child telling about their day. Where it rests, we live.`,
+        `It isn't about giving up screens altogether, but about choosing, from time to time, where to rest your gaze. A moment without your phone is not a lost moment: it is often where we truly meet others.`
+      ],
+      questions: [
+        `When did you pick up your phone today without knowing why?`,
+        `What did you miss around you while you were looking at a screen?`,
+        `Who could you give your full attention to today, even for just ten minutes?`
+      ]
+    },
+    {
+      title: `Other people's gaze`,
+      paragraphs: [
+        `We often live with a little voice asking: "What will they think of me?" It influences what we wear, what we say, what we dare or don't dare, and sometimes even what we dream of becoming.`,
+        `But those who judge also grew up in this society, with its images, its norms and its demands. Their gaze often reflects what they were taught to find "good" or "not good". It also expresses their own fears and insecurities: we sometimes criticise in others what we dare not accept in ourselves.`,
+        `A judgement therefore often says more about the person making it than the one receiving it. It is not a truth about you. This doesn't mean every opinion should be dismissed: the remark of someone who loves you and wishes you well deserves to be heard. But you don't have to bend to everyone's gaze.`,
+        `Taking some distance doesn't make you hard or indifferent. It means looking at a judgement, asking where it comes from and what it says about the person making it, then deciding what truly belongs to you. You can choose the people who matter to you: those who see you for who you are.`,
+        `The more you lean on what does you good and on the people who surround you kindly, the less other people's gaze weighs. And you can, in turn, look at others more gently.`
+      ],
+      questions: [
+        `What judgement did you hear once that still follows you, and where did it come from, do you think?`,
+        `What would you do or say if you weren't afraid of other people's gaze?`,
+        `Which people see you as you are, and how can you make more room for them?`
+      ]
+    },
+    {
+      title: `Compulsory happiness`,
+      paragraphs: [
+        `We live in a society that asks us to be well, to be positive, to smile. Grey days become a personal fault, as if we always had to find the bright side.`,
+        `This demand is tiring. It leaves little room for sadness, weariness, doubt, which are very human and very ordinary. Feeling low doesn't mean you have failed.`,
+        `You can get through a dull day without shame. A happiness that demands you never feel anything else stops being happiness: it becomes one more performance.`,
+        `Éclaircie doesn't ask you to be well. It simply invites you to notice, in the midst of it all, what did you good, even a little, even briefly.`,
+        `If this period lasts, or if you feel too low, the help corner is there.`
+      ],
+      questions: [
+        `Which "you have to think positive" sort of sentence has ever made you feel bad about feeling bad?`,
+        `What did you good, even a little, on a hard day?`,
+        `Who can you simply tell: "Today, I'm not doing very well"?`
+      ]
+    },
+    {
+      title: `The happiness that comes from others`,
+      paragraphs: [
+        `We are often told that happiness is found within: that we must first love ourselves, perfect ourselves, fulfil ourselves alone. Caring for yourself is precious, and doing yourself good alone is lovely: a walk, a book, a moment of calm. But when we think back to the moments that made us happiest, there is very often someone else: a shared laugh, a sincere conversation, a meal with others, a helping hand.`,
+        `The two aren't opposed. Happiness alone is lovely, happiness with others is too, and perhaps it is from having both that a rich life is born. We just mustn't forget the second under the pretext of trying to feel better.`,
+        `There is also a quieter joy: that of being useful to someone. Listening to a friend, doing a favour, giving a little of your time. These are often small gestures, but they do good to the person receiving them as much as to the person giving.`,
+        `And you don't need to be perfect to reach out to others. No need to have everything sorted, to be "well in your life" or at your best. You can be tired, hesitant, imperfect, and still offer your presence. It is often in those very moments that another person's presence matters most.`,
+        `Turning towards others is also turning towards the world: nature, the stories we share, the simple moments that are bigger than us. You don't have to carry everything alone or build yourself alone. You can be well with yourself, and well with others.`
+      ],
+      questions: [
+        `What was the last moment with someone that truly did you good, and what made it precious?`,
+        `What does you good when you are alone, and what changes when you share it?`,
+        `Who could you do some good to this week, with a small gesture or a word, even if you're not at your best?`
+      ]
+    }
+  ];
+
+  var EN_MOMENTS = [["Ask someone to tell you a memory that is dear to them.", "A memory shared"], ["Send a message to someone you're thinking of, for no particular reason.", "A message for no reason"], ["Thank someone for one specific thing they did.", "A specific thank you"], ["Ask someone a real question, then listen to the answer all the way through.", "A real question"], ["Offer to help someone, even with something very small.", "A helping hand"], ["Share a meal with someone, phones put away.", "A meal without screens"], ["Call someone you haven't heard from in a long time.", "A voice found again"], ["Tell someone what you appreciate about them.", "A word of appreciation"], ["Look at the sky for one whole minute.", "A minute of sky"], ["Walk with no destination and notice three things you'd never seen before.", "Three new things"], ["Close your eyes for a minute and listen to the sounds around you.", "The sounds around"], ["Watch the people around you, in the street or in a café, expecting nothing.", "Watching people"], ["Go somewhere you love and don't do anything in particular.", "A place I love"], ["Touch a tree, a stone, some water, and feel the texture.", "Touching the world"], ["Take the time to look at something beautiful, without photographing it.", "Something beautiful"], ["Step outside for five minutes without your phone.", "Five minutes outside"], ["Do someone a small favour they didn't ask for.", "A favour offered"], ["Leave a kind note for someone, on a sticky note or in a bag.", "A hidden kind note"], ["Hold a door, give up your seat, offer a real smile: a gesture for a stranger.", "A gesture for a stranger"], ["Help someone carry, look for or understand something.", "Help shared"], ["Teach someone a little thing you know how to do.", "A little thing passed on"], ["Write to someone who left a mark on you, even if it was a long time ago.", "Someone who left a mark"], ["Ask someone close to you what made them laugh recently.", "What made them laugh"], ["Listen to an older person tell you about their childhood.", "An elder's childhood"], ["Go back to a place that has done you good before.", "A place that does me good"], ["Invite someone for a tea or a coffee, with no agenda.", "A tea with no agenda"], ["Check in on someone who is going through a hard time.", "News given"], ["Make something to share, a cake or a pot of tea, and offer it.", "A cake shared"], ["Ask someone what they are proudest of, then listen.", "Their greatest pride"], ["Thank someone for something that happened more than a year ago.", "A late thank you"], ["Suggest a walk to someone, with no goal and without checking the time.", "A walk with no goal"], ["Give someone ten minutes of your full attention, without looking at your phone.", "Ten minutes of attention"], ["Notice someone who seems to need a hand, and offer one.", "A hand noticed"], ["Tell someone about a moment that did you good recently.", "A moment told"], ["Sit outside and watch the clouds, the people, the leaves go by.", "Passing clouds"], ["Listen to a whole piece of music with your eyes closed.", "A whole song"], ["Notice the light at three different times of the day.", "The light of the day"], ["Smell the rain, a flower or a tree, and stay with it for a moment.", "The smell of rain"], ["Write a postcard or a letter by hand for someone.", "A handwritten card"], ["Say hello to someone you often see without ever speaking to them.", "An unexpected hello"], ["Ask someone \"How are you, really?\" and take the time to listen.", "A real \"how are you\""], ["Make someone laugh.", "A good laugh"], ["Make something with someone, side by side and without rushing.", "Cooking together"], ["Walk and notice what grows, flies or sings around you.", "An attentive walk"], ["Spend some time with someone from a different generation than yours.", "Another generation"], ["Tell someone a little story, or ask them to tell you one.", "A story shared"], ["Help someone do something they've been putting off for a long time.", "Finally done"], ["Thank someone whose work is rarely recognised.", "A quiet thank you"], ["Watch the sunrise or the sunset, and do nothing else.", "The sun, and nothing else"], ["Play something with someone, nothing at stake, just for fun.", "A game with nothing at stake"], ["Listen to someone talk about what they're passionate about, without interrupting.", "Their passion, told"], ["Spend some time by the water or near a big tree.", "By the water"], ["Suggest meeting up with a friend you've lost touch with.", "A friend found again"], ["Share a book, a song or a film that moved you with someone.", "A favourite shared"], ["Spend a moment doing nothing with someone else, saying nothing.", "A silence together"], ["Give someone a sincere compliment about who they are, not how they look.", "A sincere compliment"], ["Organise a meal or an afternoon snack with people who don't know each other yet.", "A meal that brings people together"], ["Suggest an outing to someone that you've never done together.", "A first outing together"], ["Write a little thank-you note by hand and deliver it in person.", "A thank you in person"], ["Call two people today, just to ask how they are.", "Two calls"], ["Discover a corner of your town you've never been to.", "An unknown corner of my town"], ["Offer to help a neighbour with something they've been putting off.", "A neighbour helped"], ["Teach someone something you love doing, then ask them to teach you something.", "Teaching each other"], ["Make a meal for someone who needs one right now.", "A meal for someone"], ["Gather friends for a walk, a game or a picnic.", "Friends outdoors"], ["Find out about a local organisation and how you could lend a hand.", "An organisation near me"], ["Thank someone in front of other people for what they bring.", "A thank you in front of everyone"], ["Walk to a viewpoint and invite someone to come and see it with you.", "A shared view"], ["Prepare a small surprise for someone you love, for no particular occasion.", "A small surprise"], ["Pick up litter along a stretch of path, just to make it nicer for everyone.", "A cleaner path"], ["Invite someone to try something with you that you've both always wanted to try.", "Finally tried"], ["Suggest that colleagues or neighbours have a coffee together one day this week.", "A coffee between neighbours"], ["Write a thank-you letter to someone who passed something on to you, a teacher, a friend, a former boss, and send it.", "A thank-you letter"], ["Invite someone on a walk somewhere you love, and show them why.", "A shared walk"], ["Suggest to a friend that you try something new together: a workshop, an exhibition, a game.", "Something new together"], ["Visit someone who doesn't get many visitors.", "A visit that matters"], ["Put together a small basket or a meal for someone going through a busy time.", "A basket offered"], ["Offer someone your time for something practical: a move, some paperwork, a helping hand.", "Time offered"], ["Organise a games night or a movie night with people close to you.", "A games or movie night"], ["Walk somewhere you don't know yet, alone or with others, and stay open to what you see.", "A place to discover"], ["Bring three people who matter to you together in one thank-you message.", "A thank you to three"], ["Suggest cooking a recipe together that one of you wants to pass on.", "A recipe passed on"], ["Learn the name of someone you often see, and use it.", "A name remembered"], ["Go to the market or a small local shop and really chat with the person behind the counter.", "A word at the market"], ["Give or lend a book you loved to someone who might love it too.", "A book offered"], ["Tell someone about an idea you're excited about, and ask what they think.", "An idea shared"], ["Ask someone to show you a game or a passion they love.", "Someone's passion"], ["Introduce two people you know who haven't met yet.", "Two people introduced"], ["Go and see someone in person instead of writing, to tell them something good.", "A word, in person"], ["Plant something, a seed, a cutting, a flower, for yourself or for someone else.", "A seed planted"], ["Spend time out in nature, a forest, a river or a hill, and stay longer than planned.", "Time in nature"], ["Try a group activity near you, a choir, a workshop or a book club, just to see.", "A group activity"], ["Offer your help to an organisation or a neighbour for a small, concrete task.", "A small useful task"], ["Write a card or a note to someone who has an important day this week.", "A note for a big day"], ["Take someone to a place in your town that you find beautiful.", "A place I find beautiful"], ["Throw a little party to celebrate someone's success, even a modest one.", "A little party"], ["Visit someone close to you whom you rarely see, and ask them to tell you a memory.", "A visit and a memory"], ["Ask someone to show you how they do something, and enjoy learning it.", "Learning from someone"], ["Say yes to an invitation you would usually turn down.", "An unexpected yes"], ["Gather a few people for a simple moment outdoors: a bench, a park, a beach.", "A moment outdoors together"], ["Give a gift for no occasion, something small that makes you think of the person.", "A gift for no occasion"], ["Find out what someone close to you would truly love, and help them make it happen, even in a small way.", "A wish helped along"], ["Walk around your neighbourhood and say hello to everyone you meet.", "Hello to the whole neighbourhood"], ["Write a little story or a poem for someone and give it to them.", "A poem offered"], ["Suggest that friends each bring a dish or something to share.", "Everyone brings something"], ["Go to a show, an exhibition or a concert with someone: there are free ones near you.", "A show together"], ["Lend someone a hand with a project that matters to them.", "A project supported"], ["Tell someone about a time you were helped, and what it changed for you.", "Help that mattered"], ["Call someone who must be having a hard day and share a little of your energy.", "Energy for someone"], ["Do something useful for the people who live near you: fix, tidy, share.", "A gesture for the neighbourhood"], ["Suggest sharing a corner of nature with someone: a sunrise, a picnic, a campfire.", "A corner of nature shared"], ["Thank a person who once gave you confidence.", "A thank you for confidence"], ["Pick someone you hardly know and ask them three sincere questions.", "Three real questions"], ["Get back in touch with someone you lost touch with after a misunderstanding, and reach out.", "A hand held out"], ["Introduce someone to your favourite song, film or place.", "My favourite to share"], ["Go and meet your neighbours: knock on a door or leave a note to introduce yourself.", "A note to the neighbours"], ["Do something joyful with someone: draw, dance, run, make up a story.", "A joyful moment"], ["Offer to share a ride or an errand with someone to save them time.", "A shared trip"], ["Make a hot drink for several people and offer it during a break.", "A drink for everyone"], ["Record a warm voice message for someone you love, one they can listen to again.", "A gentle voice message"], ["Help someone tidy, sort or organise something, keeping them company.", "Tidying together"], ["Thank the person who works behind a service you use every day.", "An everyday thank you"], ["Notice what your town has that is beautiful, a wall, a garden, a fountain, and share it with someone.", "The beauty of my town"], ["Invite someone to dance, sing or play an instrument with you, without it being perfect.", "Singing or dancing together"], ["Organise a walk or an afternoon snack just for the pleasure of seeing each other.", "A snack to catch up"], ["Suggest going to a place that matters to someone, and ask them to tell you why.", "A place that matters to them"], ["Drop in on someone you like, after warning them with a little message.", "A visit announced"], ["Help someone try something they don't dare do alone.", "A first time, together"], ["Choose a happy memory with someone close and go back to the same place together.", "Back to a happy place"], ["Check in on a neighbour, especially if they live alone.", "News from the neighbours"], ["Take a break with a colleague or a classmate and ask how they really are.", "A sincere break"], ["Give a sincere compliment on someone's work, and say why you appreciate it.", "A compliment on their work"], ["Share good news with several people today and let them celebrate with you.", "A joy shared"], ["Offer to listen to someone who needs to talk, and take the time for them.", "A listening ear offered"], ["Learn something together: a song, a game, a few words in another language.", "Learning together"], ["Write to someone who lives far away and tell them one detail of your day.", "A detail of my day"], ["Suggest a bike ride, a walk or a trip by public transport to someone close, just for the pleasure of being together.", "An outing to be together"], ["Make a list of people you're grateful for, and pick one to thank today.", "A gratitude list"], ["Welcome someone to your home for a simple moment: tea, conversation or silence.", "A welcome at my place"], ["Make a meal for someone who isn't often treated to one.", "A meal offered"], ["Do something for the nature around you: pick up litter, water plants, feed the birds.", "A gesture for nature"], ["Tell someone what they taught you, even without knowing it.", "What I was taught"], ["Suggest to a friend that you invent a little ritual together: a coffee each month, a Sunday walk.", "A little ritual together"], ["Go and see someone going through a hard time, and simply be there.", "Simply there"], ["Ask someone to tell you about a person who matters a lot to them.", "Someone who matters to them"], ["Organise a small celebration for someone: a success, a birthday, a homecoming.", "A small celebration"], ["Set off to discover a place in your region that you've never seen.", "A place in my region"], ["Give someone a moment they'd love: an outing, some free time, a small favour.", "A moment offered"], ["Do someone a favour expecting nothing, and tell no one.", "A quiet favour"], ["Take care of one small practical thing for someone: a call, an appointment, a form.", "A task taken care of"], ["Introduce someone to a person who could help or inspire them.", "A helpful introduction"], ["Write an encouraging message to someone who is starting something new.", "Some encouragement"], ["Suggest a friendly little challenge to a friend, just for fun.", "A challenge for fun"], ["Thank someone who welcomed or helped you at some point in your life, and tell them what it changed.", "What it changed"], ["Offer a smile and a few words to a lonely person you pass.", "A smile for someone alone"], ["Take someone who doesn't know it to a place of culture or nature, and look at it together.", "A place discovered together"], ["Give someone close to you a moment just for them, simply to make them happy.", "A moment just for them"], ["Sing or hum while you walk, then share a song with someone.", "A song while walking"], ["Set a date today for your next moment with someone you love.", "A date set"], ["Show a calm spot in your town to someone who is stressed.", "A calm place for them"], ["Tell someone \"You matter to me\", in your own words.", "\"You matter to me\""], ["Make a little note or drawing for someone who will need it tomorrow.", "A drawing for tomorrow"], ["Go for a walk with a friend, phone in your pocket, and talk for a long time.", "A long walk together"], ["Write to someone you love about what they bring to your life.", "What they bring me"], ["Drink something hot with someone, without checking the time.", "A hot drink shared"], ["Notice three different sounds around you, then describe them to someone.", "Three sounds described"], ["Ask someone close which song reminds them of good times, then listen to it together.", "A song of good times"], ["Greet warmly someone you see every day, a shopkeeper or a neighbour.", "A warm hello"], ["Reread a message that did you good, then reply to it if it never got an answer.", "A message finally answered"], ["Take ten minutes to watch what's happening outside, from a bench or a window.", "Ten minutes at the window"], ["Ask someone a simple question: \"What made you happy this week?\"", "What made them happy"], ["Tell a funny story to someone who needs to smile.", "A story to make you smile"], ["Check in on a former colleague or classmate.", "News from before"], ["Cook something simple and keep a portion for someone.", "A portion saved"], ["Listen to someone until the end of their sentence, without preparing your answer.", "Listening to the end"], ["Look at an old memory, a photo or a letter, with someone who's in it.", "An old memory revisited"], ["Spend time outside, then describe to someone what you saw.", "Outside, then told"], ["Read a few pages of a book aloud to someone.", "A few pages aloud"], ["Note in your memories three things others did for you this week.", "Three gestures received"], ["Listen to someone tell you about their day, with all your interest.", "A day listened to"], ["Read a chapter of a book, then talk about it with someone.", "A chapter, then a chat"], ["Watch the trees on your street and notice what changes with the season.", "The trees on my street"], ["Take a slow walk somewhere you know well, and look for what you'd never noticed.", "A familiar place, seen differently"], ["Ask someone what they love about their life right now.", "What they enjoy right now"], ["Send a friend something that made you think of them.", "A thought sent"], ["Make a drink for someone who is there and set it down in front of them without a word.", "A drink set down"], ["Write in a notebook what you were grateful for today.", "A gratitude notebook"], ["Listen to the conversations in a café, a park or a market, like music.", "A music of conversations"], ["Take a meal slowly with someone and talk about what you both love.", "A slow meal"], ["Watch a film or a series with someone, and share what you thought.", "A film shared"], ["Write to someone who once helped you and tell them where you are today.", "Where I am today"], ["Notice how kind the people around you are today, and note three examples.", "So much kindness"], ["Go and sit somewhere calm and take the time to stay there.", "A calm place"], ["Remind someone of a good memory you share.", "A good memory together"], ["Tell your loved ones what you appreciate about your habits together.", "Our habits"], ["Write a list of small pleasures shared with people you love.", "Our little pleasures"], ["Cook a recipe that reminds you of someone, and think of them as you make it.", "Someone's recipe"], ["Settle on a café terrace or a bench and watch people go by kindly.", "A terrace, a bench"], ["Ask someone close to recommend a book, a place or a song.", "Advice received"], ["Fix or tidy something that bothers someone at home.", "Something fixed"], ["Write a short word of encouragement to someone who needs it.", "A line of encouragement"], ["Go and see a neighbour and ask how their week is going.", "News from the neighbour"], ["Notice a kind gesture between strangers and let it warm you.", "Kindness between strangers"], ["Take a stroll in a garden, a park or a courtyard, and pay attention to the little details.", "The details of a garden"], ["Reread a happy memory you wrote in your memories and share it with someone.", "A memory reread and shared"], ["Tell someone what you enjoyed about the time you spent together.", "What I enjoyed together"], ["Tell someone about a place that matters to you, and say why.", "A place that matters"], ["Listen to the voice of someone you love on the phone, without doing anything else.", "A voice on the phone"], ["Watch the clouds and try to see shapes in them, alone or with someone.", "Shapes in the clouds"], ["Help someone choose or decide something small, without rushing.", "A small decision helped"], ["Let someone taste something you love.", "A taste shared"], ["Ask someone in your family to tell you a story from their childhood.", "A family story"], ["Say goodbye to someone properly, looking at them.", "A real goodbye"], ["Think of three people who have mattered in your life and write what they taught you.", "Three important people"], ["Go and buy bread, fruit or flowers, and take the time to chat with the person serving you.", "Bread, fruit and a smile"], ["Give a flower, a leaf or a little found object to someone.", "A small thing offered"], ["Write a few lines to someone far away to tell them about your daily life.", "A few lines from afar"], ["Take a moment in a soothing place, then tell someone about it.", "A soothing place described"], ["Thank someone who puts up with you in difficult moments.", "A thank you for patience"], ["Walk around your home or your neighbourhood looking for what you like.", "What I like about home"], ["Look at the evening sky, then share it with someone in a message.", "An evening sky shared"], ["Listen to someone who doesn't often get to speak: an older person, a young person, someone shy.", "A voice given space"], ["Check in on a friend whose life has changed recently.", "A friend whose life is changing"], ["Watch an animal for a few minutes: a bird, a cat you meet in the street, an insect.", "An animal observed"], ["Choose one person and notice everything they do well today.", "All that's going well for someone"], ["Write down a memory that makes you smile, then send it to the person who was there.", "A memory that makes you smile"], ["Ask someone to show you a photo that is dear to them, and show them yours.", "A photo that matters"], ["Tell someone you're glad to see them.", "Glad to see you"], ["Make a small detour to say hello to someone you like.", "A detour to say hello"], ["Look for five minutes at the details of a familiar place, as if discovering it.", "A familiar place, new"], ["Ask a colleague or a classmate what they're passionate about.", "A passion shared"], ["Write a list of what makes you happy in other people's company.", "The joy of being together"], ["Notice what someone around you does to make things go well, and tell them.", "Quiet work recognised"], ["Share a pleasant moment of silence with someone, with no need to speak.", "A pleasant silence"], ["Wonder how someone in your family is doing, then call.", "News from the family"], ["Tell someone about something beautiful you saw today.", "A beauty described"], ["Listen to the rain, the wind or the birds, and stay there for a minute.", "Rain, wind, birds"], ["Say \"Thanks for being here\" to someone, simply.", "\"Thanks for being here\""], ["Write something kind on a scrap of paper and leave it where someone will find it.", "A kind note left behind"], ["Pay a stranger a compliment, on their energy, their laugh or their help.", "A compliment to a stranger"], ["Notice what you like about your workplace or school, and tell someone.", "What I like here"], ["Go to the library or a bookshop and browse with no aim.", "A bookshop, no aim"], ["Suggest that someone read you something, or tell you about something they like.", "Something read to me"], ["Write to a childhood friend and tell them about a memory you share.", "A childhood friend"], ["Check in on someone who is ill or tired, and offer your help.", "A thought for someone tired"], ["Offer someone a moment of listening, with no advice, just keeping them company.", "Listening without advice"], ["Notice three qualities you love in people you love.", "Three qualities"], ["Do something very simple to make someone's day nicer.", "A gentler day"], ["Watch someone skilled at work, a craftsperson, a cook, a gardener, and tell them you admire it.", "Admiration for a skill"], ["Share a line or a poem you love with someone.", "A poem shared"], ["Tell someone close about a small moment of joy you had this week.", "A small joy told"], ["Walk towards somewhere with water or greenery, and watch what the light does.", "Water and light"], ["Thank someone for a quality you admire in them.", "A quality thanked"], ["Tell someone what moved you in a book, a film or an encounter.", "What moved me"], ["Thank someone for their gentleness when they speak to you.", "Thanks for the gentleness"], ["Watch people play or laugh, in a park or elsewhere, and let their joy catch you.", "The joy of others"], ["Write a short thank-you letter, even if you don't send it.", "A letter, even if kept"], ["Visit a place with history and wonder who passed through before you.", "A place with history"], ["Help someone relax: a tea, a kind word, a calm moment together.", "A calm moment together"], ["Think of someone you haven't seen in a long time and smile at the memory.", "A distant memory"], ["Do a gratitude moment with someone: each of you names three things that touched you today.", "Three things each"], ["Send a simple \"I'm thinking of you\" to someone.", "A simple \"I'm thinking of you\""], ["Look at the sky through the window for a minute, doing nothing else.", "A minute at the window"], ["Talk for two minutes with someone who does you good.", "Two minutes of kindness"], ["Drink something hot, slowly, with no screen.", "A drink with no screen"], ["Say thank you, even with a simple note, to someone who helped you.", "A small thank you"], ["Rest your hand on something soft, a blanket, an animal, a plant, and stay there a moment.", "A hand on something soft"], ["Listen to a song that does you good, eyes closed.", "A song, eyes closed"], ["Smile at the first person you meet.", "A smile for the street"], ["Look at a photo of a happy moment with people you love.", "A happy photo"], ["Reply to a message left waiting with one very simple sentence.", "A very simple reply"], ["Open the window and breathe the outside air for a moment.", "A breath of air"], ["Think of someone who once did you good, and thank them, in your head or for real.", "A thank you in my head"], ["Let someone help you today, even with something very small.", "Letting someone help"], ["Watch a bird, an animal or a plant for one minute.", "A living minute"], ["Allow yourself a moment of doing nothing, then note it in your memories.", "A moment of doing nothing"], ["Light a candle or a soft lamp and stay a moment with the light.", "A candle, a lamp"], ["Write a single sentence of gratitude, the simplest you can.", "A sentence of gratitude"], ["Breathe slowly three times while looking at something beautiful.", "Three breaths"], ["Listen to the voice of someone you love, even in a short voice message.", "A reassuring voice"], ["Step out onto your doorstep for a moment, or open the window, and feel the air.", "The doorstep"], ["Think of someone who always smiles at you, and smile back.", "A smile returned"], ["Put your phone down for half an hour and let whatever comes, come.", "Half an hour without a phone"], ["Choose a corner of your home where you feel good and stay there a while.", "My own corner"], ["Look at a plant, a flower or a leaf, and notice its details.", "The details of a leaf"], ["Make yourself a drink you like and take the time to drink it.", "A drink I love"], ["Answer \"thank you\" to a compliment, simply, without playing it down.", "A simple thank you"], ["Send a little heart or a sweet word to someone who matters to you.", "A little heart sent"], ["Reread a kind message someone sent you once.", "A kind message reread"], ["Listen to a soft sound, rain, a river, birds, and stay with it a moment.", "A soft sound"], ["Look out of the window and find three things you think are pretty.", "Three pretty things"], ["Think of a time someone did you good, and let that memory warm you.", "A warming memory"], ["If the moment feels right, hug someone, or take their hand for a moment.", "A hug"], ["Say \"have a good day\" to someone with a real smile.", "A good day wished"], ["Put on soft music and listen to it without doing anything else.", "Soft music"], ["Smell something that smells good, a tea, a flower, some bread, and stay with the scent.", "A good smell"], ["Write yourself a kind note, as you would write to a friend.", "A note to myself"], ["Look at the sky for a minute, and remind yourself everyone is looking at it too.", "The same sky"], ["Let someone tell you about their day, saying nothing.", "A day told"], ["Welcome a moment of calm without filling it.", "A calm welcomed"], ["Leave a thank-you note on someone's door: a neighbour, a delivery person, someone close.", "A thank you on the door"], ["Smile at a child, an animal or an older person you pass.", "A tender smile"], ["Notice one thing you managed to do today, however tiny, and be glad of it.", "A small thing done"], ["Step away from the noise for a few minutes and let the silence do its work.", "A little silence"], ["Tell someone you're tired, and let them comfort you.", "Tiredness shared"], ["Look at an old object that reminds you of someone dear.", "An object that recalls someone"], ["Write the first names of three people who have done you good in your life.", "Three names"], ["Let a song from your childhood rock you.", "A childhood song"], ["Watch the light coming into the room and follow it with your eyes.", "Light in the room"], ["Tell someone one simple thing that makes you happy today.", "A thing that makes me happy"], ["Take a few minutes to look at photos of happy moments with friends or family.", "Happy photos"], ["Notice a kind gesture someone made for you today, however small.", "A kindness received"], ["Give yourself a moment outside, even a very short one, to see a bit of sky.", "A patch of sky"], ["Think of someone far away and send them a gentle thought.", "A thought from afar"], ["Read a poem, a sentence or a quote that does you good.", "A poem for me"], ["Sit by a window with something hot and look outside.", "A window and something warm"], ["Listen to the sounds of your home or your street and notice the gentle ones.", "Gentle sounds"], ["Tidy a small corner, a drawer, a shelf, just to feel good.", "A small corner tidied"], ["Write in your memories one thing, however small, that did you good today.", "One good thing"], ["Reread an old memory and let it warm you.", "An old memory"], ["Close your eyes and think of a place where you feel at peace.", "A place of peace"], ["Take the time to taste something good, slowly, with nothing else to do.", "A good taste"], ["Notice a quality you have in the way you are with others, and thank yourself.", "The way I am with others"], ["Listen to the sound of your footsteps for a few metres.", "The sound of my steps"], ["Reply to someone who wrote to you, even in two words.", "A reply in two words"], ["Look at something green, a tree, a plant, some grass, and let your eyes rest on it.", "Green for the eyes"], ["Think of someone who matters to you and silently wish them well.", "A silent wish"], ["Ask someone to tell you something simple, just to hear their voice.", "A voice, for nothing"], ["Spend a moment with an animal or a plant, and take the time to talk to it.", "An animal, a plant"], ["Wrap yourself in a blanket or a soft jumper, and take a break.", "A soft blanket"], ["Slip a kind little note into a book, a coat or a bag for someone.", "A note slipped in"], ["Tell someone who is doubting, \"It's going to be alright\", simply.", "\"It's going to be alright\""], ["Watch water flow, a tap, a river or the rain, for a moment.", "Flowing water"], ["Take five minutes to think of nothing but what you see.", "Five minutes of presence"], ["Think of something someone once thanked you for.", "A thank you already received"], ["Say hello to someone you pass, even with a little nod.", "A nod"], ["Treat yourself to a small pleasure, a tea, a pause, a song, then tell someone if you feel like it.", "A small pleasure"], ["Look at an old photo of someone you love.", "An old photo"], ["Leave a kind message for someone who isn't expecting anything.", "A message with no expectation"], ["Notice what was gentle about your day, even if the rest was heavy.", "The gentleness of the day"], ["Rest your eyes on something beautiful in your room and stay with it for a moment.", "Something beautiful at home"], ["Take a few steps outside, even onto the landing, and see where your eyes come to rest.", "A few steps outside"], ["Tell someone \"I'm glad I know you\".", "\"Glad I know you\""], ["Imagine someone who wishes you well saying something kind to you, and listen.", "An imagined sentence"], ["Write to a friend who must be having a long day: \"Hang in there, I'm thinking of you.\"", "A \"hang in there\" sent"], ["Think of all that someone close has done for you without you noticing.", "All that's done for me"], ["Look at the light of a lamp, a candle or a window, and let it soothe you.", "A soft flame"], ["Give yourself a moment to think of the people who support you.", "Those who support me"], ["Allow yourself to say \"not today\" to something, and tell yourself it's allowed.", "\"Not today\""], ["Listen to someone laughing, even far away, and let that laughter touch you.", "A distant laugh"], ["Choose a simple object that feels good to hold, a cup, a stone, a book, and keep it in your hands for a while.", "An object in my hands"], ["Think of someone who has always stayed close to you, and send them a thought of thanks.", "Someone who stayed close"], ["Reread a card or a note someone wrote to you, and take the time to believe it.", "A note reread"], ["Let a moment pass without judging yourself, just watch it.", "A moment without judgement"], ["Tell someone their presence matters, even with a simple \"thanks for being here\".", "Your presence matters"], ["Air out a room, open a window wide and breathe.", "A room aired out"], ["Choose something simple to watch for a minute: a flame, clouds, the street.", "Something to watch"], ["Write the first name of someone who did you good and add a word to say why.", "A name and why"], ["Offer someone a moment of calm: a tea, a silence, a presence.", "A calm offered"], ["Give yourself a bit of calm before answering something that's pressing you.", "A pause before replying"], ["Take a minute to feel what you're going through, without trying to change it.", "What I'm going through"], ["Smile at someone by message, with a word or a gentle emoji.", "A smile by message"], ["Let a moment of gratitude pass through you for someone, then keep it in your memories.", "A gratitude kept"], ["Choose a gentle song and dedicate it in your mind to someone.", "A song dedicated"], ["Tell someone their message made you happy, even if it was a few days ago.", "A message that made me happy"], ["Watch a film with someone, at the cinema or at home, and tell each other afterwards what you liked best.", "A film for two"], ["Suggest a board game, without counting the points.", "A game with no points"], ["Invite someone for a drink on a terrace, phones put away.", "A drink on a terrace"], ["Wander around the shops with a friend, with nothing to buy.", "Wandering the shops"], ["Try ice skating or bowling with someone, and laugh at your clumsiness.", "Laughing on the ice"], ["Have an improvised picnic with someone, even for an hour.", "An improvised picnic"], ["Suggest a game of boules, football or badminton in a park to someone.", "A game in the park"], ["Go to a game café or a games library with friends, and pick a game you don't know.", "A games library with friends"], ["Suggest browsing a flea market or a second-hand shop together.", "Browsing together"], ["Invite friends to a homemade pizza or pancake night, where everyone adds their own toppings.", "A pizza night"], ["Go for a bike ride with someone, without worrying about the distance.", "A bike ride"], ["Go to the waterside with someone, for a swim or simply to dip your feet.", "By the water, together"], ["Sing at the top of your voice with friends, at karaoke or in the car, without trying to sing well.", "Singing at the top of our voices"], ["Invite someone to a farmers' market, and choose together what to cook.", "A market together"], ["Take a photo of the two of you somewhere you love, to keep in your memories.", "A photo of the two of us"], ["Go to a concert, a match or a local show with someone, simply for the atmosphere.", "A local show"], ["Suggest playing a game from your childhood again: hide and seek, cards, marbles or hopscotch.", "A childhood game"], ["Invite a friend to watch the sunset with a hot drink.", "A sunset together"], ["Prepare a little treasure hunt or a riddle for someone you love.", "A treasure hunt"], ["Visit an exhibition or a museum, often free, with someone, and each pick the piece that speaks to you.", "A museum together"], ["Draw with someone on a paper tablecloth or a big sheet, without trying to make it look good.", "A drawing for two"], ["Go for a hike or a long walk with someone, and stop whenever the view appeals.", "A long walk"], ["Invite friends to an evening where everyone presents their favourite film in two sentences.", "My favourite film"], ["Go on a merry-go-round or a big wheel with someone, like kids.", "A fairground ride"], ["Suggest a game of cards or dominoes to someone, with a tea on the side.", "Cards and tea"], ["Take a friend to your favourite café or bookshop, and show them your spot.", "My favourite spot"], ["Invite someone to a round of mini golf, pool or arcade games.", "Mini golf and pool"], ["Suggest an afternoon with no plans to a friend: you decide as you go.", "An afternoon with no plans"], ["Watch a film at home with someone, under a blanket, with something to nibble.", "A film under a blanket"], ["Play a quiet board game with someone, a round or two, nothing at stake.", "A quiet game"], ["Read a book together, each taking a chapter, and share what you think.", "A book for two"], ["Take a photo of a very simple moment with someone, to keep in your memories.", "A very simple photo"], ["Go for a hot chocolate or a tea with someone, in a café you don't know.", "A hot chocolate somewhere new"], ["Do a jigsaw puzzle with someone, talking about everything and nothing.", "A puzzle and conversation"], ["Suggest rewatching a film you loved as kids together.", "An old childhood film"], ["Draw or colour something, alone or with someone who feels like it.", "Colouring together"], ["Have a coffee break in the sun with someone, and take a photo of the moment.", "A coffee in the sun"], ["Go to the library with someone, and each choose a book for the other.", "A book chosen for you"], ["Make a simple afternoon snack with someone: toast, fruit, hot chocolate.", "A simple snack"], ["Listen to a whole album together, then tell each other what you liked.", "A whole album"], ["Go for a walk with someone and find a bench to sit on for a long while.", "A bench for a long while"], ["Suggest a game of cards or dominoes to someone, and let them teach you their rules.", "Someone's rules"], ["Have a drink with a friend, and ask them what their loveliest surprise was this year.", "A drink and a surprise"], ["Invite someone to see a film early in the afternoon, at the cinema or at home, nice and quietly.", "A quiet film"], ["Go to a street party or a car boot sale with someone, for the pleasure of wandering.", "A street party"], ["Play whatever someone suggests, without trying to win.", "Playing without winning"], ["Watch a gentle film with someone close, without commenting, just side by side.", "A film side by side"], ["Read next to someone, each with your own book, on the same sofa.", "Reading side by side"], ["Share a hot chocolate or a herbal tea with someone, without talking if you don't feel like it.", "A hot chocolate without words"], ["Watch one episode of a comforting series with someone close, just one, no more.", "A comforting episode"], ["Play a quiet little game for a few minutes with someone: cards, dice or dominoes.", "A quiet game"]];
+  var EN_UI = {
+"Aujourd'hui": "Today",
+"Souvenirs": "Memories",
+"Recul": "Perspective",
+"Aide": "Help",
+"Plein d'élan": "Full of energy",
+"Tranquille": "Calm",
+"Besoin de douceur": "Need some gentleness",
+"Il y a un mois, tu notais…": "A month ago, you noted…",
+"Il y a une semaine, tu notais…": "A week ago, you noted…",
+"Un souvenir d'avant": "A memory from before",
+"Un petit moment t'attend.": "A little moment is waiting for you.",
+"Un rappel chaque jour": "A daily reminder",
+"Si tu veux, une douce notification peut t'inviter à découvrir ton moment du jour.": "If you like, a gentle notification can invite you to discover your moment of the day.",
+"Heure du rappel": "Reminder time",
+"Changer l'heure": "Change the time",
+"Activer le rappel": "Turn on the reminder",
+"Désactiver le rappel": "Turn off the reminder",
+"Non merci": "No thanks",
+"Comment veux-tu qu'on t'appelle ?": "What would you like to be called?",
+"Un prénom ou un surnom, si tu veux. Il reste sur ton téléphone, et tu pourras le changer dans « Un coin d'aide ».": "A first name or a nickname, if you like. It stays on your phone, and you can change it in “A little help corner”.",
+"Ton prénom": "Your name",
+"(si tu veux)": "(if you like)",
+"Valider": "Confirm",
+"Il s'affiche en haut de l'écran d'accueil et reste sur ton téléphone. Laisse vide pour l'effacer.": "It shows at the top of the home screen and stays on your phone. Leave it empty to erase it.",
+"Prénom ou surnom": "Name or nickname",
+"Enregistrer": "Save",
+"Comment est ton énergie aujourd'hui ?": "How is your energy today?",
+"Je cherche un moment inspiré de tes souvenirs…": "I'm looking for a moment inspired by your memories…",
+"Arrêter": "Stop",
+"Un moment inspiré de mes souvenirs": "A moment inspired by my memories",
+"Claude lit tes souvenirs seulement le temps de cette demande.": "Claude reads your memories only for the time of this request.",
+"Ajoute un souvenir, et je pourrai te proposer un moment inspiré de ce qui te fait du bien.": "Add a memory, and I can suggest a moment inspired by what does you good.",
+"Bonjour.": "Hello.",
+"Inspiré de tes souvenirs": "Inspired by your memories",
+"Un autre moment": "Another moment",
+"Le moment du jour": "Today's moment",
+"À ton rythme. Aucune réponse n'est mauvaise.": "At your own pace. There's no wrong answer.",
+"C'est fait": "Done",
+"Un autre jour": "Another day",
+"Pas envie": "Not in the mood",
+"Le vivre à deux ?": "Live it together?",
+"Propose ce moment à quelqu'un qui compte pour toi.": "Suggest this moment to someone who matters to you.",
+"WhatsApp": "WhatsApp",
+"Autre appli": "Another app",
+"Merci d'avoir pris ce moment.": "Thank you for taking this moment.",
+"Un titre pour ce souvenir": "A title for this memory",
+"Quelques mots": "A few words",
+"Une proposition, tu peux la changer.": "A suggestion, you can change it.",
+"Un petit mot sur ce que ça t'a fait vivre": "A few words on what it made you feel",
+"Garder dans mes souvenirs": "Keep in my memories",
+"Garder pour moi": "Keep for myself",
+"C'est gardé dans tes souvenirs.": "It's kept in your memories.",
+"Tu pourras le relire quand tu voudras. À demain, ou quand tu veux.": "You can reread it whenever you like. See you tomorrow, or whenever you want.",
+"Voir mes souvenirs": "See my memories",
+"C'est gardé pour toi.": "It's kept for you.",
+"À demain, ou quand tu veux.": "See you tomorrow, or whenever you want.",
+"Pas de souci.": "No worries.",
+"Cette invitation se gardera pour un autre jour. Rien ne presse.": "This invitation will keep for another day. There's no rush.",
+"C'est tout à fait OK.": "That's perfectly OK.",
+"Certains jours, on n'a pas envie. À demain, ou quand tu veux.": "Some days you just don't feel like it. See you tomorrow, or whenever you want.",
+"Revoir cette invitation": "See this invitation again",
+"Ici, rien n'est compté.": "Nothing is counted here.",
+"Photo de ce souvenir": "Photo of this memory",
+"Une photo du moment": "A photo of the moment",
+"Aperçu de ta photo": "Preview of your photo",
+"Changer la photo": "Change the photo",
+"Retirer la photo": "Remove the photo",
+"Ajouter une photo": "Add a photo",
+"Ce qui m'émerveille": "What fills me with wonder",
+"Ce que j'aimerais essayer un jour": "What I'd like to try one day",
+"Ce que j'aimerais vivre avec quelqu'un": "What I'd like to live with someone",
+"Qu'est-ce que tu faisais, enfant, sans voir le temps passer ?": "What did you do as a child without noticing time pass?",
+"Quel lieu aimerais-tu connaître, sans raison particulière ?": "Which place would you like to know, for no particular reason?",
+"Qu'est-ce qui te donnerait envie de te lever tôt, simplement par plaisir ?": "What would make you want to get up early, simply for pleasure?",
+"Quelle activité te fait oublier ton téléphone ?": "Which activity makes you forget your phone?",
+"Qu'est-ce qui te touche chez les autres, au point de te donner envie ?": "What touches you in other people, to the point of making you want it too?",
+"Que voudrais-tu apprendre, même sans jamais le maîtriser ?": "What would you like to learn, even if you never master it?",
+"Avec qui aimerais-tu partager un seul moment, juste pour le plaisir ?": "With whom would you like to share a single moment, just for the pleasure of it?",
+"Qu'est-ce qui, récemment, t'a fait t'arrêter un instant pour regarder ?": "What recently made you stop for a moment to look?",
+"Quel endroit près de chez toi n'as-tu jamais vraiment pris le temps de découvrir ?": "Which place near you have you never really taken the time to discover?",
+"Qu'est-ce que tu aimerais faire lentement, pour une fois ?": "What would you like to do slowly, for once?",
+"Quel savoir-faire d'une autre personne t'a toujours fasciné ?": "Which skill of another person has always fascinated you?",
+"Si rien n'avait à être utile, que ferais-tu ce week-end ?": "If nothing had to be useful, what would you do this weekend?",
+"Une question, sans bonne réponse": "A question, with no right answer",
+"Une autre question": "Another question",
+"Ton premier élan": "Your first spark",
+"Un nouvel élan": "A new spark",
+"Un titre": "A title",
+"Raconte-le": "Tell it",
+"Un élan n'a pas de date. Il peut rester un rêve, changer ou s'effacer.": "A spark has no date. It can stay a dream, change or fade away.",
+"Garder cet élan": "Keep this spark",
+"Annuler": "Cancel",
+"Ajouter un élan": "Add a spark",
+"Supprimer": "Delete",
+"Garder": "Keep",
+"Tes élans sont gardés sur cet appareil seulement.": "Your sparks are kept on this device only.",
+"Modifier ce souvenir": "Edit this memory",
+"Ce que tu en dis": "What you say about it",
+"Date du souvenir": "Date of the memory",
+"Ce qui me fait vibrer": "What lights me up",
+"Mes souvenirs": "My memories",
+"Ce qui t'attire, t'émerveille, te donne envie. Sans objectif ni échéance.": "What draws you, amazes you, makes you want more. No goal, no deadline.",
+"Ce qui t'a fait du bien. Rien d'autre.": "What did you good. Nothing else.",
+"Un instant…": "One moment…",
+"Ton premier souvenir": "Your first memory",
+"Un nouveau souvenir": "A new memory",
+"Pas de note, pas de catégorie.": "No score, no category.",
+"Garder ce souvenir": "Keep this memory",
+"Ajouter un souvenir": "Add a memory",
+"Modifier": "Edit",
+"Garder aussi dans ce qui me fait vibrer": "Also keep it in what lights me up",
+"Tes souvenirs sont privés : les autres personnes qui ouvrent la page ne les voient pas.": "Your memories are private: other people who open the page can't see them.",
+"Tes souvenirs sont gardés sur cet appareil seulement.": "Your memories are kept on this device only.",
+"Un souvenir qui revient": "A memory that comes back",
+"De temps en temps, un de tes souvenirs réapparaît : celui d'il y a une semaine ou d'il y a un mois, en haut de cet écran et sur « Aujourd'hui ». Quand il n'y en a pas, un souvenir plus ancien, choisi au hasard, s'affiche ici seulement. Rien à faire, c'est juste pour te faire sourire.": "From time to time, one of your memories comes back: the one from a week ago or a month ago, at the top of this screen and on “Today”. When there isn't one, an older memory, picked at random, shows up here only. Nothing to do, it's just to make you smile.",
+"Prendre du recul": "Taking a step back",
+"Des regards à lire à ton rythme, des questions à garder en tête. Jamais de réponse imposée.": "Perspectives to read at your own pace, questions to keep in mind. Never an imposed answer.",
+"Tu peux ne pas être d'accord.": "You're allowed to disagree.",
+"Tous les regards": "All perspectives",
+"Un regard": "A perspective",
+"À garder en tête, sans bonne réponse": "To keep in mind, with no right answer",
+"Ce que j'en pense": "What I think about it",
+"Pour toi seulement, rien n'est envoyé.": "For you only, nothing is sent.",
+"Un autre regard": "Another perspective",
+"Écrire est facultatif. Rien à retenir.": "Writing is optional. Nothing to memorise.",
+"Copié": "Copied",
+"Copier le numéro": "Copy the number",
+"Appeler": "Call",
+"Sauvegarder mes souvenirs": "Back up my memories",
+"Tes souvenirs, tes élans et tes photos restent sur ton téléphone. Pour les garder en sécurité ou les retrouver sur un autre téléphone, crée un fichier de sauvegarde, puis rouvre-le ici.": "Your memories, your sparks and your photos stay on your phone. To keep them safe or to find them on another phone, create a backup file, then reopen it here.",
+"Créer ma sauvegarde": "Create my backup",
+"Retrouver mes souvenirs": "Restore my memories",
+"Un coin d'aide": "A little help corner",
+"Pas besoin d'aller très mal pour demander de l'aide.": "You don't have to be doing very badly to ask for help.",
+"Parler à quelqu'un près de toi": "Talk to someone near you",
+"Ton médecin traitant peut t'écouter et t'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.": "Your doctor can listen to you and refer you to a psychologist or a psychiatrist. A person you trust matters too.",
+"Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.": "If “Call” does nothing on your device, copy the number and dial it from your phone.",
+"Cette app ne remplace pas un professionnel.": "This app doesn't replace a professional.",
+"Confidentialité et assistance": "Privacy and support",
+"Je n'ai pas réussi à trouver un moment cette fois. Tu peux réessayer.": "I couldn't find a moment this time. You can try again.",
+"Trop de demandes, ou limite d'usage atteinte. Réessaie un peu plus tard.": "Too many requests, or usage limit reached. Try again a little later.",
+"Reconnecte-toi à Claude, puis réessaie.": "Reconnect to Claude, then try again.",
+"Choisis une heure.": "Choose a time.",
+"C'est enregistré.": "Saved.",
+"Les notifications sont désactivées pour Éclaircie. Tu peux les autoriser dans les réglages de ton téléphone.": "Notifications are turned off for Éclaircie. You can allow them in your phone's settings.",
+"Le rappel n'est pas disponible ici.": "The reminder isn't available here.",
+"Je n'ai pas réussi à programmer le rappel.": "I couldn't set the reminder.",
+"Ton prénom est effacé.": "Your name is erased.",
+"Ta sauvegarde est prête. Garde-la précieusement, par exemple dans Fichiers ou dans un e-mail à toi-même.": "Your backup is ready. Keep it safe, for example in Files or in an email to yourself.",
+"Je n'ai pas réussi à créer la sauvegarde.": "I couldn't create the backup.",
+"Le rappel est désactivé.": "The reminder is turned off.",
+"Donne un titre à ce souvenir, quelques mots suffisent.": "Give this memory a title, a few words are enough.",
+"Impossible d'enregistrer pour l'instant. Réessaie dans un instant.": "Can't save right now. Try again in a moment.",
+"Le message est copié, tu peux le coller où tu veux.": "The message is copied, you can paste it wherever you like.",
+"Impossible de partager depuis cet appareil.": "Can't share from this device.",
+"Donne un titre à cet élan, quelques mots suffisent.": "Give this spark a title, a few words are enough.",
+"C'est gardé, pour toi seulement.": "Kept, for you only.",
+"Ta note est effacée.": "Your note is erased.",
+"Un souvenir ne peut pas être daté dans le futur.": "A memory can't be dated in the future.",
+"Impossible de supprimer pour l'instant.": "Can't delete right now.",
+"Ce fichier n'est pas une sauvegarde Éclaircie.": "This file isn't an Éclaircie backup.",
+"Tout était déjà là : rien à ajouter.": "Everything was already here: nothing to add.",
+"Je n'ai pas pu lire ce fichier.": "I couldn't read this file.",
+"Cette photo n'a pas pu être lue. Essaie-en une autre.": "This photo couldn't be read. Try another one.",
+"Sauvegarde Éclaircie": "Éclaircie backup",
+"Rangé dans":"Filed under",
+"Choisir":"Choose",
+"Rappel enregistré à":"Reminder saved for",
+"Tu pourras le changer dans « Un coin d'aide ».":"You can change it in “A little help corner”.",
+"Tu pourras la changer dans « Un coin d'aide ».":"You can change it in “A little help corner”.",
+"Tu recevras une douce notification chaque jour à":"You'll get a gentle notification every day at"
+};
+  (function () {
+    for (var i = 0; i < THEMES.length; i++) { THEMES[i].key = THEMES[i].title; THEMES_EN[i].key = THEMES[i].title; }
+    if (LANG !== 'en') return;
+    for (var j = 0; j < EN_MOMENTS.length; j++) { MOMENTS[j][1] = EN_MOMENTS[j][0]; MOMENT_TITLES[j] = EN_MOMENTS[j][1]; }
+    THEMES = THEMES_EN;
+    try { document.documentElement.lang = 'en'; } catch (e) { /* ignoré */ }
+  })();
+  function T(fr) { return (LANG === 'en' && Object.prototype.hasOwnProperty.call(EN_UI, fr)) ? EN_UI[fr] : fr; }
+  function unent(t) { return t.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'); }
+  function trHTML(h) {
+    if (LANG !== 'en') return h;
+    h = h.replace(/>([^<>]+)</g, function (m, t) {
+      var lead = t.match(/^\s*/)[0], trail = t.match(/\s*$/)[0];
+      var core = t.trim();
+      if (!core) return m;
+      var k = unent(core);
+      if (!Object.prototype.hasOwnProperty.call(EN_UI, k)) return m;
+      return '>' + lead + EN_UI[k].replace(/&/g, '&amp;').replace(/</g, '&lt;') + trail + '<';
+    });
+    h = h.replace(/\b(placeholder|alt|aria-label|title)="([^"]*)"/g, function (m, a, v) {
+      var k = unent(v);
+      return Object.prototype.hasOwnProperty.call(EN_UI, k) ? a + '="' + EN_UI[k].replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '"' : m;
+    });
+    return h;
+  }
+  function hm(c) { return LANG === 'en' ? pad2(c.h) + ':' + pad2(c.m) : pad2(c.h) + ' h ' + pad2(c.m); }
+
   var S = {
     tab: 'today',
     reculView: 'list',
@@ -1472,7 +1847,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   function lsSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* ignoré */ } }
 
   function dateLabel() {
-    var s = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    var s = new Date().toLocaleDateString(LANG === 'en' ? 'en-GB' : 'fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
   function whenLabel(iso) {
@@ -1480,8 +1855,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '';
     var t = new Date();
-    if (d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate()) return `Aujourd'hui`;
-    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate()) return T(`Aujourd'hui`);
+    return d.toLocaleDateString(LANG === 'en' ? 'en-GB' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
   function saveToday() {
@@ -1522,6 +1897,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       if (energy && MOMENTS[i][0] !== energy) continue;
       var sn = SEASON_OF[i];
       if (!sn) { base.push(i); continue; }
+      if (LANG === 'en') continue;
       if (!seasonOn(sn)) continue;
       if (sn.adv) { adv = i; continue; }
       if (seenS[i] === yr) continue;
@@ -1550,7 +1926,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     return idx;
   }
   function ensureMoment() {
-    if (S.cur === null || !MOMENTS[S.cur]) { S.cur = pickMoment(S.energy); saveToday(); }
+    if (S.cur === null || !MOMENTS[S.cur] || (LANG === 'en' && SEASON_OF[S.cur])) { S.cur = pickMoment(S.energy); saveToday(); }
   }
 
   function dayKey(d) { return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
@@ -1606,7 +1982,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var perm = await LN.requestPermissions();
     if (!perm || perm.display !== 'granted') return 'denied';
     await LN.cancel({ notifications: [{ id: 1 }] });
-    await LN.schedule({ notifications: [{ id: 1, title: 'Éclaircie', body: 'Un petit moment t\'attend.', schedule: { on: { hour: h, minute: m }, allowWhileIdle: true } }] });
+    await LN.schedule({ notifications: [{ id: 1, title: 'Éclaircie', body: T('Un petit moment t\'attend.'), schedule: { on: { hour: h, minute: m }, allowWhileIdle: true } }] });
     lsSet('ec-notif', JSON.stringify({ h: h, m: m }));
     return 'ok';
   }
@@ -1622,11 +1998,11 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var cur = loadNotif();
     var t = cur ? pad2(cur.h) + ':' + pad2(cur.m) : '09:00';
     if (where === 'today') {
-      if (S.notifJust && cur) return '<p class="muted small" style="text-align:center">Rappel enregistré à ' + pad2(cur.h) + ' h ' + pad2(cur.m) + '. Tu pourras le changer dans « Un coin d\'aide ».</p>';
+      if (S.notifJust && cur) return '<p class="muted small" style="text-align:center">' + T('Rappel enregistré à') + ' ' + hm(cur) + '. ' + T('Tu pourras le changer dans « Un coin d\'aide ».') + '</p>';
       if (cur || notifSkipped()) return '';
     }
     var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Un rappel chaque jour</h2>';
-    h += '<p class="muted">' + (cur ? 'Tu recevras une douce notification chaque jour à ' + pad2(cur.h) + ' h ' + pad2(cur.m) + '.' : 'Si tu veux, une douce notification peut t\'inviter à découvrir ton moment du jour.' + (where === 'today' ? ' Tu pourras la changer dans « Un coin d\'aide ».' : '')) + '</p>';
+    h += '<p class="muted">' + (cur ? T('Tu recevras une douce notification chaque jour à') + ' ' + hm(cur) + '.' : 'Si tu veux, une douce notification peut t\'inviter à découvrir ton moment du jour.' + (where === 'today' ? ' ' + T('Tu pourras la changer dans « Un coin d\'aide ».') : '')) + '</p>';
     h += '<label for="notif-time">Heure du rappel</label><input type="time" id="notif-time" value="' + t + '">';
     if (S.notifMsg) h += '<p class="msg" role="status">' + esc(S.notifMsg) + '</p>';
     h += '<div class="stack"><button type="button" class="btn secondary" data-a="notifOn">' + (cur ? 'Changer l\'heure' : 'Activer le rappel') + '</button>';
@@ -1697,13 +2073,14 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   var APP_URL = 'https://zphyj9vgnj-sketch.github.io/eclaircie-/';
   function shareText() {
     var m = S.custom ? S.custom.text : MOMENTS[S.cur][1];
+    if (LANG === 'en') return 'Here\'s today\'s moment that I received on Éclaircie:\n\n“' + m + '”\n\nWhat if we lived it together?\n\nÉclaircie is a small, gentle app, with no scores and no comparison, that invites you to turn towards others and towards the world. ' + APP_URL;
     return 'Voici le moment du jour que j\'ai reçu sur Éclaircie :\n\n« ' + m + ' »\n\nEt si on le vivait ensemble ?\n\nÉclaircie est une petite app douce, sans score ni comparaison, qui invite à se tourner vers les autres et vers le monde. ' + APP_URL;
   }
 
   function tToday() {
     ensureMoment();
     var inv = S.custom ? S.custom.text : MOMENTS[S.cur][1];
-    var h = '<div class="screen"><header class="head"><p class="eyebrow">' + esc(dateLabel()) + '</p><h1>' + (nameNow() ? 'Bonjour, ' + esc(nameNow()) + '.' : 'Bonjour.') + '</h1></header>';
+    var h = '<div class="screen"><header class="head"><p class="eyebrow">' + esc(dateLabel()) + '</p><h1>' + (nameNow() ? (LANG === 'en' ? 'Hello, ' : 'Bonjour, ') + esc(nameNow()) + '.' : T('Bonjour.')) + '</h1></header>';
     h += nameAskCard();
     if (!S.answer) {
       h += energyCard();
@@ -1996,7 +2373,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       for (var k = 0; k < t.questions.length; k++) h += '<p class="q">' + esc(t.questions[k]) + '</p>';
       h += '</div>';
       var nts = loadNotes();
-      h += '<div class="card"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Ce que j\'en pense</h2><label for="reg-note" class="muted" style="font-weight:400">Pour toi seulement, rien n\'est envoyé.</label><textarea id="reg-note" rows="4">' + esc(nts[t.title] || '') + '</textarea><button type="button" class="btn secondary" data-a="noteReg">Garder pour moi</button>';
+      h += '<div class="card"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Ce que j\'en pense</h2><label for="reg-note" class="muted" style="font-weight:400">Pour toi seulement, rien n\'est envoyé.</label><textarea id="reg-note" rows="4">' + esc(nts[t.key || t.title] || '') + '</textarea><button type="button" class="btn secondary" data-a="noteReg">Garder pour moi</button>';
       if (S.noteMsg) h += '<p class="muted small" role="status">' + esc(S.noteMsg) + '</p>';
       h += '</div><button type="button" class="btn" data-a="reculNext">Un autre regard</button>';
       h += '<p class="muted small" style="text-align:center">Écrire est facultatif. Rien à retenir.</p>';
@@ -2049,7 +2426,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var file = null;
     try { file = new File([json], fname, { type: 'application/json' }); } catch (e) { file = null; }
     if (file && navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-      return navigator.share({ files: [file], title: 'Sauvegarde Éclaircie' }).then(function () { return 'ok'; }).catch(function (err) { return (err && err.name === 'AbortError') ? 'abort' : 'fail'; });
+      return navigator.share({ files: [file], title: T('Sauvegarde Éclaircie') }).then(function () { return 'ok'; }).catch(function (err) { return (err && err.name === 'AbortError') ? 'abort' : 'fail'; });
     }
     try {
       var url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
@@ -2082,20 +2459,39 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     }).catch(function () { return 'bad'; });
   }
 
+
+  function langPicker() {
+    var h = '<div class="screen"><header class="head"><h1>Éclaircie</h1><p class="muted">Choisis ta langue · Choose your language</p></header>';
+    h += '<div class="stack"><button type="button" class="btn" data-a="pickLang" data-p="fr">Français</button><button type="button" class="btn secondary" data-a="pickLang" data-p="en">English</button></div>';
+    return h + '<p class="muted small" style="text-align:center">Tu pourras la changer plus tard, dans « Un coin d\'aide ». · You can change it later in “A little help corner”.</p></div>';
+  }
+  function langCard() {
+    var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Langue · Language</h2><div class="stack">';
+    h += '<button type="button" class="btn ' + (LANG === 'fr' ? '' : 'secondary') + '" data-a="pickLang" data-p="fr">Français</button>';
+    h += '<button type="button" class="btn ' + (LANG === 'en' ? '' : 'secondary') + '" data-a="pickLang" data-p="en">English</button></div></div>';
+    return h;
+  }
+
   function tHelp() {
     var h = '<div class="screen"><header class="head"><h1>Un coin d\'aide</h1><p class="muted">Pas besoin d\'aller très mal pour demander de l\'aide.</p></header>';
+    if (LANG === 'en') {
+      h += helpCard('Immediate danger', 'For a medical or life-threatening emergency, call your local emergency number. 112 works across the European Union, and in many other countries it redirects to the local emergency services from a mobile phone.', ['112'], true);
+      h += helpCard('Dark thoughts, deep distress', 'There is no single helpline number that works everywhere. The website findahelpline.com lists free helplines by country.', [], false);
+    } else {
     h += helpCard(`En danger immédiat`, `Pour une urgence médicale ou vitale, appelle le 15 (Samu) ou le 112.`, ['15', '112'], true);
     h += helpCard(`Idées noires, grande détresse`, `Le 3114 est le numéro national de prévention du suicide : gratuit, joignable jour et nuit.`, ['3114'], false);
     h += helpCard(`Un rapport difficile à la nourriture ou au corps`, `Anorexie Boulimie Info Écoute est une ligne d'écoute spécialisée dans les troubles du comportement alimentaire. Elle est ouverte les lundis, mardis, jeudis et vendredis de 16 h à 18 h, hors jours fériés. Appel non surtaxé.`, ['09 69 32 59 00'], false);
     h += helpCard(`Un enfant en danger`, `Le 119 est le numéro national de l'enfance en danger. L'appel est gratuit.`, ['119'], false);
     h += helpCard(`Sourd ou malentendant`, `Le 114 est le numéro d'urgence pour les personnes sourdes et malentendantes. L'appel est gratuit.`, ['114'], false);
+    }
     h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Parler à quelqu\'un près de toi</h2><p>Ton médecin traitant peut t\'écouter et t\'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.</p></div>';
     h += '<p class="muted small">Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.</p>';
     h += notifCard('help');
     h += nameEditCard();
     h += backupCard();
+    h += langCard();
     h += '<p class="muted small" style="text-align:center">Cette app ne remplace pas un professionnel.</p>';
-    h += '<p class="muted small" style="text-align:center"><a href="' + APP_URL + 'confidentialite.html" target="_blank" rel="noopener" style="color:var(--accent)">Confidentialité et assistance</a></p></div>';
+    h += '<p class="muted small" style="text-align:center"><a href="' + APP_URL + 'confidentialite.html' + (LANG === 'en' ? '#en' : '') + '" target="_blank" rel="noopener" style="color:var(--accent)">Confidentialité et assistance</a></p></div>';
     return h;
   }
 
@@ -2131,11 +2527,14 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var view = document.getElementById('view');
     var keep = captureFields();
     var html = '';
+    var navEl = document.querySelector('.nav');
+    if (navEl) navEl.style.display = LANG ? '' : 'none';
+    if (!LANG) { view.innerHTML = langPicker(); return; }
     if (S.tab === 'today') html = tToday();
     else if (S.tab === 'lights') html = tLights();
     else if (S.tab === 'recul') html = tRecul();
     else html = tHelp();
-    view.innerHTML = html;
+    view.innerHTML = trHTML(html);
     restoreFields(keep);
     updateNav();
     hydratePhotos();
@@ -2303,6 +2702,8 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
         S.backupMsg = r === 'ok' ? 'Ta sauvegarde est prête. Garde-la précieusement, par exemple dans Fichiers ou dans un e-mail à toi-même.' : r === 'abort' ? '' : 'Je n\'ai pas réussi à créer la sauvegarde.';
         render();
       });
+    } else if (a === 'pickLang') {
+      if (p === 'fr' || p === 'en') { lsSet('ec-lang', p); try { location.reload(); } catch (e) { /* ignoré */ } }
     } else if (a === 'nameSkip') {
       lsSet('ec-name', JSON.stringify({ n: '' }));
       render();
@@ -2403,7 +2804,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     } else if (a === 'noteReg') {
       var rn = val('reg-note');
       var all = loadNotes();
-      var tk = THEMES[S.reculIdx].title;
+      var tk = THEMES[S.reculIdx].key || THEMES[S.reculIdx].title;
       if (rn) all[tk] = rn; else delete all[tk];
       lsSet('ec-notes', JSON.stringify(all));
       S.noteMsg = rn ? 'C\'est gardé, pour toi seulement.' : 'Ta note est effacée.';
@@ -2510,6 +2911,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
         importData(String(rd.result || '')).then(function (r) {
           if (r === 'bad') S.backupMsg = 'Ce fichier n\'est pas une sauvegarde Éclaircie.';
           else if (r.l + r.e === 0) S.backupMsg = 'Tout était déjà là : rien à ajouter.';
+          else if (LANG === 'en') S.backupMsg = 'Done: ' + r.l + ' memor' + (r.l === 1 ? 'y' : 'ies') + ' and ' + r.e + ' spark' + (r.e === 1 ? '' : 's') + ' restored.';
           else S.backupMsg = 'C\'est fait : ' + r.l + ' souvenir' + (r.l > 1 ? 's' : '') + ' et ' + r.e + ' élan' + (r.e > 1 ? 's' : '') + ' retrouvé' + (r.l + r.e > 1 ? 's' : '') + '.';
           S.elans = null; render();
         });
@@ -2526,9 +2928,14 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     });
   });
 
-  loadToday();
+  if (LANG === 'en') {
+    var nsp = document.querySelectorAll('.nav button span');
+    for (var ni = 0; ni < nsp.length; ni++) nsp[ni].textContent = T(nsp[ni].textContent);
+    var nv = document.querySelector('.nav'); if (nv) nv.setAttribute('aria-label', 'Main navigation');
+  }
+  if (LANG) loadToday();
   render();
-  boot();
+  if (LANG) boot();
   bootSample();
 })();
 </script>
