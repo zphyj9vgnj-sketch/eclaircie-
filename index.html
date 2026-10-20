@@ -1763,8 +1763,14 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 "Je n'ai pas pu lire ce fichier.": "I couldn't read this file.",
 "Cette photo n'a pas pu être lue. Essaie-en une autre.": "This photo couldn't be read. Try another one.",
 "Sauvegarde Éclaircie": "Éclaircie backup",
+"Partager à un ami":"Share with a friend",
+"Messages":"Messages",
+"Copier":"Copy",
 "Rangé dans":"Filed under",
 "Choisir":"Choose",
+"Avec la photo":"With the photo",
+"« Avec la photo » ouvre le partage de ton téléphone : choisis WhatsApp ou Messages, puis relis et modifie avant d'envoyer. WhatsApp et Messages seuls envoient le texte.":"“With the photo” opens your phone's share sheet: choose WhatsApp or Messages, then reread and edit before sending. WhatsApp and Messages on their own send the text only.",
+"Impossible de partager la photo depuis cet appareil.":"Can't share the photo from this device.",
 "Rappel enregistré à":"Reminder saved for",
 "Tu pourras le changer dans « Un coin d'aide ».":"You can change it in “A little help corner”.",
 "Tu pourras la changer dans « Un coin d'aide ».":"You can change it in “A little help corner”.",
@@ -1816,6 +1822,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     elanDel: null,
     noteMsg: '',
     shareMsg: '',
+    shareOpen: null,
     answer: null,
     offset: 0,
     cur: null,
@@ -1953,6 +1960,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     var l = pool[mod(dayNum, pool.length)];
     var r = '<div class="retro"><span class="label">' + label + '</span>' + photoImg(l) + '<p class="q">' + esc(l.title || l.text) + '</p>';
     if (l.title && l.text) r += '<p class="small">' + esc(l.text) + '</p>';
+    r += '<button type="button" class="link sm" style="align-self:flex-start" data-a="shareOpen" data-p="r' + esc(l.id) + '">Partager à un ami</button>';
+    if (S.shareOpen === 'r' + l.id) r += sharePanel(l.id, !!l.photo);
     return r + '</div>';
   }
 
@@ -2071,6 +2080,22 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   /* Adresse envoyée dans les messages. À remplacer par le lien App Store une fois l'app publiée. */
   var APP_URL = 'https://zphyj9vgnj-sketch.github.io/eclaircie-/';
+  function lightById(id) { for (var i = 0; i < S.lights.length; i++) { if (S.lights[i].id === id) return S.lights[i]; } return null; }
+  function lightShareText(l) {
+    var t = (l.title || '') + (l.title && l.text ? '\n' : '') + (l.text || '');
+    if (LANG === 'en') return 'A memory I keep, and wanted to share with you:\n\n“' + t + '”\n\nI kept it in Éclaircie, a small, gentle app with no scores and no comparison. ' + APP_URL;
+    return 'Un souvenir que je garde et que j\'avais envie de partager avec toi :\n\n« ' + t + ' »\n\nJe l\'ai gardé dans Éclaircie, une petite app douce, sans score ni comparaison. ' + APP_URL;
+  }
+  function shareTextFor(p) {
+    if (p && p !== 'm') { var l = lightById(p); if (l) return lightShareText(l); }
+    return shareText();
+  }
+  function sharePanel(p, hasPhoto) {
+    var h = '<div class="row"><button type="button" class="btn secondary" data-a="shareWa" data-p="' + esc(p) + '">WhatsApp</button><button type="button" class="btn secondary" data-a="shareSms" data-p="' + esc(p) + '">Messages</button><button type="button" class="btn secondary" data-a="shareCopy" data-p="' + esc(p) + '">Copier</button></div>';
+    if (hasPhoto) h += '<button type="button" class="btn secondary" data-a="shareFile" data-p="' + esc(p) + '">Avec la photo</button><p class="muted small">« Avec la photo » ouvre le partage de ton téléphone : choisis WhatsApp ou Messages, puis relis et modifie avant d\'envoyer. WhatsApp et Messages seuls envoient le texte.</p>';
+    if (S.shareMsg) h += '<p class="muted small" role="status">' + esc(S.shareMsg) + '</p>';
+    return h;
+  }
   function shareText() {
     var m = S.custom ? S.custom.text : MOMENTS[S.cur][1];
     if (LANG === 'en') return 'Here\'s today\'s moment that I received on Éclaircie:\n\n“' + m + '”\n\nWhat if we lived it together?\n\nÉclaircie is a small, gentle app, with no scores and no comparison, that invites you to turn towards others and towards the world. ' + APP_URL;
@@ -2087,7 +2112,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       h += '<div class="card"><span class="pill">' + (S.custom ? 'Inspiré de tes souvenirs' : (S.offset > 0 ? 'Un autre moment' : 'Le moment du jour')) + '</span><p class="quote">' + esc(inv) + '</p><p class="muted">' + esc(S.custom && S.custom.why ? S.custom.why : 'À ton rythme. Aucune réponse n\'est mauvaise.') + '</p></div>';
       h += '<div class="stack"><button type="button" class="btn" data-a="answer" data-p="done">C\'est fait</button>';
       h += '<div class="row"><button type="button" class="btn secondary" data-a="answer" data-p="later">Un autre jour</button><button type="button" class="btn secondary" data-a="answer" data-p="no">Pas envie</button></div><button type="button" class="link" style="align-self:center" data-a="again">Un autre moment</button></div>';
-      h += '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Le vivre à deux ?</h2><p class="muted small">Propose ce moment à quelqu\'un qui compte pour toi.</p><div class="row"><button type="button" class="btn secondary" data-a="shareWa">WhatsApp</button><button type="button" class="btn secondary" data-a="shareOther">Autre appli</button></div>' + (S.shareMsg ? '<p class="muted small" role="status">' + esc(S.shareMsg) + '</p>' : '') + '</div>';
+      h += '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Le vivre à deux ?</h2><p class="muted small">Propose ce moment à quelqu\'un qui compte pour toi.</p>' + sharePanel('m', false) + '</div>';
     } else if (S.answer === 'done') {
       if (!S.noteDone) {
         h += '<div class="card"><h2>Merci d\'avoir pris ce moment.</h2><label for="note-title">Un titre pour ce souvenir</label><input type="text" id="note-title" autocomplete="off" placeholder="Quelques mots" value="' + esc(suggestedTitle()) + '">' + (suggestedTitle() ? '<p class="muted small">Une proposition, tu peux la changer.</p>' : '') + '<label for="note">Un petit mot sur ce que ça t\'a fait vivre <span class="opt">(si tu veux)</span></label><textarea id="note" rows="4"></textarea>' + photoField();
@@ -2344,6 +2369,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
       } else {
         h += '<div class="row" style="align-items:center;justify-content:space-between"><button type="button" class="link sm" style="flex:0 0 auto" data-a="editOpen" data-p="' + esc(l.id) + '">Modifier</button><button type="button" class="link sm" style="flex:0 0 auto" data-a="delAsk" data-p="' + esc(l.id) + '">Supprimer</button></div>';
         h += '<div class="row"><button type="button" class="link sm" style="flex:1 1 auto;text-align:left" data-a="toElan" data-p="' + esc(l.id) + '">Garder aussi dans ce qui me fait vibrer</button></div>';
+        h += '<div class="row"><button type="button" class="link sm" style="flex:1 1 auto;text-align:left" data-a="shareOpen" data-p="' + esc(l.id) + '">Partager à un ami</button></div>';
+        if (S.shareOpen === l.id) h += sharePanel(l.id, !!l.photo);
       }
       h += '</div>';
     }
@@ -2676,7 +2703,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
   function act(a, p) {
     S.msg = '';
     if (a === 'tab') {
-      S.tab = p; S.err = ''; S.shareMsg = ''; S.nameMsg = ''; S.notifMsg = ''; S.notifJust = false; S.editId = null;
+      S.tab = p; S.err = ''; S.shareMsg = ''; S.shareOpen = null; S.nameMsg = ''; S.notifMsg = ''; S.notifJust = false; S.editId = null;
       render({ top: true });
     } else if (a === 'answer') {
       S.answer = p; S.err = ''; saveToday();
@@ -2744,21 +2771,40 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     } else if (a === 'openAdd') {
       S.editId = null;
       S.addOpen = true; S.err = ''; render({ focus: 'light-title' });
+    } else if (a === 'shareOpen') {
+      S.shareOpen = (S.shareOpen === p ? null : p); S.shareMsg = ''; render();
     } else if (a === 'shareWa') {
-      var wa = 'https://wa.me/?text=' + encodeURIComponent(shareText());
+      var wa = 'https://wa.me/?text=' + encodeURIComponent(shareTextFor(p && p.charAt(0) === 'r' && lightById(p.slice(1)) ? p.slice(1) : p));
       var w = null;
       try { w = window.open(wa, '_blank'); } catch (e) { w = null; }
       if (!w) { try { window.location.href = wa; } catch (e2) { /* ignoré */ } }
-    } else if (a === 'shareOther') {
-      var tx0 = shareText();
-      var fallback = function () {
-        try {
-          navigator.clipboard.writeText(tx0).then(function () { S.shareMsg = 'Le message est copié, tu peux le coller où tu veux.'; render(); }).catch(function () { S.shareMsg = 'Impossible de partager depuis cet appareil.'; render(); });
-        } catch (e3) { S.shareMsg = 'Impossible de partager depuis cet appareil.'; render(); }
-      };
-      if (navigator.share) {
-        navigator.share({ text: tx0 }).catch(function (err) { if (!err || err.name !== 'AbortError') fallback(); });
-      } else { fallback(); }
+    } else if (a === 'shareSms') {
+      var smsBody = encodeURIComponent(shareTextFor(p && p.charAt(0) === 'r' && lightById(p.slice(1)) ? p.slice(1) : p));
+      var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      try { window.location.href = 'sms:' + (ios ? '&' : '?') + 'body=' + smsBody; } catch (e4) { /* ignoré */ }
+    } else if (a === 'shareFile') {
+      var sid = p && p.charAt(0) === 'r' && lightById(p.slice(1)) ? p.slice(1) : p;
+      var sl = lightById(sid);
+      var stext = shareTextFor(sid);
+      var shareFail = function () { S.shareMsg = 'Impossible de partager la photo depuis cet appareil.'; render(); };
+      if (!sl || !sl.photo) { shareFail(); }
+      else {
+        idbGet(sl.id).then(function (d) {
+          if (!d) { shareFail(); return; }
+          return fetch(d).then(function (r) { return r.blob(); }).then(function (bl) {
+            var f = new File([bl], 'souvenir.jpg', { type: bl.type || 'image/jpeg' });
+            if (navigator.canShare && navigator.canShare({ files: [f] }) && navigator.share) {
+              return navigator.share({ files: [f], text: stext }).catch(function (err) { if (!err || err.name !== 'AbortError') shareFail(); });
+            }
+            shareFail();
+          });
+        }).catch(shareFail);
+      }
+    } else if (a === 'shareCopy') {
+      var tx0 = shareTextFor(p && p.charAt(0) === 'r' && lightById(p.slice(1)) ? p.slice(1) : p);
+      try {
+        navigator.clipboard.writeText(tx0).then(function () { S.shareMsg = 'Le message est copié, tu peux le coller où tu veux.'; render(); }).catch(function () { S.shareMsg = 'Impossible de partager depuis cet appareil.'; render(); });
+      } catch (e3) { S.shareMsg = 'Impossible de partager depuis cet appareil.'; render(); }
     } else if (a === 'lview') {
       S.lview = p === 'elans' ? 'elans' : 'lights'; S.err = ''; S.photoData = null; S.editId = null; S.elanOpen = false; S.elanDraft = null; render({ top: true });
     } else if (a === 'elanQ') {
