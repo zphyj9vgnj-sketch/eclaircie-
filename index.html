@@ -97,6 +97,8 @@ body {
 .sun { position: absolute; top: -130px; right: -130px; width: 300px; height: 300px; border-radius: 50%; background: var(--sun); opacity: 0.55; pointer-events: none; }
 #view { position: relative; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y; padding: 20px 0 16px; outline: none; }
 
+#view { scrollbar-width: none; -ms-overflow-style: none; }
+#view::-webkit-scrollbar { display: none; width: 0; height: 0; }
 .screen { display: flex; flex-direction: column; gap: 16px; }
 .head { display: flex; flex-direction: column; gap: 6px; }
 .eyebrow { margin: 0; font-size: 15px; color: var(--muted); }
@@ -1224,6 +1226,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     cur: null,
     energy: null,
     notifMsg: '',
+    nameMsg: '',
     noteDone: null,
     deleting: null,
     msg: '',
@@ -1376,6 +1379,34 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     return h + '</div></div>';
   }
 
+  /* ---------- Prénom (facultatif, gardé uniquement sur l'appareil) ---------- */
+
+  function loadName() {
+    try {
+      var o = JSON.parse(lsGet('ec-name') || 'null');
+      if (o && typeof o.n === 'string') return o;
+    } catch (e) { /* ignoré */ }
+    return null;
+  }
+  function nameNow() { var o = loadName(); return o && o.n ? o.n : ''; }
+  function cleanName(v) { return String(v || '').replace(/\s+/g, ' ').trim().slice(0, 30); }
+  function nameAskCard() {
+    if (loadName()) return '';
+    var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Comment veux-tu qu\'on t\'appelle ?</h2>';
+    h += '<p class="muted small">Un prénom ou un surnom, si tu veux. Il reste sur ton téléphone, et tu pourras le changer dans « Un coin d\'aide ».</p>';
+    h += '<label for="name-input">Ton prénom <span class="opt">(si tu veux)</span></label><input type="text" id="name-input" autocomplete="given-name" maxlength="30">';
+    h += '<div class="stack"><button type="button" class="btn secondary" data-a="nameSave">Valider</button><button type="button" class="link" style="align-self:center" data-a="nameSkip">Non merci</button></div></div>';
+    return h;
+  }
+  function nameEditCard() {
+    var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Ton prénom</h2>';
+    h += '<p class="muted small">Il s\'affiche en haut de l\'écran d\'accueil et reste sur ton téléphone. Laisse vide pour l\'effacer.</p>';
+    h += '<label for="name-input">Prénom ou surnom</label><input type="text" id="name-input" autocomplete="given-name" maxlength="30" value="' + esc(nameNow()) + '">';
+    if (S.nameMsg) h += '<p class="msg" role="status">' + esc(S.nameMsg) + '</p>';
+    h += '<div class="stack"><button type="button" class="btn secondary" data-a="nameSave">Enregistrer</button></div></div>';
+    return h;
+  }
+
   function energyCard() {
     var h = '<div class="card tight"><p class="small muted">Comment est ton énergie aujourd\'hui ? <span class="opt">(si tu veux)</span></p><div style="display:flex;flex-wrap:wrap;gap:8px">';
     for (var i = 0; i < ENERGIES.length; i++) {
@@ -1416,7 +1447,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   function tToday() {
     ensureMoment();
     var inv = S.custom ? S.custom.text : MOMENTS[S.cur][1];
-    var h = '<div class="screen"><header class="head"><p class="eyebrow">' + esc(dateLabel()) + '</p><h1>Bonjour.</h1></header>';
+    var h = '<div class="screen"><header class="head"><p class="eyebrow">' + esc(dateLabel()) + '</p><h1>' + (nameNow() ? 'Bonjour, ' + esc(nameNow()) + '.' : 'Bonjour.') + '</h1></header>';
+    h += nameAskCard();
     if (!S.answer) {
       h += energyCard();
       h += '<div class="card"><span class="pill">' + (S.custom ? 'Inspiré de tes lumières' : (S.offset > 0 ? 'Un autre moment' : 'Le moment du jour')) + '</span><p class="quote">' + esc(inv) + '</p><p class="muted">' + esc(S.custom && S.custom.why ? S.custom.why : 'À ton rythme. Aucune réponse n\'est mauvaise.') + '</p></div>';
@@ -1719,6 +1751,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     h += helpCard(`Sourd ou malentendant`, `Le 114 est le numéro d'urgence pour les personnes sourdes et malentendantes. L'appel est gratuit.`, ['114'], false);
     h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Parler à quelqu\'un près de toi</h2><p>Ton médecin traitant peut t\'écouter et t\'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.</p></div>';
     h += '<p class="muted small">Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.</p>';
+    h += nameEditCard();
     h += '<p class="muted small" style="text-align:center">Cette app ne remplace pas un professionnel.</p>';
     h += '<p class="muted small" style="text-align:center"><a href="' + APP_URL + 'confidentialite.html" target="_blank" rel="noopener" style="color:var(--accent)">Confidentialité et assistance</a></p></div>';
     return h;
@@ -1726,7 +1759,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   /* ---------- Rendu ---------- */
 
-  var FIELDS = ['note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time', 'elan-title', 'elan-text'];
+  var FIELDS = ['name-input', 'note-title', 'note', 'light-title', 'light-text', 'light-place', 'notif-time', 'elan-title', 'elan-text'];
 
   function captureFields() {
     var out = {};
@@ -1902,7 +1935,7 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
   function act(a, p) {
     S.msg = '';
     if (a === 'tab') {
-      S.tab = p; S.err = ''; S.shareMsg = '';
+      S.tab = p; S.err = ''; S.shareMsg = ''; S.nameMsg = '';
       render({ top: true });
     } else if (a === 'answer') {
       S.answer = p; S.err = ''; saveToday();
@@ -1916,6 +1949,14 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
         S.notifMsg = r === 'ok' ? 'C\'est enregistré.' : r === 'denied' ? 'Les notifications sont désactivées pour Éclaircie. Tu peux les autoriser dans les réglages de ton téléphone.' : 'Le rappel n\'est pas disponible ici.';
         render();
       }).catch(function () { S.notifMsg = 'Je n\'ai pas réussi à programmer le rappel.'; render(); });
+    } else if (a === 'nameSave') {
+      var nv = cleanName(val('name-input'));
+      lsSet('ec-name', JSON.stringify({ n: nv }));
+      S.nameMsg = S.tab === 'help' ? (nv ? 'C\'est enregistré.' : 'Ton prénom est effacé.') : '';
+      render();
+    } else if (a === 'nameSkip') {
+      lsSet('ec-name', JSON.stringify({ n: '' }));
+      render();
     } else if (a === 'notifOff') {
       disableNotif().then(function () { S.notifMsg = 'Le rappel est désactivé.'; render(); });
     } else if (a === 'energy') {
