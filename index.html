@@ -95,8 +95,10 @@ body {
 
 #app { position: relative; height: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; overflow: hidden; }
 .sun { position: absolute; top: -130px; right: -130px; width: 300px; height: 300px; border-radius: 50%; background: var(--sun); opacity: 0.55; pointer-events: none; }
-#view { position: relative; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overflow-x: clip; overscroll-behavior-x: none; touch-action: pan-y; padding: 20px 0 16px; outline: none; }
+#view { position: relative; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overflow-x: clip; overscroll-behavior-x: none; touch-action: pan-y; padding: max(20px, calc(env(safe-area-inset-top, 0px) + 12px)) 0 16px; outline: none; }
 
+input[type="time"] { -webkit-appearance: none; appearance: none; display: block; width: 100%; max-width: 100%; min-width: 0; min-height: 52px; margin: 0; text-align: center; overflow: hidden; }
+input[type="time"]::-webkit-date-and-time-value { text-align: center; margin: 0 auto; }
 #view { scrollbar-width: none; -ms-overflow-style: none; }
 #view::-webkit-scrollbar { display: none; width: 0; height: 0; }
 .screen { display: flex; flex-direction: column; gap: 16px; }
@@ -1499,6 +1501,111 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
         `Qu'est-ce qui te fait du bien lorsque tu es seul, et qu'est-ce qui change lorsque tu le partages ?`,
         `À qui pourrais-tu faire du bien cette semaine, par un petit geste ou un mot, même sans être au meilleur de ta forme ?`
       ]
+    },
+    {
+      title: `Traverser la tempête`,
+      paragraphs: [
+        `Je suis là un instant avec toi.`,
+        `Peut-être que quelque chose vient de te faire mal. Une phrase, un regard, un reflet, ou simplement cette voix en toi qui se fait la plus dure de toutes. Peut-être que tout s'est emballé, ou que ça va l'être. Peut-être que c'est déjà passé, et qu'il reste la honte, la fatigue, ce poids dans le ventre.`,
+        `Quoi que ce soit, tu n'es pas en faute. Tu n'es pas faible, et tu n'as rien raté. Tu as eu un moment très dur, et tu es encore là.`,
+        `Tu n'as rien à réparer. Rien à te faire payer. Rien à prouver.`,
+        `Je me doute que tu as peut-être envie de t'isoler, de te cacher, de disparaître du regard des autres pour qu'on ne te voie pas ainsi. C'est une envie qu'on comprend, quand la honte est là. Mais imagine quelqu'un qui t'aime vraiment, devant toi, à cet instant. Il se ficherait complètement de ton apparence. Il voudrait juste te serrer dans ses bras, rester là, t'aider à traverser cette tempête, avec sa présence et son amour.`,
+        `Souvent, le regard le plus sévère est celui qu'on pose sur soi. Les autres ne voient presque rien de ce qui nous torture.`,
+        `Pense un instant aux personnes que tu aimes. À une amie, à un parent, à quelqu'un de ta famille, à l'amour de ta vie. Pourquoi les aimes-tu ? Ce n'est pas pour leur silhouette. C'est pour leur rire, leur façon de t'écouter, leur manière d'être là quand ça va mal, une phrase qu'ils disent, un geste tout simple, ce qu'on se raconte. C'est la chaleur qu'ils ont, leur humour, leur façon de voir le monde. Si tu y réfléchis, leur corps n'a presque rien à voir avec l'amour que tu leur portes.`,
+        `C'est la même chose pour toi. Les gens qui t'aiment ne t'aiment pas pour ton corps. Ils t'aiment pour ce que tu es avec eux : ta présence, ta douceur, ta façon de rire, d'écouter, d'être toi. C'est de tout ça que se fait l'amour.`,
+        `Ton corps est beau, et pas seulement à cause de ce qu'il montre. Il te porte chaque jour, il te permet de serrer quelqu'un dans tes bras, de marcher dehors, de ressentir, d'être avec les gens que tu aimes. C'est une beauté qui n'a rien à voir avec un miroir.`,
+        `Si tu peux, pose une main sur ton cœur ou sur ton ventre, et respire comme tu peux. Ça n'a pas besoin d'être beau.`,
+        `Un jour, peut-être, tu auras envie d'en parler à quelqu'un : un proche, un médecin, une ligne d'écoute. Ce n'est pas une obligation, et il n'y a pas de date. Porter ça en silence, c'est lourd, et beaucoup de gens le portent longtemps avant d'oser le dire. Chacun avance à son rythme. Si ce jour vient, des personnes peuvent t'écouter sans te juger. Dans « Aide », tu trouveras des numéros. Et si tu te sens en danger, le 3114 répond tous les jours.`,
+        `Tu as le droit d'aller mal. Tu as le droit de prendre ton temps.`
+      ],
+      questions: [
+        `Si tu pouvais te parler comme à quelqu'un que tu aimes, que te dirais-tu ?`
+      ]
+    },
+    {
+      title: `Quand tout s'éteint`,
+      paragraphs: [
+        `Je suis là avec toi. Merci d'être là.`,
+        `Peut-être que depuis un moment, tout est lourd, gris, sans saveur. Que ce qui te faisait du bien ne fait plus rien. Que la fatigue ne part pas, même après le sommeil. Et peut-être qu'il arrive que l'idée que tout s'arrête te traverse. Si c'est le cas, tu n'as pas à le cacher ici. Tu n'es pas faible, et ce n'est pas ta faute.`,
+        `Cette douleur est réelle. Ce que tu portes, ce qui t'a manqué ou ce que tu as perdu : tout ça compte. Mais l'envie que ça s'arrête est le signe d'une douleur immense, pas la vérité sur ta vie.`,
+        `Quand on va très mal, la tête ment. Elle te dit que ça ne changera jamais, que tu es coincé dans cette vie fade, à enchaîner des journées de plus en plus dures, sans fin, comme une torture qui ne s'arrêtera pas. Elle te dit que personne ne comprendrait, que les autres seraient mieux sans toi. Tout ça paraît absolument vrai, et pourtant ça ne l'est pas. La dépression fait croire que le présent est éternel. Elle éteint les couleurs, le goût, l'envie, et elle fait croire que c'est définitif. Mais ça ne l'est pas. Ce qu'on ressent change, même quand on ne voit pas comment, même quand on n'y croit plus. Beaucoup de personnes qui ont ressenti ce vide ont retrouvé, peu à peu, du goût aux choses.`,
+        `Tu n'as pas à porter ça en solitaire, et tu n'as pas à tout expliquer. Quand tu te sentiras prêt, ou un peu moins seul, tu pourras en dire un mot à quelqu'un en qui tu as confiance : un proche, un ami, un médecin. À ton rythme, sans obligation. Un simple « je ne vais pas bien » suffit pour commencer.`,
+        `Et si ça devient trop lourd, ou si tu te sens en danger en ce moment, tu peux appeler le 3114. C'est gratuit, joignable à toute heure, tous les jours, avec des personnes qui sont là pour t'écouter. En cas de danger immédiat, appelle le 112. Éloigne-toi de ce qui pourrait te faire du mal, et reste près de quelqu'un si tu le peux.`,
+        `Si ça dure depuis des semaines, un médecin peut aider. Ce que tu vis a un nom, la dépression, et elle se soigne. Tu n'as pas à attendre que ce soit pire pour demander.`,
+        `Tu comptes. Pour des gens que tu connais, et pour d'autres que tu n'as pas encore rencontrés.`
+      ],
+      questions: [
+        `Y a-t-il une personne à qui tu pourrais faire savoir, doucement, que tu traverses un moment difficile ?`
+      ]
+    },
+    {
+      title: `Quand on ne t'entend pas`,
+      paragraphs: [
+        `Il y a une fatigue particulière à vivre avec quelqu'un à qui l'on doit sans cesse redire ce dont on a besoin et ce qu'on ne veut pas. Demander, expliquer, reformuler, demander encore. Et avoir parfois l'impression que ta voix, pourtant claire, arrive à peine jusqu'à l'autre.`,
+        `À force, quelque chose se passe en toi. Tu commences à douter. Est-ce que je demande trop ? Est-ce que je suis trop sensible ? Est-ce que j'exagère ? Tu te surprends à peser chaque mot, à attendre le bon moment, à renoncer pour avoir la paix. Et le renoncement laisse un vide, parfois de la colère, parfois de la tristesse.`,
+        `Écoute doucement ceci : tu n'es pas trop. Pas trop sensible, pas trop exigeant, pas trop compliqué. Tu as des besoins et des limites, comme tout le monde, et ce n'est pas une faute. Tu n'as pas à t'excuser de les avoir, ni de les redire, ni d'être fatigué de devoir le faire.`,
+        `Un besoin n'est pas une faveur. Une limite n'est pas une attaque. Dans une relation qui fait du bien, on n'a pas à se battre pour être entendu : on a le droit de le dire avec ses mots, et d'être pris au sérieux. Ça ne veut pas dire que l'autre doit tout deviner, ni que tout sera parfait. Ça veut dire qu'on s'écoute vraiment.`,
+        `Ça ne signifie pas non plus que l'autre est une mauvaise personne. Parfois, elle ne se rend pas compte de ce que tu vis. Parfois, elle est prise dans ses propres difficultés, ou dans des habitudes qu'elle n'a jamais regardées. Parfois, elle entend sans parvenir à changer. Il n'y a que toi qui peux sentir ce qu'il en est, et tu as le droit de prendre le temps d'y voir clair, sans te presser, sans te juger.`,
+        `Peut-être que ta fatigue est un signal à écouter, pas à faire taire. Elle dit quelque chose de ce dont tu as besoin. Tu peux en parler à une personne de confiance, un proche, un ami, ou à un professionnel qui accompagne les couples, seul ou à deux. À ton rythme, sans devoir trancher tout de suite.`,
+        `Si tu as peur, si tu te sens contrôlé, rabaissé, ou si des gestes ou des mots te font du mal, ce n'est plus seulement une question d'écoute. Tu peux appeler le 3919, gratuit et anonyme, à toute heure, tous les jours. En cas de danger immédiat, appelle le 17 ou le 112.`
+      ],
+      questions: [
+        `Quand te sens-tu le plus entendu, et par qui ?`,
+        `Que voudrais-tu qu'on respecte absolument pour que tu te sentes bien, sans avoir à le répéter ?`,
+        `Si un ami te racontait ça, que lui dirais-tu ?`
+      ]
+    },
+    {
+      title: `Tu peux ne pas t'excuser`,
+      paragraphs: [
+        `« Pardon. » « Désolé. » « Je te dérange ? » Ces mots sortent parfois avant même qu'on y pense. On s'excuse d'avoir posé une question, d'être arrivé, d'avoir besoin d'un peu de temps, d'occuper de la place. On s'excuse même quand quelqu'un nous marche sur le pied.`,
+        `Ce réflexe a souvent une histoire. Peut-être que tu as appris, petit, qu'il valait mieux se faire discret. Qu'il fallait éviter les conflits, ne pas déranger, ne pas être un poids. Peut-être qu'une petite voix te dit que ta présence est une gêne, et que t'excuser est une façon de te faire pardonner d'avance. C'est une façon de prendre soin des autres, et c'est aussi une façon de se protéger.`,
+        `Mais à force, ça fatigue. S'excuser sans cesse, c'est se dire sans cesse qu'on est de trop, et ça pèse, même si les autres ne le voient pas. Et la plupart du temps, personne n'attendait d'excuse : on n'a pas fait de mal, on a juste existé, demandé, ressenti, pris sa place.`,
+        `Tu n'as pas à t'arrêter du jour au lendemain, ni à te forcer. Si tu en as envie, tu peux essayer, doucement, de remplacer un « désolé » par un « merci ». « Désolé d'être en retard » devient « Merci de m'avoir attendu ». « Pardon de te déranger » devient « Merci d'avoir un moment pour moi ». Tu dis la même chose, avec un peu plus de place pour toi, et un peu plus de chaleur pour l'autre.`,
+        `S'excuser quand on a vraiment blessé quelqu'un reste beau et important. Ce qui est doux, c'est de réserver ce mot aux moments où il est vrai, et de se laisser exister le reste du temps.`,
+        `Tu as le droit d'être là, de prendre de la place, d'avoir des besoins, de demander. Tu n'as pas à t'en excuser.`
+      ],
+      questions: [
+        `Dans quelles situations dis-tu « pardon » sans vraiment savoir pourquoi ?`,
+        `Qu'imaginerais-tu qu'il se passe si tu ne t'excusais pas ?`,
+        `À quelle personne aimerais-tu dire « merci » plutôt que « désolé » cette semaine ?`
+      ]
+    },
+    {
+      title: `Quand on a peur chez soi`,
+      paragraphs: [
+        `Il y a des relations où l'on marche sur la pointe des pieds. Où l'on surveille ses mots, son ton, l'heure à laquelle on rentre, l'humeur de l'autre. Où l'on s'excuse de choses qu'on n'a pas faites. Où l'on finit par se sentir tout petit, ou en danger, sans toujours savoir pourquoi.`,
+        `La violence ne se résume pas aux coups. Elle peut être faite de cris, d'insultes, de moqueries, d'humiliations, de contrôle, de surveillance du téléphone ou de l'argent, d'isolement loin de ses proches, de menaces, de pression. Elle peut alterner avec des moments très doux, des excuses, des promesses, et c'est ce qui rend tout si confus.`,
+        `Si tu te reconnais dans un peu de tout ça, voici d'abord ce qui compte : ce n'est pas ta faute. Rien de ce que tu es, de ce que tu as dit ou fait ne justifie qu'on te fasse peur ou qu'on te fasse du mal. Tu n'es pas responsable du comportement de l'autre.`,
+        `Tu as peut-être honte, ou tu te demandes si c'est « vraiment si grave ». Tu as peut-être du mal à partir, parce que tu aimes cette personne, parce que tu as peur, parce que tu dépends d'elle, ou simplement parce que c'est très dur. Rester n'est pas un échec. Tu n'as pas à tout décider tout de suite, ni à te justifier devant qui que ce soit.`,
+        `Tu n'as pas à rester seul avec ça. Tu peux en parler à une personne de confiance, même juste une phrase. Tu peux aussi en parler à des personnes formées, qui t'écoutent sans te juger et sans te forcer à rien.`,
+        `Le 3919 est un numéro d'écoute gratuit et anonyme, joignable tous les jours, pour les femmes victimes de violences. Pour tout le monde, il existe aussi un tchat anonyme et gratuit sur arretonslesviolences.gouv.fr, disponible à toute heure. Si tu es en danger immédiat, appelle le 17 ou le 112.`,
+        `Si quelqu'un regarde ton téléphone, tu peux fermer cette page à tout moment. Ce n'est pas une faute : c'est une façon de te protéger.`,
+        `Tu mérites d'être en sécurité, et d'être traité avec respect, douceur et tendresse.`
+      ],
+      questions: [
+        `Dans ta relation, y a-t-il des moments où tu as peur, ou où tu te sens tout petit ?`,
+        `Qui, parmi les personnes qui t'entourent, pourrait t'écouter sans te juger ?`
+      ]
+    },
+    {
+      title: `Ce qui t'est arrivé n'est pas ta faute`,
+      paragraphs: [
+        `Je suis là avec toi. Je ne te demande rien, et tu n'as rien à raconter.`,
+        `Si quelqu'un a posé sur toi des gestes que tu n'as pas voulus, t'a forcé, ou a profité de toi, ce qui s'est passé est de la violence. Et je veux que tu l'entendes doucement, aussi souvent qu'il le faudra : ce n'est pas ta faute.`,
+        `Ce n'est pas ta faute, même si tu connaissais cette personne. Même si tu l'aimais, ou qu'elle faisait partie de ta famille. Même si tu avais dit oui avant, même si tu étais chez elle, ou que tu avais bu. Même si tu n'as pas dit non, pas crié, pas résisté : le corps se fige souvent face à la peur, et ça n'est pas un consentement. Même si tu as continué à voir cette personne après. Même si ça fait longtemps, ou que tu étais enfant.`,
+        `Ce n'est pas ta faute, et ça ne l'a jamais été. Ni ta tenue, ni ta façon d'être, ni ce que tu as fait ou n'as pas fait n'a causé cela. La seule personne responsable, c'est celle qui a franchi la limite. Toi, tu as survécu à quelque chose que personne ne devrait vivre. Tout ce que tu as fait pour traverser ce moment, tu l'as fait pour tenir, et c'était juste.`,
+        `Si une petite voix te répète que tu aurais dû faire autrement, c'est la honte qui parle. Elle se trompe, et elle n'est pas à toi : elle appartient à la personne qui t'a fait du mal. Tu n'as pas à la porter.`,
+        `Tu as le droit de ressentir ce que tu ressens, quel que soit le moment. De la peur, de la honte, de la colère, du dégoût, de la tristesse, du vide, ou rien du tout. Certaines personnes en parlent tout de suite, d'autres des années plus tard. Il n'y a pas de bonne façon de réagir, pas de calendrier, pas de « je devrais aller mieux ».`,
+        `Tu n'as aucune obligation : ni d'en parler, ni de porter plainte, ni de tout décider maintenant. Tu avances à ton rythme, et ton histoire t'appartient.`,
+        `Quand tu te sentiras prêt, ou un peu moins seul, tu pourras peut-être en dire un mot à quelqu'un en qui tu as confiance. Des personnes formées peuvent aussi t'écouter sans te juger et sans rien te demander que tu ne veuilles pas. Si c'est récent, un médecin ou un service d'urgences peut s'occuper de toi, de ton corps comme de ta tête.`,
+        `Le 3919 est un numéro d'écoute gratuit et anonyme, joignable tous les jours, pour les femmes victimes de violences, y compris sexuelles. Pour tout le monde, il existe aussi un tchat anonyme et gratuit sur arretonslesviolences.gouv.fr. Si tu es en danger immédiat, appelle le 17 ou le 112. Si tu es un enfant ou un adolescent, ou si tu connais un enfant en danger, le 119 écoute tous les jours. Et si ça devient trop lourd, le 3114 est là aussi.`,
+        `Tu as été blessé, et tu mérites douceur, respect et sécurité. Tu comptes. Je suis là.`
+      ],
+      questions: [
+        `Qu'est-ce qui pourrait t'apaiser un peu, maintenant ?`,
+        `Y a-t-il une personne à qui tu pourrais écrire un mot ?`
+      ]
     }
   ];
 
@@ -1672,6 +1779,111 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
         `What was the last moment with someone that truly did you good, and what made it precious?`,
         `What does you good when you are alone, and what changes when you share it?`,
         `Who could you do some good to this week, with a small gesture or a word, even if you're not at your best?`
+      ]
+    },
+    {
+      title: `Getting through the storm`,
+      paragraphs: [
+        `I'm here with you for a moment.`,
+        `Maybe something has just hurt you. A sentence, a look, a reflection, or simply that voice inside you that is the harshest of all. Maybe everything has spiralled, or is about to. Maybe it has already passed, and what's left is the shame, the exhaustion, that weight in your stomach.`,
+        `Whatever it is, you are not at fault. You are not weak, and you have not failed. You went through a very hard moment, and you are still here.`,
+        `There is nothing to fix. Nothing to make up for. Nothing to prove.`,
+        `I suspect you may want to isolate yourself, to hide, to disappear from other people's eyes so that no one sees you like this. That's a feeling we can understand when shame is there. But imagine someone who truly loves you, right in front of you, in this moment. They wouldn't care about your appearance at all. They would just want to hold you, stay with you, and help you get through this storm with their presence and their love.`,
+        `Often, the harshest gaze is the one we turn on ourselves. Other people barely see anything of what torments us.`,
+        `Think for a moment about the people you love. A friend, a parent, someone in your family, the love of your life. Why do you love them? It isn't for their shape. It's for their laugh, the way they listen to you, the way they're there when things are hard, something they say, a simple gesture, what you share with each other. It's the warmth they have, their humour, the way they see the world. If you think about it, their body has almost nothing to do with the love you feel for them.`,
+        `It's the same for you. The people who love you don't love you for your body. They love you for who you are with them: your presence, your gentleness, the way you laugh, listen, and are yourself. Love is made of all of that.`,
+        `Your body is beautiful, and not only because of what it shows. It carries you every day, lets you hold someone in your arms, walk outside, feel, be with the people you love. It's a beauty that has nothing to do with a mirror.`,
+        `If you can, place a hand on your heart or on your stomach, and breathe however you can. It doesn't have to look beautiful.`,
+        `One day, maybe, you'll feel like talking to someone about it: a loved one, a doctor, a helpline. It isn't an obligation, and there is no deadline. Carrying this in silence is heavy, and many people carry it for a long time before daring to say it. Everyone goes at their own pace. If that day comes, there are people who can listen without judging. In "Help" you'll find numbers. And if you ever feel in danger, call your local emergency number (112 in Europe).`,
+        `You have the right to not be okay. You have the right to take your time.`
+      ],
+      questions: [
+        `If you could speak to yourself the way you would to someone you love, what would you say?`
+      ]
+    },
+    {
+      title: `When everything goes dark`,
+      paragraphs: [
+        `I'm here with you. Thank you for being here.`,
+        `Maybe for a while now, everything has felt heavy, grey, tasteless. What used to do you good doesn't do anything anymore. The tiredness doesn't leave, even after sleep. And maybe the thought of everything stopping crosses your mind at times. If so, you don't have to hide it here. You are not weak, and it is not your fault.`,
+        `This pain is real. What you carry, what you have missed or lost: all of it matters. But the wish for it to stop is the sign of an immense pain, not the truth about your life.`,
+        `When we are hurting this much, the mind lies. It tells you nothing will ever change, that you are stuck in this dull life, stringing together harder and harder days, endless, like a torture that will never stop. It tells you no one would understand, that others would be better off without you. All of it feels completely true, and yet it isn't. Depression makes the present feel eternal. It switches off colours, taste, desire, and makes you believe it is permanent. It isn't. What we feel changes, even when we can't see how, even when we no longer believe it. Many people who have felt this emptiness have, little by little, found taste in things again.`,
+        `You don't have to carry this alone, and you don't have to explain everything. When you feel ready, or a little less alone, you can say a word about it to someone you trust: a loved one, a friend, a doctor. At your own pace, with no obligation. A simple "I'm not doing well" is enough to start.`,
+        `And if it becomes too heavy, or if you feel in danger right now, call your local emergency number (112 in Europe) or a helpline: you can find one for your country at findahelpline.com. Move away from anything that could hurt you, and stay near someone if you can.`,
+        `If this has lasted for weeks, a doctor can help. What you are going through has a name, depression, and it can be treated. You don't have to wait until it's worse to ask.`,
+        `You matter. To people you know, and to others you haven't met yet.`
+      ],
+      questions: [
+        `Is there someone you could gently let know that you are going through a hard time?`
+      ]
+    },
+    {
+      title: `When no one hears you`,
+      paragraphs: [
+        `There is a particular kind of tiredness in living with someone you constantly have to remind of what you need and what you don't want. Asking, explaining, rephrasing, asking again. And sometimes feeling that your voice, however clear, barely reaches the other person.`,
+        `Over time, something shifts inside you. You start to doubt. Am I asking too much? Am I too sensitive? Am I exaggerating? You catch yourself weighing every word, waiting for the right moment, giving up to keep the peace. And giving up leaves an emptiness, sometimes anger, sometimes sadness.`,
+        `Listen gently to this: you are not too much. Not too sensitive, not too demanding, not too complicated. You have needs and limits, like everyone, and that is not a fault. You don't have to apologise for having them, for repeating them, or for being tired of having to.`,
+        `A need is not a favour. A limit is not an attack. In a relationship that does you good, you don't have to fight to be heard: you have the right to say it in your own words and to be taken seriously. That doesn't mean the other person must guess everything, or that everything will be perfect. It means you truly listen to each other.`,
+        `It doesn't mean the other person is bad, either. Sometimes they don't realise what you're going through. Sometimes they are caught up in their own difficulties, or in habits they have never looked at. Sometimes they hear you without managing to change. Only you can feel what is going on, and you have the right to take the time to see clearly, without rushing, without judging yourself.`,
+        `Perhaps your tiredness is a signal to listen to, not to silence. It says something about what you need. You can talk to someone you trust, a loved one, a friend, or a professional who works with couples, alone or together. At your own pace, without having to decide right away.`,
+        `If you are afraid, if you feel controlled or put down, or if gestures or words hurt you, this is no longer only a question of being heard. You can call your local emergency number (112 in Europe), or find a helpline for domestic abuse in your country at findahelpline.com.`
+      ],
+      questions: [
+        `When do you feel most heard, and by whom?`,
+        `What would you like to be respected without having to repeat it?`,
+        `If a friend told you this, what would you say to them?`
+      ]
+    },
+    {
+      title: `You don't have to apologise`,
+      paragraphs: [
+        `"Sorry." "Sorry to bother you." "Am I in the way?" These words sometimes come out before we even think. We apologise for asking a question, for arriving, for needing a little time, for taking up space. We even apologise when someone steps on our foot.`,
+        `This reflex often has a history. Maybe you learned, as a child, that it was better to stay discreet. That you had to avoid conflict, not bother anyone, not be a burden. Maybe a small voice tells you that your presence is an inconvenience, and that apologising is a way of being forgiven in advance. It is a way of caring for others, and also a way of protecting yourself.`,
+        `But over time, it wears you out. Apologising constantly means constantly telling yourself you are too much, and that weighs on you, even if others don't see it. And most of the time, no one was expecting an apology: you didn't do any harm, you simply existed, asked, felt, took your place.`,
+        `You don't have to stop overnight, or force yourself. If you feel like it, you can gently try replacing a "sorry" with a "thank you". "Sorry I'm late" becomes "Thank you for waiting for me". "Sorry to bother you" becomes "Thank you for having a moment for me". You say the same thing, with a little more room for yourself and a little more warmth for the other person.`,
+        `Apologising when you have truly hurt someone remains beautiful and important. What is gentle is to keep the word for the moments when it is true, and to let yourself exist the rest of the time.`,
+        `You have the right to be here, to take up space, to have needs, to ask. You don't have to apologise for any of it.`
+      ],
+      questions: [
+        `In which situations do you say "sorry" without really knowing why?`,
+        `What do you imagine would happen if you didn't apologise?`,
+        `Who would you like to say "thank you" to, rather than "sorry", this week?`
+      ]
+    },
+    {
+      title: `When you are afraid at home`,
+      paragraphs: [
+        `There are relationships where you walk on tiptoe. Where you watch your words, your tone, the time you get home, the other person's mood. Where you apologise for things you haven't done. Where you end up feeling very small, or in danger, without always knowing why.`,
+        `Violence is not only blows. It can be made of shouting, insults, mockery, humiliation, control, monitoring of your phone or your money, isolation from the people close to you, threats, pressure. It can alternate with very tender moments, apologies, promises, and that is what makes everything so confusing.`,
+        `If you recognise yourself in a bit of all this, here is what matters first: it is not your fault. Nothing about who you are, or what you have said or done, justifies someone making you afraid or hurting you. You are not responsible for the other person's behaviour.`,
+        `You may feel ashamed, or wonder whether it is "really that serious". You may find it hard to leave, because you love this person, because you are afraid, because you depend on them, or simply because it is very hard. Staying is not a failure. You don't have to decide everything right now, or justify yourself to anyone.`,
+        `You don't have to stay alone with this. You can tell someone you trust, even in a single sentence. You can also talk to trained people who will listen without judging and without forcing you to do anything.`,
+        `If you are in immediate danger, call your local emergency number (112 in Europe). To find a helpline for domestic violence in your country, see findahelpline.com.`,
+        `If someone looks at your phone, you can close this page at any time. That is not a fault: it is a way of protecting yourself.`,
+        `You deserve to be safe, and to be treated with respect, gentleness and tenderness.`
+      ],
+      questions: [
+        `In your relationship, are there moments when you feel afraid, or very small?`,
+        `Who around you could listen to you without judging?`
+      ]
+    },
+    {
+      title: `What happened to you is not your fault`,
+      paragraphs: [
+        `I'm here with you. I'm not asking anything of you, and you have nothing to tell.`,
+        `If someone put their hands on you in ways you did not want, forced you, or took advantage of you, what happened was violence. And I want you to hear this gently, as often as you need: it is not your fault.`,
+        `It is not your fault, even if you knew the person. Even if you loved them, or they were family. Even if you said yes before, even if you were at their place, or had been drinking. Even if you didn't say no, didn't shout, didn't resist: the body often freezes in the face of fear, and that is not consent. Even if you kept seeing that person afterwards. Even if it was a long time ago, or you were a child.`,
+        `It is not your fault, and it never was. Not your clothes, not who you are, not what you did or didn't do caused this. The only person responsible is the one who crossed the line. You survived something no one should have to live through. Everything you did to get through that moment, you did to hold on, and it was right.`,
+        `If a small voice keeps telling you that you should have done something differently, that is shame speaking. It is wrong, and it isn't yours: it belongs to the person who hurt you. You don't have to carry it.`,
+        `You have the right to feel what you feel, whenever it comes. Fear, shame, anger, disgust, sadness, emptiness, or nothing at all. Some people speak about it right away, others years later. There is no right way to react, no timeline, no "I should be better by now".`,
+        `You have no obligation: not to talk about it, not to report it, not to decide everything now. You go at your own pace, and your story belongs to you.`,
+        `When you feel ready, or a little less alone, you may be able to say a word about it to someone you trust. Trained people can also listen without judging and without asking anything you don't want to share. If it was recent, a doctor or an emergency department can look after you, body and mind.`,
+        `If you are in immediate danger, call your local emergency number (112 in Europe). To find a helpline for survivors of sexual violence in your country, see findahelpline.com.`,
+        `You were hurt, and you deserve gentleness, respect and safety. You matter. I'm here.`
+      ],
+      questions: [
+        `What could ease things a little, right now?`,
+        `Is there someone you could write a word to?`
       ]
     }
   ];
@@ -1854,7 +2066,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 "Rappel enregistré à":"Reminder saved for",
 "Tu pourras le changer dans « Un coin d'aide ».":"You can change it in “A little help corner”.",
 "Tu pourras la changer dans « Un coin d'aide ».":"You can change it in “A little help corner”.",
-"Tu recevras une douce notification chaque jour à":"You'll get a gentle notification every day at"
+"Tu recevras une douce notification chaque jour à":"You'll get a gentle notification every day at",
+"Des mots pour les moments difficiles":"Words for hard moments",
+"Des textes à lire doucement, à ton rythme, dans « Recul ».":"Texts to read gently, at your own pace, in “A step back”."
 };
   (function () {
     for (var i = 0; i < THEMES.length; i++) { THEMES[i].key = THEMES[i].title; THEMES_EN[i].key = THEMES[i].title; }
@@ -2488,6 +2702,14 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     return h + '</div>';
   }
 
+  function helpReadCard() {
+    var ids = [12, 15, 16], h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">' + T('Des mots pour les moments difficiles') + '</h2><p class="muted">' + T('Des textes à lire doucement, à ton rythme, dans « Recul ».') + '</p><div class="stack">';
+    for (var i = 0; i < ids.length; i++) {
+      if (!THEMES[ids[i]]) continue;
+      h += '<button type="button" class="btn secondary" data-a="helpRead" data-p="' + ids[i] + '">' + esc(THEMES[ids[i]].title) + '</button>';
+    }
+    return h + '</div></div>';
+  }
   function helpCard(title, text, numbers, danger) {
     var h = '<div class="card tight"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">' + esc(title) + '</h2><p class="muted">' + esc(text) + '</p>';
     for (var i = 0; i < numbers.length; i++) {
@@ -2588,9 +2810,11 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
     h += helpCard(`En danger immédiat`, `Pour une urgence médicale ou vitale, appelle le 15 (Samu) ou le 112.`, ['15', '112'], true);
     h += helpCard(`Idées noires, grande détresse`, `Le 3114 est le numéro national de prévention du suicide : gratuit, joignable jour et nuit.`, ['3114'], false);
     h += helpCard(`Un rapport difficile à la nourriture ou au corps`, `Anorexie Boulimie Info Écoute est une ligne d'écoute spécialisée dans les troubles du comportement alimentaire. Elle est ouverte les lundis, mardis, jeudis et vendredis de 16 h à 18 h, hors jours fériés. Appel non surtaxé.`, ['09 69 32 59 00'], false);
+    h += helpCard(`Violences conjugales ou sexuelles`, `Le 3919 est un numéro d'écoute gratuit et anonyme, joignable tous les jours, pour les femmes victimes de violences. Pour tout le monde, un tchat anonyme existe sur arretonslesviolences.gouv.fr. En danger immédiat : 17 ou 112.`, ['3919'], false);
     h += helpCard(`Un enfant en danger`, `Le 119 est le numéro national de l'enfance en danger. L'appel est gratuit.`, ['119'], false);
     h += helpCard(`Sourd ou malentendant`, `Le 114 est le numéro d'urgence pour les personnes sourdes et malentendantes. L'appel est gratuit.`, ['114'], false);
     }
+    h += helpReadCard();
     h += '<div class="card tight" style="background:var(--soft)"><h2 style="font-size:19px;font-family:var(--font-body);font-weight:600">Parler à quelqu\'un près de toi</h2><p>Ton médecin traitant peut t\'écouter et t\'orienter vers un psychologue ou un psychiatre. Une personne de confiance compte aussi.</p></div>';
     h += '<p class="muted small">Si « Appeler » ne fait rien sur ton appareil, copie le numéro et compose-le depuis ton téléphone.</p>';
     h += notifCard('help');
@@ -3004,6 +3228,8 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     } else if (a === 'delConfirm') {
       S.deleting = null;
       removeLight(p).then(function () { render(); }).catch(function () { S.err = 'Impossible de supprimer pour l\'instant.'; render(); });
+    } else if (a === 'helpRead') {
+      S.tab = 'recul'; S.err = ''; S.noteMsg = ''; S.reculView = 'detail'; S.reculIdx = parseInt(p, 10) || 0; render({ top: true });
     } else if (a === 'reculOpen') {
       S.reculView = 'detail'; S.noteMsg = ''; S.reculIdx = parseInt(p, 10) || 0; render({ top: true });
     } else if (a === 'reculList') {
@@ -3059,6 +3285,12 @@ Réponds uniquement avec un objet JSON de la forme {"invitation": "...", "why": 
     for (var ni = 0; ni < nsp.length; ni++) nsp[ni].textContent = T(nsp[ni].textContent);
     var nv = document.querySelector('.nav'); if (nv) nv.setAttribute('aria-label', 'Main navigation');
   }
+  (function () {
+    var vw = document.getElementById('view');
+    var fix = function () { if (vw.scrollLeft) vw.scrollLeft = 0; if (document.documentElement.scrollLeft) document.documentElement.scrollLeft = 0; if (document.body.scrollLeft) document.body.scrollLeft = 0; };
+    vw.addEventListener('scroll', fix, { passive: true });
+    window.addEventListener('scroll', fix, { passive: true });
+  })();
   if (LANG) loadToday();
   render();
   if (LANG) boot();
