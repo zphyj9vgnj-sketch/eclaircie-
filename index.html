@@ -2374,11 +2374,15 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
 
   /* Adresse envoyée dans les messages. À remplacer par le lien App Store une fois l'app publiée. */
   var APP_URL = 'https://zphyj9vgnj-sketch.github.io/eclaircie-/';
+  var IOS_URL = 'https://apps.apple.com/app/id6824820844';
+  function linksTxt() {
+    return LANG === 'en' ? '\n\niPhone: ' + IOS_URL + '\nOther phones and computers: ' + APP_URL : '\n\nSur iPhone : ' + IOS_URL + '\nSinon (Android, ordinateur) : ' + APP_URL;
+  }
   function lightById(id) { for (var i = 0; i < S.lights.length; i++) { if (S.lights[i].id === id) return S.lights[i]; } return null; }
   function lightShareText(l) {
     var t = (l.title || '') + (l.title && l.text ? '\n' : '') + (l.text || '');
-    if (LANG === 'en') return 'A memory I keep, and wanted to share with you:\n\n“' + t + '”\n\nI kept it in Éclaircie, a small, gentle app with no scores and no comparison. ' + APP_URL;
-    return 'Un souvenir que je garde et que j\'avais envie de partager avec toi :\n\n« ' + t + ' »\n\nJe l\'ai gardé dans Éclaircie, une petite app douce, sans score ni comparaison. ' + APP_URL;
+    if (LANG === 'en') return 'A memory I keep, and wanted to share with you:\n\n“' + t + '”\n\nI kept it in Éclaircie, a small, gentle app with no scores and no comparison. ' + linksTxt();
+    return 'Un souvenir que je garde et que j\'avais envie de partager avec toi :\n\n« ' + t + ' »\n\nJe l\'ai gardé dans Éclaircie, une petite app douce, sans score ni comparaison. ' + linksTxt();
   }
   function shareTextFor(p) {
     if (p && p !== 'm') { var l = lightById(p); if (l) return lightShareText(l); }
@@ -2392,8 +2396,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visib
   }
   function shareText() {
     var m = S.custom ? S.custom.text : MOMENTS[S.cur][1];
-    if (LANG === 'en') return 'Here\'s today\'s moment that I received on Éclaircie:\n\n“' + m + '”\n\nWhat if we lived it together?\n\nÉclaircie is a small, gentle app, with no scores and no comparison, that invites you to turn towards others and towards the world. ' + APP_URL;
-    return 'Voici le moment du jour que j\'ai reçu sur Éclaircie :\n\n« ' + m + ' »\n\nEt si on le vivait ensemble ?\n\nÉclaircie est une petite app douce, sans score ni comparaison, qui invite à se tourner vers les autres et vers le monde. ' + APP_URL;
+    if (LANG === 'en') return 'Here\'s today\'s moment that I received on Éclaircie:\n\n“' + m + '”\n\nWhat if we lived it together?\n\nÉclaircie is a small, gentle app, with no scores and no comparison, that invites you to turn towards others and towards the world. ' + linksTxt();
+    return 'Voici le moment du jour que j\'ai reçu sur Éclaircie :\n\n« ' + m + ' »\n\nEt si on le vivait ensemble ?\n\nÉclaircie est une petite app douce, sans score ni comparaison, qui invite à se tourner vers les autres et vers le monde. ' + linksTxt();
   }
 
   function tToday() {
